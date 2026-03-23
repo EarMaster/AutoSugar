@@ -6,8 +6,12 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Gradle wrapper (8.9) so CI runners can build without a local Gradle install
 - GitHub Actions CI workflow with separate Build, Unit Tests, and Lint jobs
 - Branch strategy documented in AGENTS.md: `main` is protected, all work on `develop`
+
+### Changed
+- Replaced deprecated `kotlinOptions { jvmTarget }` with `kotlin { jvmToolchain(17) }` in app build script
 - MIT License (Copyright 2026 Nico Wiedemann)
 - Full Android project scaffold: Gradle version catalog, root and app-level build files, ProGuard rules
 - `AndroidManifest.xml` with `CarAppService` (IOT category), `MainActivity`, internet and foreground-service permissions
