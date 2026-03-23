@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoSugar</string>
+
+    <!-- Car UI -->
+    <string name="label_glucose_value">Blood Glucose</string>
+    <string name="label_trend">Trend</string>
+    <string name="label_delta">Change</string>
+    <string name="label_unit_mgdl">mg/dL</string>
+    <string name="label_unit_mmoll">mmol/L</string>
+    <string name="action_switch_source">Switch Source</string>
+    <string name="label_loading">Loading…</string>
+    <string name="error_fetch_failed">Failed to fetch data</string>
+    <string name="action_retry">Retry</string>
+    <string name="label_no_profiles">No sources configured.\nOpen AutoSugar on your phone to add a Nightscout source.</string>
+
+    <!-- Settings UI -->
+    <string name="label_settings">Settings</string>
+    <string name="btn_add_profile">Add Source</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_test_connection">Test Connection</string>
+    <string name="hint_display_name">Display name</string>
+    <string name="hint_base_url">Nightscout URL (e.g. https://mynb.herokuapp.com)</string>
+    <string name="hint_api_token">API Token</string>
+    <string name="label_unit">Glucose Unit</string>
+    <string name="label_add_source">Add Source</string>
+    <string name="label_edit_source">Edit Source</string>
+    <string name="msg_test_success">Connected! Current BG: %1$s %2$s</string>
+    <string name="msg_test_failed">Connection failed: %1$s</string>
+    <string name="msg_saved">Source saved.</string>
+    <string name="msg_deleted">Source deleted.</string>
+    <string name="label_no_sources">No sources yet.\nTap + to add your Nightscout URL.</string>
+</resources>

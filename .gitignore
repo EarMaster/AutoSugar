@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+**/build/
+local.properties
+*.iml
+
+# Android Studio
+.idea/
+*.ipr
+*.iws
+captures/
+
+# Kotlin
+*.class
+
+# Generated files
+gen/
+out/
+
+# macOS
+.DS_Store
+
+# Keystore (never commit)
+*.jks
+*.keystore
