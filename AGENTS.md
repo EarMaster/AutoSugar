@@ -2,6 +2,12 @@
 
 This document defines specific roles for AI agents or developers to ensure a modular and scalable implementation of AutoSugar.
 
+## Branch Strategy
+
+* **`main`** is protected. Never commit or push directly to `main`.
+* All work happens on **`develop`** (or feature branches off `develop`).
+* Merges into `main` are done via pull request only.
+
 ## Agent 1: Android Auto UX/UI Specialist
 * **Focus:** Implementing the `CarAppService` and `Screen` hierarchy.
 * **Tasks:** * Design a dynamic `PaneTemplate` that updates based on the selected source.
