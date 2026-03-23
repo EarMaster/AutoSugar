@@ -6,6 +6,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- MIT License (Copyright 2026 Nico Wiedemann)
 - Full Android project scaffold: Gradle version catalog, root and app-level build files, ProGuard rules
 - `AndroidManifest.xml` with `CarAppService` (IOT category), `MainActivity`, internet and foreground-service permissions
 - Data layer: `NightscoutProfile` and `GlucoseEntry` domain models, `EntryDto` Moshi DTO, `NightscoutApi` Retrofit interface, `NightscoutApiFactory` with per-URL instance caching and OkHttp logging interceptor
