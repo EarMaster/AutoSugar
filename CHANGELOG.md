@@ -6,6 +6,22 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- TabTemplate for multi-profile switching (CarApi >= 6, 2–4 profiles); falls back to numbered icon ActionStrip
+- Trend arrow rendered as bitmap image in Car UI row; delta shown below glucose value
+- Configurable auto-refresh interval (30 s / 1 min / 2 min / 5 min) via Settings
+- Configurable tab icon per profile (Person, Home, Heart, Star, Car, Medical) with icon picker in profile edit screen
+- App launcher icon and mipmap assets
+- DHU simulator setup guide (`TESTING.md`)
+- `AppPreferencesDataStore` for persisting app-level preferences
+- History endpoint (`getEntries`) in Nightscout API client
+
+### Fixed
+- App not appearing in Android Auto (missing `com.google.android.gms.car.application` meta-data)
+- Crash on `ActionStrip` exceeding max 1 titled action
+- Glucose unit labels shown in uppercase (now `mg/dL` / `mmol/L`)
+- Java 17 toolchain required for Kotlin 2.0.21 compatibility
+
+### Added
 - Gradle wrapper (8.9) so CI runners can build without a local Gradle install
 - GitHub Actions CI workflow with separate Build, Unit Tests, and Lint jobs
 - Branch strategy documented in AGENTS.md: `main` is protected, all work on `develop`

@@ -4,6 +4,7 @@ import androidx.car.app.CarAppService
 import androidx.car.app.Session
 import androidx.car.app.validation.HostValidator
 import com.autosugar.data.repository.NightscoutRepository
+import com.autosugar.data.storage.AppPreferencesDataStore
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -11,9 +12,10 @@ import javax.inject.Inject
 class AutoSugarCarAppService : CarAppService() {
 
     @Inject lateinit var repository: NightscoutRepository
+    @Inject lateinit var appPrefs: AppPreferencesDataStore
 
     override fun createHostValidator(): HostValidator =
         HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
 
-    override fun onCreateSession(): Session = AutoSugarSession(repository)
+    override fun onCreateSession(): Session = AutoSugarSession(repository, appPrefs)
 }

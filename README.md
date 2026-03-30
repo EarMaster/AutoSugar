@@ -1,5 +1,7 @@
 # AutoSugar
 
+<img src="AutoSugar.svg" alt="AutoSugar icon" width="128" align="right">
+
 AutoSugar is an unofficial Android Auto application designed to monitor Nightscout CGM data. It allows users to track blood glucose levels from one or multiple sources (e.g., self and children) directly on their vehicle's head unit.
 
 ## Features

@@ -46,7 +46,26 @@ class NightscoutRepository @Inject constructor(
             direction = latest.direction ?: "NOT COMPUTABLE",
             dateIso = latest.dateString ?: latest.date.toString(),
             delta = latest.delta ?: delta,
+            dateMs = latest.date,
         )
+    }
+
+    suspend fun getHistory(profileId: String, count: Int = 24): Result<List<GlucoseEntry>> = runCatching {
+        val profiles = dataStore.profilesFlow.first()
+        val profile = profiles.find { it.id == profileId }
+            ?: error("Profile $profileId not found")
+
+        val api = apiFactory.get(profile.baseUrl)
+        api.getEntries(token = profile.apiToken.ifBlank { null }, count = count)
+            .map { dto ->
+                GlucoseEntry(
+                    sgv = dto.sgv,
+                    direction = dto.direction ?: "NOT COMPUTABLE",
+                    dateIso = dto.dateString ?: dto.date.toString(),
+                    delta = dto.delta,
+                    dateMs = dto.date,
+                )
+            }
     }
 
     suspend fun saveProfile(profile: NightscoutProfile) {

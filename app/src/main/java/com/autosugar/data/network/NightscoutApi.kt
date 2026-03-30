@@ -10,4 +10,10 @@ interface NightscoutApi {
         @Query("token") token: String? = null,
         @Query("count") count: Int = 2,
     ): List<EntryDto>
+
+    @GET("api/v1/entries.json")
+    suspend fun getEntries(
+        @Query("token") token: String? = null,
+        @Query("count") count: Int = 24,
+    ): List<EntryDto>
 }

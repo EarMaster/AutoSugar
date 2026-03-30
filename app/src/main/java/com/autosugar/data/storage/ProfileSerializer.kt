@@ -34,6 +34,7 @@ internal data class NightscoutProfileJson(
     val baseUrl: String,
     val apiToken: String,
     val unit: String,
+    val icon: String = com.autosugar.data.model.ProfileIcon.PERSON.name,
 )
 
 private fun NightscoutProfile.toJson() = NightscoutProfileJson(
@@ -42,6 +43,7 @@ private fun NightscoutProfile.toJson() = NightscoutProfileJson(
     baseUrl = baseUrl,
     apiToken = apiToken,
     unit = unit.name,
+    icon = icon.name,
 )
 
 private fun NightscoutProfileJson.toModel() = NightscoutProfile(
@@ -50,4 +52,6 @@ private fun NightscoutProfileJson.toModel() = NightscoutProfile(
     baseUrl = baseUrl,
     apiToken = apiToken,
     unit = com.autosugar.data.model.GlucoseUnit.valueOf(unit),
+    icon = runCatching { com.autosugar.data.model.ProfileIcon.valueOf(icon) }
+        .getOrDefault(com.autosugar.data.model.ProfileIcon.PERSON),
 )

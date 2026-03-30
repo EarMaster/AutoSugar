@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.autosugar.data.model.GlucoseUnit
 import com.autosugar.data.model.NightscoutProfile
+import com.autosugar.data.model.ProfileIcon
 import com.autosugar.data.repository.NightscoutRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,7 @@ class ProfileEditViewModel @Inject constructor(
     var baseUrl = MutableStateFlow("")
     var apiToken = MutableStateFlow("")
     var unit = MutableStateFlow(GlucoseUnit.MG_DL)
+    var icon = MutableStateFlow(ProfileIcon.PERSON)
 
     private var editingId: String? = null
 
@@ -44,6 +46,7 @@ class ProfileEditViewModel @Inject constructor(
             baseUrl.value = profile.baseUrl
             apiToken.value = profile.apiToken
             unit.value = profile.unit
+            icon.value = profile.icon
         }
     }
 
@@ -56,7 +59,10 @@ class ProfileEditViewModel @Inject constructor(
             repository.getCurrentEntry(tempProfile.id)
                 .onSuccess { entry ->
                     _uiState.value = ProfileEditUiState.TestSuccess(
-                        "${entry.displayValue(tempProfile.unit)} ${tempProfile.unit.name.replace("_", "/")}"
+                        "${entry.displayValue(tempProfile.unit)} ${when (tempProfile.unit) {
+                            GlucoseUnit.MG_DL -> "mg/dL"
+                            GlucoseUnit.MMOL_L -> "mmol/L"
+                        }}"
                     )
                     // Revert if we were just testing (don't keep the temp profile if it was new)
                     if (editingId == null) {
@@ -88,5 +94,6 @@ class ProfileEditViewModel @Inject constructor(
         baseUrl = baseUrl.value.trim(),
         apiToken = apiToken.value.trim(),
         unit = unit.value,
+        icon = icon.value,
     )
 }

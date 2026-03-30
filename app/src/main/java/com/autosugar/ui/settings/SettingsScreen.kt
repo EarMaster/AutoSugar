@@ -15,7 +15,9 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +43,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val profiles by viewModel.profiles.collectAsState()
+    val refreshInterval by viewModel.refreshIntervalSeconds.collectAsState()
 
     Scaffold(
         topBar = {
@@ -52,22 +55,31 @@ fun SettingsScreen(
             }
         },
     ) { padding ->
-        if (profiles.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = stringResource(R.string.label_no_sources),
-                    style = MaterialTheme.typography.bodyLarge,
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            item {
+                RefreshIntervalSection(
+                    currentSeconds = refreshInterval,
+                    onSelect = { viewModel.setRefreshInterval(it) },
                 )
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
+            item { HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp)) }
+            if (profiles.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.label_no_sources),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+            } else {
                 items(profiles, key = { it.id }) { profile ->
                     ProfileCard(
                         profile = profile,
@@ -75,6 +87,33 @@ fun SettingsScreen(
                         onDelete = { viewModel.deleteProfile(profile.id) },
                     )
                 }
+            }
+        }
+    }
+}
+
+private val REFRESH_OPTIONS = listOf(
+    30 to R.string.label_refresh_30s,
+    60 to R.string.label_refresh_1min,
+    120 to R.string.label_refresh_2min,
+    300 to R.string.label_refresh_5min,
+)
+
+@Composable
+private fun RefreshIntervalSection(currentSeconds: Int, onSelect: (Int) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = stringResource(R.string.label_refresh_interval),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            REFRESH_OPTIONS.forEach { (seconds, labelRes) ->
+                FilterChip(
+                    selected = currentSeconds == seconds,
+                    onClick = { onSelect(seconds) },
+                    label = { Text(stringResource(labelRes)) },
+                )
             }
         }
     }

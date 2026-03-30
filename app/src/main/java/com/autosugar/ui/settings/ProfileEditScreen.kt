@@ -37,6 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.autosugar.R
 import com.autosugar.data.model.GlucoseUnit
+import com.autosugar.data.model.ProfileIcon
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +62,7 @@ fun ProfileEditScreen(
     val baseUrl by viewModel.baseUrl.collectAsState()
     val apiToken by viewModel.apiToken.collectAsState()
     val unit by viewModel.unit.collectAsState()
+    val icon by viewModel.icon.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState) {
@@ -128,13 +137,44 @@ fun ProfileEditScreen(
                 enabled = !isLoading,
             )
 
+            Text(stringResource(R.string.label_tab_icon))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ProfileIcon.entries.forEach { profileIcon ->
+                    val selected = icon == profileIcon
+                    Card(
+                        onClick = { viewModel.icon.value = profileIcon },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer
+                                            else MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = if (selected) MaterialTheme.colorScheme.onPrimaryContainer
+                                           else MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        modifier = androidx.compose.ui.Modifier.size(48.dp),
+                        enabled = !isLoading,
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                        ) {
+                            Icon(
+                                painter = painterResource(profileIcon.resId),
+                                contentDescription = profileIcon.name,
+                            )
+                        }
+                    }
+                }
+            }
+
             Text(stringResource(R.string.label_unit))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 GlucoseUnit.entries.forEach { u ->
                     FilterChip(
                         selected = unit == u,
                         onClick = { viewModel.unit.value = u },
-                        label = { Text(u.name.replace("_", "/")) },
+                        label = { Text(when (u) {
+                            GlucoseUnit.MG_DL -> "mg/dL"
+                            GlucoseUnit.MMOL_L -> "mmol/L"
+                        }) },
                         enabled = !isLoading,
                     )
                 }

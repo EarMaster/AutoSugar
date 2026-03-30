@@ -9,6 +9,8 @@ data class GlucoseEntry(
     val dateIso: String,
     /** Delta to the previous reading, in the same unit as sgv (mg/dL). Null if unavailable. */
     val delta: Double?,
+    /** Unix timestamp in milliseconds — used for reliable chronological sorting. */
+    val dateMs: Long = 0L,
 ) {
     /** Returns the display value converted to the requested unit. */
     fun displayValue(unit: GlucoseUnit): String = when (unit) {
