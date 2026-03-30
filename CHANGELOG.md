@@ -5,6 +5,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Remove hardcoded local JDK path from gradle.properties so CI builds succeed on GitHub Actions
+
 ### Added
 - Per-profile glucose alert notifications for high and low BG using
   Nightscout's bgHigh/bgLow thresholds, with 15-minute repeat cooldown
