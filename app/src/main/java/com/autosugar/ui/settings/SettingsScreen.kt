@@ -29,10 +29,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.autosugar.R
+import com.autosugar.data.model.GlucoseUnit
 import com.autosugar.data.model.NightscoutProfile
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,6 +132,12 @@ private fun ProfileCard(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            Icon(
+                painter = painterResource(profile.icon.resId),
+                contentDescription = null,
+                modifier = Modifier.padding(end = 12.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = profile.displayName, style = MaterialTheme.typography.titleMedium)
                 Text(
@@ -139,7 +147,10 @@ private fun ProfileCard(
                     maxLines = 1,
                 )
                 Text(
-                    text = profile.unit.name.replace("_", "/"),
+                    text = when (profile.unit) {
+                        GlucoseUnit.MG_DL  -> "mg/dL"
+                        GlucoseUnit.MMOL_L -> "mmol/L"
+                    },
                     style = MaterialTheme.typography.labelSmall,
                 )
             }

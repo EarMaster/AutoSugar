@@ -34,6 +34,11 @@
     <string name="label_no_sources">No sources yet.\nTap + to add your Nightscout URL.</string>
 
     <string name="label_tab_icon">Tab Icon</string>
+    <string name="label_graph">3h</string>
+    <string name="label_just_now">just now</string>
+    <string name="label_n_min_ago">%d min ago</string>
+    <string name="label_reading">Reading: %s</string>
+    <string name="label_received">Received: %s</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Refresh Interval</string>

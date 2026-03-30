@@ -6,6 +6,18 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Glucose history graph in Car UI: 3-hour bitmap rendered via `Pane.setImage()` with target range band, dotted grid lines, drop-pin value labels at 20-min marks, and half-hour time labels
+- Reading age ("X min ago") and received timestamp shown as secondary row in Car UI
+- Expanded profile icon set: male, female, boy, girl, baby, elderly man, elderly woman variants
+- German translations for all new strings
+
+### Fixed
+- Profile icon now shown in Settings overview list
+- Glucose unit displayed as `mg/dL` / `mmol/L` (was `MG/DL` / `MMOL/L`)
+
+### Changed
+- Icon picker in profile edit screen uses `FlowRow` for dynamic wrapping instead of fixed 4-per-row
+
 - TabTemplate for multi-profile switching (CarApi >= 6, 2–4 profiles); falls back to numbered icon ActionStrip
 - Trend arrow rendered as bitmap image in Car UI row; delta shown below glucose value
 - Configurable auto-refresh interval (30 s / 1 min / 2 min / 5 min) via Settings
