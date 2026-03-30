@@ -6,6 +6,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Monochrome adaptive icon (`ic_launcher_monochrome.xml`) for Android 13+ themed icon support
+- `<monochrome>` layer added to `ic_launcher.xml` adaptive icon definition
+
+### Changed
+- Adaptive icon background color updated from `#F4EFE4` to `#302919`
+
+### Added
 - Fetch glucose target thresholds (`bgTargetBottom`/`bgTargetTop`) from Nightscout `/api/v1/status.json` and use them for the graph's target band and dynamic Y-axis scaling
 - `StatusDto`, `SettingsDto`, `ThresholdsDto` DTOs for Nightscout status response
 - `getStatus()` endpoint in `NightscoutApi` and `getTargetRange()` in `NightscoutRepository`
