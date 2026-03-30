@@ -1,8 +1,8 @@
-Commit staged changes using a conventional commit message, after syncing with the remote.
+Commit recent changes using a conventional commit message, after syncing with the remote.
 
 ## Steps
 
-1. **Check git status** — run `git status` to see staged, unstaged, and untracked files. If there is nothing staged, stop and tell the user.
+1. **Check git status** — run `git status` to see staged, unstaged, and untracked files. If there is nothing staged, stage recent changes. If there are unstaged or changed files from previous sessions group them (if possible) and use `AskUserQuestion` to ask the user if these changes shall be commited as well.
 
 2. **Sync** — run `git pull --rebase` to incorporate upstream changes before committing. If it fails (e.g. conflicts), stop and report the error; do not proceed.
 

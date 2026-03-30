@@ -5,6 +5,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- `/commit` command now auto-stages recent changes and prompts about other unstaged files instead of stopping when nothing is staged
+
 ### Added
 - Monochrome adaptive icon (`ic_launcher_monochrome.xml`) for Android 13+ themed icon support
 - `<monochrome>` layer added to `ic_launcher.xml` adaptive icon definition
