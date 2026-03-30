@@ -34,4 +34,5 @@ data class NightscoutProfile(
     val apiToken: String,
     val unit: GlucoseUnit = GlucoseUnit.MG_DL,
     val icon: ProfileIcon = ProfileIcon.PERSON,
+    val alertsEnabled: Boolean = false,
 )

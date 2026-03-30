@@ -5,7 +5,18 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Per-profile glucose alert notifications for high and low BG using
+  Nightscout's bgHigh/bgLow thresholds, with 15-minute repeat cooldown
+- Predictive alerts: 15-min linear extrapolation warns before a
+  threshold is crossed (requires delta data from Nightscout)
+- POST_NOTIFICATIONS permission for Android 13+ alert support
+
 ### Changed
+- Settings screen: profile cards show an alerts toggle; tap to edit,
+  long-press to drag-reorder profiles; unit removed from card display
+- Profile edit screen: save moved to top-bar icon, test connection
+  placed directly below API token field, delete button moved to bottom
 - `/commit` command now auto-stages recent changes and prompts about other unstaged files instead of stopping when nothing is staged
 
 ### Added

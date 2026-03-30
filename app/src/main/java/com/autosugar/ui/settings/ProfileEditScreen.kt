@@ -1,28 +1,44 @@
 package com.autosugar.ui.settings
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -32,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -40,13 +57,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.autosugar.R
 import com.autosugar.data.model.GlucoseUnit
 import com.autosugar.data.model.ProfileIcon
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.res.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,11 +75,17 @@ fun ProfileEditScreen(
     val apiToken by viewModel.apiToken.collectAsState()
     val unit by viewModel.unit.collectAsState()
     val icon by viewModel.icon.collectAsState()
+    val alertsEnabled by viewModel.alertsEnabled.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* no-op: we gracefully handle missing permission in GlucoseAlertManager */ }
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
             is ProfileEditUiState.Saved -> onNavigateUp()
+            is ProfileEditUiState.Deleted -> onNavigateUp()
             is ProfileEditUiState.TestSuccess -> {
                 snackbarHostState.showSnackbar("BG: ${state.message}")
                 viewModel.clearState()
@@ -83,6 +99,8 @@ fun ProfileEditScreen(
     }
 
     val isLoading = uiState is ProfileEditUiState.Loading
+    val canSave = !isLoading && displayName.isNotBlank() && baseUrl.isNotBlank()
+
     val title = if (profileId == null) {
         stringResource(R.string.label_add_source)
     } else {
@@ -98,6 +116,26 @@ fun ProfileEditScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
+                actions = {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .size(24.dp),
+                            strokeWidth = 2.5.dp,
+                        )
+                    } else {
+                        IconButton(
+                            onClick = { viewModel.save() },
+                            enabled = canSave,
+                        ) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = stringResource(R.string.btn_save),
+                            )
+                        }
+                    }
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -109,6 +147,7 @@ fun ProfileEditScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // ── Connection fields ─────────────────────────────────────────
             OutlinedTextField(
                 value = displayName,
                 onValueChange = { viewModel.displayName.value = it },
@@ -117,7 +156,6 @@ fun ProfileEditScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !isLoading,
             )
-
             OutlinedTextField(
                 value = baseUrl,
                 onValueChange = { viewModel.baseUrl.value = it },
@@ -127,7 +165,6 @@ fun ProfileEditScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                 enabled = !isLoading,
             )
-
             OutlinedTextField(
                 value = apiToken,
                 onValueChange = { viewModel.apiToken.value = it },
@@ -138,7 +175,34 @@ fun ProfileEditScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 enabled = !isLoading,
             )
+            OutlinedButton(
+                onClick = { viewModel.testConnection() },
+                enabled = !isLoading && baseUrl.isNotBlank(),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.btn_test_connection))
+            }
 
+            // ── Alerts ────────────────────────────────────────────────────
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(stringResource(R.string.label_glucose_alerts))
+                Switch(
+                    checked = alertsEnabled,
+                    onCheckedChange = { enabled ->
+                        viewModel.alertsEnabled.value = enabled
+                        if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    },
+                    enabled = !isLoading,
+                )
+            }
+
+            // ── Tab icon ─────────────────────────────────────────────────
             Text(stringResource(R.string.label_tab_icon))
             @OptIn(ExperimentalLayoutApi::class)
             FlowRow(
@@ -155,12 +219,12 @@ fun ProfileEditScreen(
                             contentColor = if (selected) MaterialTheme.colorScheme.onPrimaryContainer
                                            else MaterialTheme.colorScheme.onSurfaceVariant,
                         ),
-                        modifier = androidx.compose.ui.Modifier.size(48.dp),
+                        modifier = Modifier.size(48.dp),
                         enabled = !isLoading,
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize(),
                         ) {
                             Icon(
                                 painter = painterResource(profileIcon.resId),
@@ -171,44 +235,42 @@ fun ProfileEditScreen(
                 }
             }
 
+            // ── Unit ─────────────────────────────────────────────────────
             Text(stringResource(R.string.label_unit))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 GlucoseUnit.entries.forEach { u ->
                     FilterChip(
                         selected = unit == u,
                         onClick = { viewModel.unit.value = u },
-                        label = { Text(when (u) {
-                            GlucoseUnit.MG_DL -> "mg/dL"
-                            GlucoseUnit.MMOL_L -> "mmol/L"
-                        }) },
+                        label = {
+                            Text(when (u) {
+                                GlucoseUnit.MG_DL  -> "mg/dL"
+                                GlucoseUnit.MMOL_L -> "mmol/L"
+                            })
+                        },
                         enabled = !isLoading,
                     )
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            // ── Delete (edit mode only) ───────────────────────────────────
+            if (profileId != null) {
+                Spacer(Modifier.height(8.dp))
                 OutlinedButton(
-                    onClick = { viewModel.testConnection() },
-                    enabled = !isLoading && baseUrl.isNotBlank(),
-                    modifier = Modifier.weight(1f),
+                    onClick = { viewModel.delete() },
+                    enabled = !isLoading,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error,
+                    ),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
                 ) {
-                    Text(stringResource(R.string.btn_test_connection))
-                }
-
-                Button(
-                    onClick = { viewModel.save() },
-                    enabled = !isLoading && displayName.isNotBlank() && baseUrl.isNotBlank(),
-                    modifier = Modifier.weight(1f),
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(modifier = Modifier.padding(4.dp))
-                    } else {
-                        Text(stringResource(R.string.btn_save))
-                    }
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    Text(stringResource(R.string.btn_delete))
                 }
             }
         }

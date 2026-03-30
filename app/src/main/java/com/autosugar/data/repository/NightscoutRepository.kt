@@ -1,6 +1,7 @@
 package com.autosugar.data.repository
 
 import com.autosugar.data.model.GlucoseEntry
+import com.autosugar.data.model.GlucoseThresholds
 import com.autosugar.data.model.NightscoutProfile
 import com.autosugar.data.network.NightscoutApiFactory
 import com.autosugar.data.storage.ProfileDataStore
@@ -50,16 +51,19 @@ class NightscoutRepository @Inject constructor(
         )
     }
 
-    /** Returns Pair(bgTargetBottom, bgTargetTop) in mg/dL. */
-    suspend fun getTargetRange(profileId: String): Result<Pair<Int, Int>> = runCatching {
+    /** Returns all four Nightscout threshold values in mg/dL. */
+    suspend fun getThresholds(profileId: String): Result<GlucoseThresholds> = runCatching {
         val profiles = dataStore.profilesFlow.first()
         val profile = profiles.find { it.id == profileId }
             ?: error("Profile $profileId not found")
         val api = apiFactory.get(profile.baseUrl)
         val t = api.getStatus(token = profile.apiToken.ifBlank { null }).settings?.thresholds
-        val bottom = t?.bgTargetBottom ?: error("bgTargetBottom not in status response")
-        val top    = t.bgTargetTop    ?: error("bgTargetTop not in status response")
-        bottom to top
+        GlucoseThresholds(
+            bgLow          = t?.bgLow          ?: 70,
+            bgTargetBottom = t?.bgTargetBottom ?: error("bgTargetBottom not in status response"),
+            bgTargetTop    = t?.bgTargetTop    ?: error("bgTargetTop not in status response"),
+            bgHigh         = t?.bgHigh         ?: 180,
+        )
     }
 
     suspend fun getHistory(profileId: String, count: Int = 24): Result<List<GlucoseEntry>> = runCatching {
@@ -93,5 +97,9 @@ class NightscoutRepository @Inject constructor(
         val profiles = dataStore.profilesFlow.first().filter { it.id != id }
         dataStore.save(profiles)
         if (_activeProfileId.value == id) _activeProfileId.value = null
+    }
+
+    suspend fun saveAll(profiles: List<NightscoutProfile>) {
+        dataStore.save(profiles)
     }
 }

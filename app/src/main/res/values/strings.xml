@@ -40,6 +40,16 @@
     <string name="label_reading">Reading: %s</string>
     <string name="label_received">Received: %s</string>
 
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">Glucose alerts</string>
+    <string name="notif_channel_name">Glucose Alerts</string>
+    <string name="notif_channel_desc">High and low blood glucose alerts with 15-minute repeat cooldown</string>
+    <string name="notif_title_high">High glucose</string>
+    <string name="notif_title_low">Low glucose</string>
+    <string name="notif_title_predicted_high">Glucose trending high</string>
+    <string name="notif_title_predicted_low">Glucose trending low</string>
+    <string name="notif_text_predicted">Predicted in 15 min: %s</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Refresh Interval</string>
     <string name="label_refresh_30s">30 sec</string>

@@ -25,6 +25,7 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.lifecycleScope
 import com.autosugar.R
 import com.autosugar.data.model.GlucoseEntry
+import com.autosugar.data.model.GlucoseThresholds
 import com.autosugar.data.model.GlucoseUnit
 import com.autosugar.data.model.NightscoutProfile
 import com.autosugar.data.repository.NightscoutRepository
@@ -48,10 +49,18 @@ class GlucoseScreen(
     private var history: List<GlucoseEntry> = emptyList()
     private var lastFetchedMs: Long = 0L
     private var isLoading = true
-    private var bgTargetBottom: Float = 70f
-    private var bgTargetTop: Float = 180f
+    private var thresholds: GlucoseThresholds = GlucoseThresholds(
+        bgLow = 70, bgTargetBottom = 70, bgTargetTop = 180, bgHigh = 180,
+    )
     private var errorMessage: String? = null
     private var pollingJob: Job? = null
+
+    private val alertManager = GlucoseAlertManager(carContext)
+    private val alertCooldownMs = 15 * 60_000L
+    private var lastHighAlertMs = 0L
+    private var lastLowAlertMs = 0L
+    private var lastPredictedHighAlertMs = 0L
+    private var lastPredictedLowAlertMs = 0L
 
     init {
         lifecycleScope.launch {
@@ -80,7 +89,7 @@ class GlucoseScreen(
         coroutineScope {
             val entryResult = async { repository.getCurrentEntry(activeProfileId) }
             val historyResult = async { repository.getHistory(activeProfileId, count = 36) }
-            val thresholdsResult = async { repository.getTargetRange(activeProfileId) }
+            val thresholdsResult = async { repository.getThresholds(activeProfileId) }
             entryResult.await()
                 .onSuccess { result ->
                     entry = result
@@ -94,12 +103,44 @@ class GlucoseScreen(
             historyResult.await()
                 .onSuccess { h -> history = h.sortedBy { it.dateMs } }
             thresholdsResult.await()
-                .onSuccess { (bottom, top) ->
-                    bgTargetBottom = bottom.toFloat()
-                    bgTargetTop    = top.toFloat()
-                }
+                .onSuccess { t -> thresholds = t }
         }
+        checkAlerts()
         invalidate()
+    }
+
+    private fun checkAlerts() {
+        val currentEntry = entry ?: return
+        val profile = profiles.find { it.id == activeProfileId } ?: return
+        if (!profile.alertsEnabled) return
+
+        val sgv = currentEntry.sgv
+        val now = System.currentTimeMillis()
+
+        if (sgv > thresholds.bgHigh && now - lastHighAlertMs > alertCooldownMs) {
+            alertManager.sendHighAlert(sgv, profile.unit)
+            lastHighAlertMs = now
+        }
+        if (sgv < thresholds.bgLow && now - lastLowAlertMs > alertCooldownMs) {
+            alertManager.sendLowAlert(sgv, profile.unit)
+            lastLowAlertMs = now
+        }
+
+        val delta = currentEntry.delta ?: return
+        val projected15 = sgv + delta * 3  // 3 readings × ~5 min = 15 min ahead
+
+        if (projected15 > thresholds.bgHigh && sgv <= thresholds.bgHigh &&
+            now - lastPredictedHighAlertMs > alertCooldownMs
+        ) {
+            alertManager.sendPredictedHighAlert(projected15.toInt(), profile.unit)
+            lastPredictedHighAlertMs = now
+        }
+        if (projected15 < thresholds.bgLow && sgv >= thresholds.bgLow &&
+            now - lastPredictedLowAlertMs > alertCooldownMs
+        ) {
+            alertManager.sendPredictedLowAlert(projected15.toInt(), profile.unit)
+            lastPredictedLowAlertMs = now
+        }
     }
 
     override fun onGetTemplate(): Template {
@@ -245,7 +286,7 @@ class GlucoseScreen(
                 )
                 .addRow(statsRow.build())
             if (history.size >= 2) {
-                pane.setImage(graphIcon(history, unit, bgTargetBottom, bgTargetTop))
+                pane.setImage(graphIcon(history, unit, thresholds.bgTargetBottom.toFloat(), thresholds.bgTargetTop.toFloat()))
             }
             pane.build()
         }

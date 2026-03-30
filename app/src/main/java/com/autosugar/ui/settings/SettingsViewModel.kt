@@ -24,8 +24,17 @@ class SettingsViewModel @Inject constructor(
     val refreshIntervalSeconds: StateFlow<Int> = appPrefs.refreshIntervalSeconds
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 60)
 
-    fun deleteProfile(id: String) {
-        viewModelScope.launch { repository.deleteProfile(id) }
+    fun setAlertsEnabled(id: String, enabled: Boolean) {
+        viewModelScope.launch {
+            val updated = profiles.value.map { p ->
+                if (p.id == id) p.copy(alertsEnabled = enabled) else p
+            }
+            repository.saveAll(updated)
+        }
+    }
+
+    fun saveOrder(ordered: List<NightscoutProfile>) {
+        viewModelScope.launch { repository.saveAll(ordered) }
     }
 
     fun setRefreshInterval(seconds: Int) {

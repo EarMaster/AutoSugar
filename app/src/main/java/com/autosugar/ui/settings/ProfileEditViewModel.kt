@@ -20,6 +20,7 @@ sealed interface ProfileEditUiState {
     data class TestSuccess(val message: String) : ProfileEditUiState
     data class Error(val message: String) : ProfileEditUiState
     data object Saved : ProfileEditUiState
+    data object Deleted : ProfileEditUiState
 }
 
 @HiltViewModel
@@ -32,6 +33,7 @@ class ProfileEditViewModel @Inject constructor(
     var apiToken = MutableStateFlow("")
     var unit = MutableStateFlow(GlucoseUnit.MG_DL)
     var icon = MutableStateFlow(ProfileIcon.PERSON)
+    var alertsEnabled = MutableStateFlow(false)
 
     private var editingId: String? = null
 
@@ -47,6 +49,7 @@ class ProfileEditViewModel @Inject constructor(
             apiToken.value = profile.apiToken
             unit.value = profile.unit
             icon.value = profile.icon
+            alertsEnabled.value = profile.alertsEnabled
         }
     }
 
@@ -84,6 +87,14 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
+    fun delete() {
+        val id = editingId ?: return
+        viewModelScope.launch {
+            repository.deleteProfile(id)
+            _uiState.value = ProfileEditUiState.Deleted
+        }
+    }
+
     fun clearState() {
         _uiState.value = ProfileEditUiState.Idle
     }
@@ -95,5 +106,6 @@ class ProfileEditViewModel @Inject constructor(
         apiToken = apiToken.value.trim(),
         unit = unit.value,
         icon = icon.value,
+        alertsEnabled = alertsEnabled.value,
     )
 }
