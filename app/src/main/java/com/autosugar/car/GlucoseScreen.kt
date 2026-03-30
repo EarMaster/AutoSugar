@@ -48,6 +48,8 @@ class GlucoseScreen(
     private var history: List<GlucoseEntry> = emptyList()
     private var lastFetchedMs: Long = 0L
     private var isLoading = true
+    private var bgTargetBottom: Float = 70f
+    private var bgTargetTop: Float = 180f
     private var errorMessage: String? = null
     private var pollingJob: Job? = null
 
@@ -78,6 +80,7 @@ class GlucoseScreen(
         coroutineScope {
             val entryResult = async { repository.getCurrentEntry(activeProfileId) }
             val historyResult = async { repository.getHistory(activeProfileId, count = 36) }
+            val thresholdsResult = async { repository.getTargetRange(activeProfileId) }
             entryResult.await()
                 .onSuccess { result ->
                     entry = result
@@ -90,6 +93,11 @@ class GlucoseScreen(
                 }
             historyResult.await()
                 .onSuccess { h -> history = h.sortedBy { it.dateMs } }
+            thresholdsResult.await()
+                .onSuccess { (bottom, top) ->
+                    bgTargetBottom = bottom.toFloat()
+                    bgTargetTop    = top.toFloat()
+                }
         }
         invalidate()
     }
@@ -237,7 +245,7 @@ class GlucoseScreen(
                 )
                 .addRow(statsRow.build())
             if (history.size >= 2) {
-                pane.setImage(graphIcon(history, unit))
+                pane.setImage(graphIcon(history, unit, bgTargetBottom, bgTargetTop))
             }
             pane.build()
         }
@@ -249,7 +257,7 @@ class GlucoseScreen(
                else carContext.getString(R.string.label_n_min_ago, min)
     }
 
-    private fun graphIcon(entries: List<GlucoseEntry>, unit: GlucoseUnit): CarIcon {
+    private fun graphIcon(entries: List<GlucoseEntry>, unit: GlucoseUnit, bgTargetBottom: Float, bgTargetTop: Float): CarIcon {
         val w = 600
         val h = 400
         val pad = 16f
@@ -259,8 +267,9 @@ class GlucoseScreen(
         val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bmp)
 
-        val yMin = 40f
-        val yMax = 400f
+        val offset = (bgTargetTop - bgTargetBottom) * 0.25f
+        val yMin = minOf(entries.minOf { it.sgv }.toFloat(), bgTargetBottom - offset).coerceAtLeast(0f)
+        val yMax = maxOf(entries.maxOf { it.sgv }.toFloat(), bgTargetTop + offset)
         val tMin = entries.first().dateMs
         val tMax = entries.last().dateMs
         val tRange = (tMax - tMin).coerceAtLeast(1L).toFloat()
@@ -268,9 +277,9 @@ class GlucoseScreen(
         fun xOf(ms: Long) = pad + (ms - tMin).toFloat() / tRange * plotW
         fun yOf(sgv: Float) = pad + plotH * (1f - (sgv.coerceIn(yMin, yMax) - yMin) / (yMax - yMin))
 
-        // Target range band 70–180 mg/dL
+        // Target range band
         canvas.drawRect(
-            pad, yOf(180f), pad + plotW, yOf(70f),
+            pad, yOf(bgTargetTop), pad + plotW, yOf(bgTargetBottom),
             Paint().apply { color = Color.argb(55, 100, 220, 100); style = Paint.Style.FILL },
         )
 
@@ -291,9 +300,10 @@ class GlucoseScreen(
             GlucoseUnit.MG_DL  -> (1..7).map { it * 50f }       // 50, 100, …, 350
             GlucoseUnit.MMOL_L -> (1..7).map { it * 3f * 18f }  // 3, 6, …, 21 mmol/L → ×18
         }
+        val edgeMargin = 20f
         for (sgv in yGridMgdl) {
             val y = yOf(sgv)
-            if (y < pad || y > pad + plotH) continue
+            if (y < pad + edgeMargin || y > pad + plotH - edgeMargin) continue
             canvas.drawLine(pad, y, pad + plotW, y, gridPaint)
         }
 
@@ -316,7 +326,7 @@ class GlucoseScreen(
             labelPaint.textAlign = Paint.Align.CENTER
             yGridMgdl.forEachIndexed { i, sgv ->
                 val y = yOf(sgv)
-                if (y < pad || y > pad + plotH) return@forEachIndexed
+                if (y < pad + edgeMargin || y > pad + plotH - edgeMargin) return@forEachIndexed
                 // Show label every other line, starting at index 1 (100, 200, 300 for mg/dL)
                 if (i % 2 != 1) return@forEachIndexed
                 val label = when (unit) {
@@ -326,7 +336,7 @@ class GlucoseScreen(
                 canvas.drawText(label, yLabelX, y - 5f, labelPaint)
             }
 
-            // Half-hour labels at the top (HH:30) — no vertical line
+            // Half-hour labels at the bottom (HH:30) — no vertical line
             val tMinHour = (tMin / msPerHour) * msPerHour
             var tHalf = tMinHour + ms30
             if (tHalf < tMin) tHalf += msPerHour
@@ -336,7 +346,7 @@ class GlucoseScreen(
                 labelPaint.textAlign = Paint.Align.CENTER
                 canvas.drawText(
                     "%02d:30".format(cal.get(java.util.Calendar.HOUR_OF_DAY)),
-                    xOf(tHalf), pad + labelPaint.textSize, labelPaint,
+                    xOf(tHalf), pad + plotH - 4f, labelPaint,
                 )
                 tHalf += msPerHour
             }
@@ -355,8 +365,8 @@ class GlucoseScreen(
                 textAlign = Paint.Align.CENTER
                 typeface  = Typeface.DEFAULT_BOLD
             }
-            // Minimum tipY: keep the whole drop below the time labels at the top
-            val minTipY = pad + labelPaint.textSize * 2f + dropTailH + dropBodyH + 4f
+            // Minimum tipY: keep the whole drop within the plot area
+            val minTipY = pad + dropTailH + dropBodyH + 4f
 
             var t = (tMin / ms20 + 1) * ms20
             while (t <= tMax) {
@@ -371,7 +381,7 @@ class GlucoseScreen(
                     labelPaint.textAlign = Paint.Align.CENTER
                     canvas.drawText(
                         "%02d:00".format(cal.get(java.util.Calendar.HOUR_OF_DAY)),
-                        x, pad + labelPaint.textSize, labelPaint,
+                        x, pad + plotH - 4f, labelPaint,
                     )
                 }
 

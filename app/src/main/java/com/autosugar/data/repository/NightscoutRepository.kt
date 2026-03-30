@@ -50,6 +50,18 @@ class NightscoutRepository @Inject constructor(
         )
     }
 
+    /** Returns Pair(bgTargetBottom, bgTargetTop) in mg/dL. */
+    suspend fun getTargetRange(profileId: String): Result<Pair<Int, Int>> = runCatching {
+        val profiles = dataStore.profilesFlow.first()
+        val profile = profiles.find { it.id == profileId }
+            ?: error("Profile $profileId not found")
+        val api = apiFactory.get(profile.baseUrl)
+        val t = api.getStatus(token = profile.apiToken.ifBlank { null }).settings?.thresholds
+        val bottom = t?.bgTargetBottom ?: error("bgTargetBottom not in status response")
+        val top    = t.bgTargetTop    ?: error("bgTargetTop not in status response")
+        bottom to top
+    }
+
     suspend fun getHistory(profileId: String, count: Int = 24): Result<List<GlucoseEntry>> = runCatching {
         val profiles = dataStore.profilesFlow.first()
         val profile = profiles.find { it.id == profileId }

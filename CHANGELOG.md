@@ -6,6 +6,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Fetch glucose target thresholds (`bgTargetBottom`/`bgTargetTop`) from Nightscout `/api/v1/status.json` and use them for the graph's target band and dynamic Y-axis scaling
+- `StatusDto`, `SettingsDto`, `ThresholdsDto` DTOs for Nightscout status response
+- `getStatus()` endpoint in `NightscoutApi` and `getTargetRange()` in `NightscoutRepository`
+
+### Changed
+- Graph Y-axis now scales dynamically to fit actual readings plus the target range (with padding), instead of a fixed 40–400 mg/dL range
+- Time labels moved to the bottom of the graph; grid lines skip values too close to chart edges
+
+### Added
 - Glucose history graph in Car UI: 3-hour bitmap rendered via `Pane.setImage()` with target range band, dotted grid lines, drop-pin value labels at 20-min marks, and half-hour time labels
 - Reading age ("X min ago") and received timestamp shown as secondary row in Car UI
 - Expanded profile icon set: male, female, boy, girl, baby, elderly man, elderly woman variants

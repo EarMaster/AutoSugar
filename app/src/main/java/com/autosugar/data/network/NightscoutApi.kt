@@ -1,6 +1,7 @@
 package com.autosugar.data.network
 
 import com.autosugar.data.network.dto.EntryDto
+import com.autosugar.data.network.dto.StatusDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -16,4 +17,9 @@ interface NightscoutApi {
         @Query("token") token: String? = null,
         @Query("count") count: Int = 24,
     ): List<EntryDto>
+
+    @GET("api/v1/status.json")
+    suspend fun getStatus(
+        @Query("token") token: String? = null,
+    ): StatusDto
 }
