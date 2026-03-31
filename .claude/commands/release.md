@@ -52,7 +52,13 @@ Single question, two options: "Proceed" and "Cancel / change". If the user cance
 
 ## Step 4 — Apply changes
 
-**4a. Update `app/build.gradle.kts`**
+**4a. Create What's New files**
+
+Create `docs/whatsnew/X.Y.Z-en-US` and `docs/whatsnew/X.Y.Z-de-DE` with a short user-facing summary of the release (max 500 characters each). Base the content on the `## [Unreleased]` section of `CHANGELOG.md`, but write it in plain language for end users — not a technical log. Do not copy changelog bullet points verbatim.
+
+Only include changes that are visible or relevant to the user of the app itself. Exclude anything related to CI/CD workflows, GitHub Actions, GitHub Pages, the website, internal tooling, or other infrastructure — users don't see these.
+
+**4b. Update `app/build.gradle.kts`**
 
 Replace the `versionCode` and `versionName` lines with the new values. Use Edit — do not rewrite the whole file.
 

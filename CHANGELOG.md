@@ -5,6 +5,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Release process: what's new text for Google Play now stored in `docs/whatsnew/` per version instead of in GitHub release notes
+
 ## [1.1.0] - 2026-04-01
 
 ### Added

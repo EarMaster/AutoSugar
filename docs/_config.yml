@@ -9,6 +9,7 @@ header_pages:
 
 exclude:
   - adr/
+  - whatsnew/
 
 minima:
   skin: auto
