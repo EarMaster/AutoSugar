@@ -1,6 +1,7 @@
 ---
 description: Commit recent changes using a conventional commit message, after syncing with the remote.
 allowed-tools: Bash(git status:*), Bash(git pull:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), AskUserQuestion, Edit, Write
+model: haiku
 ---
 Commit recent changes using a conventional commit message, after syncing with the remote.
 
