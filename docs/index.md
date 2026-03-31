@@ -14,9 +14,9 @@ Blood glucose monitoring for Android Auto — see your [Nightscout](https://nigh
 
 ## Features
 
-<div style="display:flex; gap:12px; flex-wrap:wrap; margin:1rem 0; clear:both;">
-  <img src="screenshots/android-auto-glucose-monitor-profile-1.png" alt="Glucose monitor — profile 1" height="220">
-  <img src="screenshots/android-auto-glucose-monitor-profile-2.png" alt="Glucose monitor — profile 2" height="220">
+<div style="display:flex; gap:12px; flex-wrap:nowrap; margin:1rem 0; clear:both;">
+  <a href="screenshots/android-auto-glucose-monitor-profile-1.png" class="glightbox" data-gallery="screenshots" data-title="Glucose monitor — profile 1" style="flex:1; min-width:0;"><img src="screenshots/android-auto-glucose-monitor-profile-1.png" alt="Glucose monitor — profile 1" style="width:100%; height:auto; display:block;"></a>
+  <a href="screenshots/android-auto-glucose-monitor-profile-2.png" class="glightbox" data-gallery="screenshots" data-title="Glucose monitor — profile 2" style="flex:1; min-width:0;"><img src="screenshots/android-auto-glucose-monitor-profile-2.png" alt="Glucose monitor — profile 2" style="width:100%; height:auto; display:block;"></a>
 </div>
 
 - Monitor one or multiple [Nightscout](https://nightscout.github.io) sources (e.g. yourself and your children)
@@ -27,8 +27,8 @@ Blood glucose monitoring for Android Auto — see your [Nightscout](https://nigh
 ## Configuration
 
 <div style="display:flex; gap:12px; flex-wrap:wrap; margin:1rem 0;">
-  <img src="screenshots/android-settings-list-profiles.png" alt="Settings — profiles list" height="220">
-  <img src="screenshots/android-settings-edit-profile.png" alt="Settings — edit profile" height="220">
+  <a href="screenshots/android-settings-list-profiles.png" class="glightbox" data-gallery="screenshots" data-title="Settings — profiles list"><img src="screenshots/android-settings-list-profiles.png" alt="Settings — profiles list" height="220" style="display:block;"></a>
+  <a href="screenshots/android-settings-edit-profile.png" class="glightbox" data-gallery="screenshots" data-title="Settings — edit profile"><img src="screenshots/android-settings-edit-profile.png" alt="Settings — edit profile" height="220" style="display:block;"></a>
 </div>
 
 1. **Open AutoSugar** on your Android phone and tap **Add profile**.

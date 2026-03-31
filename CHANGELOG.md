@@ -8,6 +8,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - CodeQL security analysis workflow (runs on push/PR to main and develop, weekly schedule)
 - Website: favicon using logo SVG
+- Website: lightbox for screenshots (GLightbox, keyboard/swipe nav)
 
 ### Changed
 - Website: use SVG logo (right-aligned), reorder screenshots by context
@@ -15,6 +16,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Removed `context: fork` from commit and release command frontmatter
 
 ### Fixed
+- Website: footer showed site title twice; now shows title + description once each
+- Website: Android Auto screenshots now always display side-by-side
 - Website: logo 404 (SVG was untracked); replace PNG with SVG
 - Website: screenshots now appear directly under their respective Features and Configuration section headings
 - Release signing keystore path now resolved relative to project root via `rootProject.file()`
