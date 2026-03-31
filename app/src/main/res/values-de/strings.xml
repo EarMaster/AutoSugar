@@ -13,6 +13,11 @@
     <string name="error_fetch_failed">Datenabruf fehlgeschlagen</string>
     <string name="action_retry">Wiederholen</string>
     <string name="label_no_profiles">Keine Quellen konfiguriert.\nÖffne AutoSugar auf deinem Smartphone, um eine Nightscout-Quelle hinzuzufügen.</string>
+    <string name="label_graph">3h</string>
+    <string name="label_just_now">gerade eben</string>
+    <string name="label_n_min_ago">vor %d Min.</string>
+    <string name="label_reading">Messung: %s</string>
+    <string name="label_received">Empfangen: %s</string>
 
     <!-- Settings UI -->
     <string name="label_settings">Einstellungen</string>
@@ -32,4 +37,24 @@
     <string name="msg_saved">Quelle gespeichert.</string>
     <string name="msg_deleted">Quelle gelöscht.</string>
     <string name="label_no_sources">Noch keine Quellen.\nTippe auf +, um deine Nightscout-URL hinzuzufügen.</string>
+    <string name="label_tab_icon">Tab-Symbol</string>
+
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">Glukose-Alarme</string>
+    <string name="notif_channel_name">Glukose-Alarme</string>
+    <string name="notif_channel_desc">Alarme bei hohem und niedrigem Blutzucker mit 15-Minuten-Wiederholungsintervall</string>
+    <string name="notif_title_high">Hoher Blutzucker</string>
+    <string name="notif_title_low">Niedriger Blutzucker</string>
+    <string name="notif_title_predicted_high">Blutzucker steigt</string>
+    <string name="notif_title_predicted_low">Blutzucker fällt</string>
+    <string name="notif_text_predicted">Voraussichtlich in 15 Min.: %s</string>
+
+    <!-- Refresh interval -->
+    <string name="label_refresh_interval">Aktualisierungsintervall</string>
+    <string name="label_refresh_30s">30 Sek.</string>
+    <string name="label_refresh_1min">1 Min.</string>
+    <string name="label_refresh_2min">2 Min.</string>
+    <string name="label_refresh_5min">5 Min.</string>
+    <string name="label_app_version">Version %s</string>
+    <string name="error_invalid_url">Muss mit http:// oder https:// beginnen</string>
 </resources>

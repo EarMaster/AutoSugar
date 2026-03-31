@@ -32,4 +32,30 @@
     <string name="msg_saved">Source saved.</string>
     <string name="msg_deleted">Source deleted.</string>
     <string name="label_no_sources">No sources yet.\nTap + to add your Nightscout URL.</string>
+
+    <string name="label_tab_icon">Tab Icon</string>
+    <string name="label_graph">3h</string>
+    <string name="label_just_now">just now</string>
+    <string name="label_n_min_ago">%d min ago</string>
+    <string name="label_reading">Reading: %s</string>
+    <string name="label_received">Received: %s</string>
+
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">Glucose alerts</string>
+    <string name="notif_channel_name">Glucose Alerts</string>
+    <string name="notif_channel_desc">High and low blood glucose alerts with 15-minute repeat cooldown</string>
+    <string name="notif_title_high">High glucose</string>
+    <string name="notif_title_low">Low glucose</string>
+    <string name="notif_title_predicted_high">Glucose trending high</string>
+    <string name="notif_title_predicted_low">Glucose trending low</string>
+    <string name="notif_text_predicted">Predicted in 15 min: %s</string>
+
+    <!-- Refresh interval -->
+    <string name="label_refresh_interval">Refresh Interval</string>
+    <string name="label_refresh_30s">30 sec</string>
+    <string name="label_refresh_1min">1 min</string>
+    <string name="label_refresh_2min">2 min</string>
+    <string name="label_refresh_5min">5 min</string>
+    <string name="label_app_version">Version %s</string>
+    <string name="error_invalid_url">Must start with http:// or https://</string>
 </resources>

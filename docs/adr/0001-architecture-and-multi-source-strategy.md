@@ -4,7 +4,7 @@
 Accepted
 
 ## Context
-The user requires a solution to monitor blood glucose levels via Android Auto. The solution must support a variable number of sources (1 to N) and be available in multiple languages (starting with English and German). Due to the medical nature and unofficial API usage, the app will be distributed via sideloading.
+The user requires a solution to monitor blood glucose levels via Android Auto. The solution must support a variable number of sources (1 to N) and be available in multiple languages (starting with English and German). The app is distributed via the Google Play Store. Sideloading from GitHub Releases remains supported for development and testing purposes.
 
 ## Decision
 1.  **App Category:** We will use the IoT category (`androidx.car.app.category.IOT`). This allows the app to stay active in the background and coexist with Google Maps in split-screen layouts.
@@ -17,4 +17,4 @@ The user requires a solution to monitor blood glucose levels via Android Auto. T
 
 ## Consequences
 * **Pros:** Scalable for families with multiple T1D members; compliant with Android Auto's "Coolwalk" multi-tasking; easier for international users.
-* **Cons:** UI complexity increases as the number of sources grows (templates have limits on button counts). Sideloading requires manual updates.
+* **Cons:** UI complexity increases as the number of sources grows (templates have limits on button counts).
