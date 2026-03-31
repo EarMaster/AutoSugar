@@ -5,6 +5,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- `/commit` command now includes frontmatter metadata for Claude Code command system integration
+
 ### Added
 - Unit tests for GlucoseEntry display logic (displayValue, displayDelta, trendArrow)
 - Unit tests for ProfileSerializer JSON round-trip including alertsEnabled and icon fallback
