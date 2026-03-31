@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-04-01
+
 ### Added
 - API token permission detection and read-only security warning in profile configuration
 - CodeQL security analysis workflow (runs on push/PR to main and develop, weekly schedule)
