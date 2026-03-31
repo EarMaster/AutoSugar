@@ -102,6 +102,18 @@ class NightscoutRepository @Inject constructor(
             }
     }
 
+    /**
+     * Returns true if the token grants more than read-only access.
+     * Returns false for blank tokens (public instances) or when the server does not return
+     * permission information (older Nightscout versions).
+     */
+    suspend fun hasElevatedPermissions(profile: NightscoutProfile): Boolean {
+        if (profile.apiToken.isBlank()) return false
+        val api = apiFactory.get(profile.baseUrl)
+        val authorized = api.getStatus(token = profile.apiToken).authorized ?: return false
+        return authorized.permissions.values.any { it > 1 }
+    }
+
     suspend fun saveProfile(profile: NightscoutProfile) {
         val profiles = dataStore.profilesFlow.first().toMutableList()
         val idx = profiles.indexOfFirst { it.id == profile.id }

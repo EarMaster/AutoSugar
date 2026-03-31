@@ -57,4 +57,5 @@
     <string name="label_refresh_5min">5 分钟</string>
     <string name="label_app_version">版本 %s</string>
     <string name="error_invalid_url">必须以 http:// 或 https:// 开头</string>
+    <string name="warning_token_overpowered">此令牌具有写入权限。AutoSugar 仅需要读取访问权限——建议使用只读令牌以提高安全性。</string>
 </resources>

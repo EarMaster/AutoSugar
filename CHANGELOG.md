@@ -6,6 +6,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- API token permission detection and read-only security warning in profile configuration
 - CodeQL security analysis workflow (runs on push/PR to main and develop, weekly schedule)
 - Website: favicon using logo SVG
 - Website: lightbox for screenshots (GLightbox, keyboard/swipe nav)
