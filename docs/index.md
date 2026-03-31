@@ -12,12 +12,12 @@ Blood glucose monitoring for Android Auto — see your [Nightscout](https://nigh
 
 [Other installation options →](install)
 
+## Features
+
 <div style="display:flex; gap:12px; flex-wrap:wrap; margin:1rem 0; clear:both;">
   <img src="screenshots/android-auto-glucose-monitor-profile-1.png" alt="Glucose monitor — profile 1" height="220">
   <img src="screenshots/android-auto-glucose-monitor-profile-2.png" alt="Glucose monitor — profile 2" height="220">
 </div>
-
-## Features
 
 - Monitor one or multiple [Nightscout](https://nightscout.github.io) sources (e.g. yourself and your children)
 - Current glucose value, trend arrow, and delta
@@ -26,6 +26,11 @@ Blood glucose monitoring for Android Auto — see your [Nightscout](https://nigh
 
 ## Configuration
 
+<div style="display:flex; gap:12px; flex-wrap:wrap; margin:1rem 0;">
+  <img src="screenshots/android-settings-list-profiles.png" alt="Settings — profiles list" height="220">
+  <img src="screenshots/android-settings-edit-profile.png" alt="Settings — edit profile" height="220">
+</div>
+
 1. **Open AutoSugar** on your Android phone and tap **Add profile**.
 2. Enter your [Nightscout](https://nightscout.github.io) URL (e.g. `https://yoursite.herokuapp.com`) and an optional display name.
 3. If your Nightscout instance requires authentication, enter your API secret.
@@ -33,11 +38,6 @@ Blood glucose monitoring for Android Auto — see your [Nightscout](https://nigh
 5. **Connect Android Auto** — AutoSugar will appear in the app launcher on your car's display.
 
 You can add multiple profiles to monitor different Nightscout sources (e.g. one for yourself and one for your child). Use the profile list in the app to switch or reorder them.
-
-<div style="display:flex; gap:12px; flex-wrap:wrap; margin:1rem 0;">
-  <img src="screenshots/android-settings-list-profiles.png" alt="Settings — profiles list" height="220">
-  <img src="screenshots/android-settings-edit-profile.png" alt="Settings — edit profile" height="220">
-</div>
 
 ## Source code
 
