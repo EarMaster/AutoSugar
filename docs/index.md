@@ -42,3 +42,6 @@ You can add multiple profiles to monitor different Nightscout sources (e.g. one 
 ## Source code
 
 Open source — find the code and report issues on [GitHub](https://github.com/EarMaster/AutoSugar).
+
+<script src="https://cdn.jsdelivr.net/npm/glightbox@3/dist/js/glightbox.min.js"></script>
+<script>GLightbox({ selector: '.glightbox' });</script>

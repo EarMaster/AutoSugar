@@ -16,6 +16,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Removed `context: fork` from commit and release command frontmatter
 
 ### Fixed
+- Website: GLightbox not loading; fix by overriding head.html (custom-head.html unsupported in Minima 2.5.x)
 - Website: footer showed site title twice; now shows title + description once each
 - Website: Android Auto screenshots now always display side-by-side
 - Website: logo 404 (SVG was untracked); replace PNG with SVG
