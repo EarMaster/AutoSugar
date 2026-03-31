@@ -55,4 +55,6 @@
     <string name="label_refresh_1min">1 Min.</string>
     <string name="label_refresh_2min">2 Min.</string>
     <string name="label_refresh_5min">5 Min.</string>
+    <string name="label_app_version">Version %s</string>
+    <string name="error_invalid_url">Muss mit http:// oder https:// beginnen</string>
 </resources>
