@@ -3,22 +3,10 @@ name: Release
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-    inputs:
-      track:
-        description: Google Play track to upload to
-        required: false
-        default: beta
-        type: choice
-        options:
-          - internal
-          - alpha
-          - beta
-          - production
 
 jobs:
   release:
-    name: Tag, publish & deploy
+    name: Tag, build & publish
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,8 +20,11 @@ jobs:
         id: version
         run: |
           VERSION=$(grep 'versionName' app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
+          SHA=$(git rev-parse --short HEAD)
           echo "name=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "artifact_base=autosugar-v${VERSION}-${SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Check if tag already exists
         id: tag_check
@@ -51,7 +42,6 @@ jobs:
           VERSION="${{ steps.version.outputs.name }}"
           NOTES=$(awk "/^## \[$VERSION\]/{found=1; next} found && /^## \[/{exit} found{print}" CHANGELOG.md \
             | sed '/^[[:space:]]*$/d' | awk 'NR==1{p=1} p')
-          # Preserve multiline output
           {
             echo "body<<RELEASE_NOTES_EOF"
             echo "$NOTES"
@@ -65,15 +55,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag "${{ steps.version.outputs.tag }}"
           git push origin "${{ steps.version.outputs.tag }}"
-
-      - name: Create GitHub Release
-        if: steps.tag_check.outputs.exists == 'false'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create "${{ steps.version.outputs.tag }}" \
-            --title "${{ steps.version.outputs.tag }}" \
-            --notes "${{ steps.notes.outputs.body }}"
 
       - uses: actions/setup-java@v4
         if: steps.tag_check.outputs.exists == 'false'
@@ -97,27 +78,21 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease bundleRelease
 
-      - name: Upload APK to GitHub Release
+      - name: Rename artifacts
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          BASE="${{ steps.version.outputs.artifact_base }}"
+          mv app/build/outputs/apk/release/app-release.apk "app/build/outputs/apk/release/${BASE}.apk"
+          mv app/build/outputs/bundle/release/app-release.aab "app/build/outputs/bundle/release/${BASE}.aab"
+
+      - name: Create GitHub Release
         if: steps.tag_check.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${{ steps.version.outputs.tag }}" \
-            app/build/outputs/apk/release/app-release.apk \
-            --clobber
-
-      - name: Prepare what's new for Google Play
-        if: steps.tag_check.outputs.exists == 'false'
-        run: |
-          mkdir -p whatsnew
-          echo "${{ steps.notes.outputs.body }}" > whatsnew/whatsnew-en-US
-
-      - name: Upload to Google Play
-        if: steps.tag_check.outputs.exists == 'false'
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
-          packageName: de.autosugar
-          releaseFiles: app/build/outputs/bundle/release/*.aab
-          track: ${{ inputs.track || 'beta' }}
-          whatsNewDirectory: whatsnew/
+          BASE="${{ steps.version.outputs.artifact_base }}"
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --notes "${{ steps.notes.outputs.body }}" \
+            "app/build/outputs/apk/release/${BASE}.apk" \
+            "app/build/outputs/bundle/release/${BASE}.aab"
