@@ -1,8 +1,17 @@
 name: Google Play Deploy
 
 on:
-  release:
-    types: [published]
+  workflow_call:
+    inputs:
+      tag:
+        description: GitHub release tag to deploy (e.g. v1.2.3)
+        required: true
+        type: string
+      track:
+        description: Google Play track to upload to
+        required: false
+        default: beta
+        type: string
   workflow_dispatch:
     inputs:
       tag:

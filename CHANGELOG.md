@@ -19,6 +19,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CI: split release workflow into build (release.yml) and deployment (google-play.yml) stages
 - CI: build artifacts now include app name, version, and commit SHA (e.g. autosugar-v1.0.0-c749008.apk)
 - CI: GitHub releases now include both APK and AAB files
+- CI: google-play.yml now triggered automatically from release.yml via workflow_call (no longer needs release: event)
+- CI: CodeQL runs only on PRs and weekly schedule (removed redundant push trigger)
 
 ### Fixed
 - Website: GLightbox not loading; fix by overriding head.html (custom-head.html unsupported in Minima 2.5.x)

@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.out.outputs.tag }}
 
     steps:
       - uses: actions/checkout@v4
@@ -96,3 +98,18 @@ jobs:
             --notes "${{ steps.notes.outputs.body }}" \
             "app/build/outputs/apk/release/${BASE}.apk" \
             "app/build/outputs/bundle/release/${BASE}.aab"
+
+      - name: Output tag for downstream
+        if: steps.tag_check.outputs.exists == 'false'
+        id: out
+        run: echo "tag=${{ steps.version.outputs.tag }}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy to Google Play
+    needs: release
+    if: needs.release.outputs.tag != ''
+    uses: ./.github/workflows/google-play.yml
+    with:
+      tag: ${{ needs.release.outputs.tag }}
+      track: beta
+    secrets: inherit
