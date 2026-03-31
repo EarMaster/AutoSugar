@@ -39,6 +39,16 @@
     <string name="label_no_sources">Noch keine Quellen.\nTippe auf +, um deine Nightscout-URL hinzuzufügen.</string>
     <string name="label_tab_icon">Tab-Symbol</string>
 
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">Glukose-Alarme</string>
+    <string name="notif_channel_name">Glukose-Alarme</string>
+    <string name="notif_channel_desc">Alarme bei hohem und niedrigem Blutzucker mit 15-Minuten-Wiederholungsintervall</string>
+    <string name="notif_title_high">Hoher Blutzucker</string>
+    <string name="notif_title_low">Niedriger Blutzucker</string>
+    <string name="notif_title_predicted_high">Blutzucker steigt</string>
+    <string name="notif_title_predicted_low">Blutzucker fällt</string>
+    <string name="notif_text_predicted">Voraussichtlich in 15 Min.: %s</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Aktualisierungsintervall</string>
     <string name="label_refresh_30s">30 Sek.</string>

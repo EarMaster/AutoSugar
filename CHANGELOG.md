@@ -5,8 +5,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Unit tests for GlucoseEntry display logic (displayValue, displayDelta, trendArrow)
+- Unit tests for ProfileSerializer JSON round-trip including alertsEnabled and icon fallback
+- Expanded NightscoutRepository unit tests covering all methods (getCurrentEntry delta
+  handling, getThresholds defaults, getHistory, saveProfile upsert, deleteProfile, saveAll)
+
 ### Fixed
 - Remove hardcoded local JDK path from gradle.properties so CI builds succeed on GitHub Actions
+- Add missing German translations for glucose alert strings (lint MissingTranslation)
 
 ### Added
 - Per-profile glucose alert notifications for high and low BG using
