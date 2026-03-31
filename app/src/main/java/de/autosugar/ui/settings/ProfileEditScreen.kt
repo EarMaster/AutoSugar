@@ -78,6 +78,7 @@ fun ProfileEditScreen(
     val unit by viewModel.unit.collectAsState()
     val icon by viewModel.icon.collectAsState()
     val alertsEnabled by viewModel.alertsEnabled.collectAsState()
+    val tokenOverpowered by viewModel.tokenOverpowered.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
@@ -192,6 +193,21 @@ fun ProfileEditScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 enabled = !isLoading,
             )
+            if (tokenOverpowered) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(R.string.warning_token_overpowered),
+                        modifier = Modifier.padding(12.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
             OutlinedButton(
                 onClick = { viewModel.testConnection() },
                 enabled = !isLoading && baseUrl.isNotBlank(),

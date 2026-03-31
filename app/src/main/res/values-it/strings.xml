@@ -57,4 +57,5 @@
     <string name="label_refresh_5min">5 min</string>
     <string name="label_app_version">Versione %s</string>
     <string name="error_invalid_url">Deve iniziare con http:// o https://</string>
+    <string name="warning_token_overpowered">Questo token ha permessi di scrittura. AutoSugar richiede solo l\'accesso in lettura — si consiglia un token di sola lettura per una maggiore sicurezza.</string>
 </resources>

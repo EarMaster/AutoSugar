@@ -57,4 +57,5 @@
     <string name="label_refresh_5min">5分</string>
     <string name="label_app_version">バージョン %s</string>
     <string name="error_invalid_url">http:// または https:// で始まる必要があります</string>
+    <string name="warning_token_overpowered">このトークンには書き込み権限があります。AutoSugar が必要とするのは読み取りアクセスのみです — セキュリティ向上のため、読み取り専用トークンの使用を推奨します。</string>
 </resources>

@@ -40,6 +40,9 @@ class ProfileEditViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ProfileEditUiState>(ProfileEditUiState.Idle)
     val uiState: StateFlow<ProfileEditUiState> = _uiState.asStateFlow()
 
+    private val _tokenOverpowered = MutableStateFlow(false)
+    val tokenOverpowered: StateFlow<Boolean> = _tokenOverpowered.asStateFlow()
+
     fun loadProfile(profileId: String) {
         viewModelScope.launch {
             val profile = repository.profilesFlow.first().find { it.id == profileId } ?: return@launch
@@ -55,10 +58,14 @@ class ProfileEditViewModel @Inject constructor(
 
     fun testConnection() {
         _uiState.value = ProfileEditUiState.Loading
+        _tokenOverpowered.value = false
         val tempProfile = buildProfile()
         viewModelScope.launch {
             repository.testConnection(tempProfile)
                 .onSuccess { entry ->
+                    _tokenOverpowered.value = runCatching {
+                        repository.hasElevatedPermissions(tempProfile)
+                    }.getOrDefault(false)
                     _uiState.value = ProfileEditUiState.TestSuccess(
                         "${entry.displayValue(tempProfile.unit)} ${when (tempProfile.unit) {
                             GlucoseUnit.MG_DL -> "mg/dL"

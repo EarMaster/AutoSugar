@@ -57,4 +57,5 @@
     <string name="label_refresh_5min">5 min</string>
     <string name="label_app_version">Version %s</string>
     <string name="error_invalid_url">Doit commencer par http:// ou https://</string>
+    <string name="warning_token_overpowered">Ce jeton dispose de permissions en écriture. AutoSugar ne nécessite qu\'un accès en lecture — un jeton en lecture seule est recommandé pour plus de sécurité.</string>
 </resources>
