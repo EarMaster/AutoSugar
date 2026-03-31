@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoSugar</string>
+
+    <!-- Car UI -->
+    <string name="label_glucose_value">Glycémie</string>
+    <string name="label_trend">Tendance</string>
+    <string name="label_delta">Variation</string>
+    <string name="label_unit_mgdl">mg/dL</string>
+    <string name="label_unit_mmoll">mmol/L</string>
+    <string name="action_switch_source">Changer de source</string>
+    <string name="label_loading">Chargement…</string>
+    <string name="error_fetch_failed">Échec de la récupération des données</string>
+    <string name="action_retry">Réessayer</string>
+    <string name="label_no_profiles">Aucune source configurée.\nOuvrez AutoSugar sur votre téléphone pour ajouter une source Nightscout.</string>
+    <string name="label_graph">3h</string>
+    <string name="label_just_now">à l\'instant</string>
+    <string name="label_n_min_ago">il y a %d min</string>
+    <string name="label_reading">Lecture : %s</string>
+    <string name="label_received">Reçu : %s</string>
+
+    <!-- Settings UI -->
+    <string name="label_settings">Paramètres</string>
+    <string name="btn_add_profile">Ajouter une source</string>
+    <string name="btn_save">Enregistrer</string>
+    <string name="btn_delete">Supprimer</string>
+    <string name="btn_edit">Modifier</string>
+    <string name="btn_test_connection">Tester la connexion</string>
+    <string name="hint_display_name">Nom d\'affichage</string>
+    <string name="hint_base_url">URL Nightscout (ex. https://mynb.herokuapp.com)</string>
+    <string name="hint_api_token">Jeton API</string>
+    <string name="label_unit">Unité de glucose</string>
+    <string name="label_add_source">Ajouter une source</string>
+    <string name="label_edit_source">Modifier la source</string>
+    <string name="msg_test_success">Connecté ! Glycémie actuelle : %1$s %2$s</string>
+    <string name="msg_test_failed">Échec de la connexion : %1$s</string>
+    <string name="msg_saved">Source enregistrée.</string>
+    <string name="msg_deleted">Source supprimée.</string>
+    <string name="label_no_sources">Aucune source.\nAppuyez sur + pour ajouter votre URL Nightscout.</string>
+    <string name="label_tab_icon">Icône d\'onglet</string>
+
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">Alertes glycémie</string>
+    <string name="notif_channel_name">Alertes glycémie</string>
+    <string name="notif_channel_desc">Alertes d\'hyperglycémie et d\'hypoglycémie avec intervalle de répétition de 15 minutes</string>
+    <string name="notif_title_high">Glycémie élevée</string>
+    <string name="notif_title_low">Glycémie basse</string>
+    <string name="notif_title_predicted_high">Glycémie en hausse</string>
+    <string name="notif_title_predicted_low">Glycémie en baisse</string>
+    <string name="notif_text_predicted">Prévision dans 15 min : %s</string>
+
+    <!-- Refresh interval -->
+    <string name="label_refresh_interval">Intervalle d\'actualisation</string>
+    <string name="label_refresh_30s">30 sec</string>
+    <string name="label_refresh_1min">1 min</string>
+    <string name="label_refresh_2min">2 min</string>
+    <string name="label_refresh_5min">5 min</string>
+    <string name="label_app_version">Version %s</string>
+    <string name="error_invalid_url">Doit commencer par http:// ou https://</string>
+</resources>

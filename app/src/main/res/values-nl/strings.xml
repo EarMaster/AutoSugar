@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoSugar</string>
+
+    <!-- Car UI -->
+    <string name="label_glucose_value">Bloedglucose</string>
+    <string name="label_trend">Trend</string>
+    <string name="label_delta">Verandering</string>
+    <string name="label_unit_mgdl">mg/dL</string>
+    <string name="label_unit_mmoll">mmol/L</string>
+    <string name="action_switch_source">Bron wisselen</string>
+    <string name="label_loading">Laden…</string>
+    <string name="error_fetch_failed">Ophalen van gegevens mislukt</string>
+    <string name="action_retry">Opnieuw proberen</string>
+    <string name="label_no_profiles">Geen bronnen geconfigureerd.\nOpen AutoSugar op je telefoon om een Nightscout-bron toe te voegen.</string>
+    <string name="label_graph">3u</string>
+    <string name="label_just_now">zojuist</string>
+    <string name="label_n_min_ago">%d min geleden</string>
+    <string name="label_reading">Meting: %s</string>
+    <string name="label_received">Ontvangen: %s</string>
+
+    <!-- Settings UI -->
+    <string name="label_settings">Instellingen</string>
+    <string name="btn_add_profile">Bron toevoegen</string>
+    <string name="btn_save">Opslaan</string>
+    <string name="btn_delete">Verwijderen</string>
+    <string name="btn_edit">Bewerken</string>
+    <string name="btn_test_connection">Verbinding testen</string>
+    <string name="hint_display_name">Weergavenaam</string>
+    <string name="hint_base_url">Nightscout-URL (bijv. https://mynb.herokuapp.com)</string>
+    <string name="hint_api_token">API-token</string>
+    <string name="label_unit">Glucose-eenheid</string>
+    <string name="label_add_source">Bron toevoegen</string>
+    <string name="label_edit_source">Bron bewerken</string>
+    <string name="msg_test_success">Verbonden! Huidige glucose: %1$s %2$s</string>
+    <string name="msg_test_failed">Verbinding mislukt: %1$s</string>
+    <string name="msg_saved">Bron opgeslagen.</string>
+    <string name="msg_deleted">Bron verwijderd.</string>
+    <string name="label_no_sources">Nog geen bronnen.\nTik op + om je Nightscout-URL toe te voegen.</string>
+    <string name="label_tab_icon">Tabpictogram</string>
+
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">Glucosemeldingen</string>
+    <string name="notif_channel_name">Glucosemeldingen</string>
+    <string name="notif_channel_desc">Meldingen voor hoge en lage bloedglucose met herhalings-cooldown van 15 minuten</string>
+    <string name="notif_title_high">Hoge glucose</string>
+    <string name="notif_title_low">Lage glucose</string>
+    <string name="notif_title_predicted_high">Glucose stijgt</string>
+    <string name="notif_title_predicted_low">Glucose daalt</string>
+    <string name="notif_text_predicted">Voorspelling over 15 min: %s</string>
+
+    <!-- Refresh interval -->
+    <string name="label_refresh_interval">Verversingsinterval</string>
+    <string name="label_refresh_30s">30 sec</string>
+    <string name="label_refresh_1min">1 min</string>
+    <string name="label_refresh_2min">2 min</string>
+    <string name="label_refresh_5min">5 min</string>
+    <string name="label_app_version">Versie %s</string>
+    <string name="error_invalid_url">Moet beginnen met http:// of https://</string>
+</resources>

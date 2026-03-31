@@ -88,14 +88,23 @@ jobs:
         if: steps.tag_check.outputs.exists == 'false'
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
 
-      - name: Build signed AAB
+      - name: Build signed APK and AAB
         if: steps.tag_check.outputs.exists == 'false'
         env:
           KEYSTORE_PATH: keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew bundleRelease
+        run: ./gradlew assembleRelease bundleRelease
+
+      - name: Upload APK to GitHub Release
+        if: steps.tag_check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ steps.version.outputs.tag }}" \
+            app/build/outputs/apk/release/app-release.apk \
+            --clobber
 
       - name: Prepare what's new for Google Play
         if: steps.tag_check.outputs.exists == 'false'

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoSugar</string>
+
+    <!-- Car UI -->
+    <string name="label_glucose_value">血糖値</string>
+    <string name="label_trend">トレンド</string>
+    <string name="label_delta">変化量</string>
+    <string name="label_unit_mgdl">mg/dL</string>
+    <string name="label_unit_mmoll">mmol/L</string>
+    <string name="action_switch_source">ソース切替</string>
+    <string name="label_loading">読み込み中…</string>
+    <string name="error_fetch_failed">データの取得に失敗しました</string>
+    <string name="action_retry">再試行</string>
+    <string name="label_no_profiles">ソースが設定されていません。\nスマートフォンでAutoSugarを開き、Nightscoutソースを追加してください。</string>
+    <string name="label_graph">3時間</string>
+    <string name="label_just_now">たった今</string>
+    <string name="label_n_min_ago">%d分前</string>
+    <string name="label_reading">測定値: %s</string>
+    <string name="label_received">受信: %s</string>
+
+    <!-- Settings UI -->
+    <string name="label_settings">設定</string>
+    <string name="btn_add_profile">ソースを追加</string>
+    <string name="btn_save">保存</string>
+    <string name="btn_delete">削除</string>
+    <string name="btn_edit">編集</string>
+    <string name="btn_test_connection">接続テスト</string>
+    <string name="hint_display_name">表示名</string>
+    <string name="hint_base_url">Nightscout URL（例: https://mynb.herokuapp.com）</string>
+    <string name="hint_api_token">APIトークン</string>
+    <string name="label_unit">血糖単位</string>
+    <string name="label_add_source">ソースを追加</string>
+    <string name="label_edit_source">ソースを編集</string>
+    <string name="msg_test_success">接続成功！現在の血糖値: %1$s %2$s</string>
+    <string name="msg_test_failed">接続失敗: %1$s</string>
+    <string name="msg_saved">ソースを保存しました。</string>
+    <string name="msg_deleted">ソースを削除しました。</string>
+    <string name="label_no_sources">ソースがありません。\n+をタップしてNightscout URLを追加してください。</string>
+    <string name="label_tab_icon">タブアイコン</string>
+
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">血糖アラート</string>
+    <string name="notif_channel_name">血糖アラート</string>
+    <string name="notif_channel_desc">15分間隔の繰り返しで高血糖・低血糖アラート</string>
+    <string name="notif_title_high">高血糖</string>
+    <string name="notif_title_low">低血糖</string>
+    <string name="notif_title_predicted_high">血糖値上昇傾向</string>
+    <string name="notif_title_predicted_low">血糖値下降傾向</string>
+    <string name="notif_text_predicted">15分後の予測: %s</string>
+
+    <!-- Refresh interval -->
+    <string name="label_refresh_interval">更新間隔</string>
+    <string name="label_refresh_30s">30秒</string>
+    <string name="label_refresh_1min">1分</string>
+    <string name="label_refresh_2min">2分</string>
+    <string name="label_refresh_5min">5分</string>
+    <string name="label_app_version">バージョン %s</string>
+    <string name="error_invalid_url">http:// または https:// で始まる必要があります</string>
+</resources>

@@ -5,93 +5,30 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-### Changed
-- `/commit` command now includes frontmatter metadata for Claude Code command system integration
-
 ### Added
-- Unit tests for GlucoseEntry display logic (displayValue, displayDelta, trendArrow)
-- Unit tests for ProfileSerializer JSON round-trip including alertsEnabled and icon fallback
-- Expanded NightscoutRepository unit tests covering all methods (getCurrentEntry delta
-  handling, getThresholds defaults, getHistory, saveProfile upsert, deleteProfile, saveAll)
+- CodeQL security analysis workflow (runs on push/PR to main and develop, weekly schedule)
+
+### Changed
+- Removed `context: fork` from commit and release command frontmatter
 
 ### Fixed
-- Remove hardcoded local JDK path from gradle.properties so CI builds succeed on GitHub Actions
-- Add missing German translations for glucose alert strings (lint MissingTranslation)
+- Release signing keystore path now resolved relative to project root via `rootProject.file()`
+
+## [1.0.0] - 2026-03-31
 
 ### Added
-- Per-profile glucose alert notifications for high and low BG using
-  Nightscout's bgHigh/bgLow thresholds, with 15-minute repeat cooldown
-- Predictive alerts: 15-min linear extrapolation warns before a
-  threshold is crossed (requires delta data from Nightscout)
-- POST_NOTIFICATIONS permission for Android 13+ alert support
-
-### Changed
-- Settings screen: profile cards show an alerts toggle; tap to edit,
-  long-press to drag-reorder profiles; unit removed from card display
-- Profile edit screen: save moved to top-bar icon, test connection
-  placed directly below API token field, delete button moved to bottom
-- `/commit` command now auto-stages recent changes and prompts about other unstaged files instead of stopping when nothing is staged
-
-### Added
-- Monochrome adaptive icon (`ic_launcher_monochrome.xml`) for Android 13+ themed icon support
-- `<monochrome>` layer added to `ic_launcher.xml` adaptive icon definition
-
-### Changed
-- Adaptive icon background color updated from `#F4EFE4` to `#302919`
-
-### Added
-- Fetch glucose target thresholds (`bgTargetBottom`/`bgTargetTop`) from Nightscout `/api/v1/status.json` and use them for the graph's target band and dynamic Y-axis scaling
-- `StatusDto`, `SettingsDto`, `ThresholdsDto` DTOs for Nightscout status response
-- `getStatus()` endpoint in `NightscoutApi` and `getTargetRange()` in `NightscoutRepository`
-
-### Changed
-- Graph Y-axis now scales dynamically to fit actual readings plus the target range (with padding), instead of a fixed 40–400 mg/dL range
-- Time labels moved to the bottom of the graph; grid lines skip values too close to chart edges
-
-### Added
-- Glucose history graph in Car UI: 3-hour bitmap rendered via `Pane.setImage()` with target range band, dotted grid lines, drop-pin value labels at 20-min marks, and half-hour time labels
-- Reading age ("X min ago") and received timestamp shown as secondary row in Car UI
-- Expanded profile icon set: male, female, boy, girl, baby, elderly man, elderly woman variants
-- German translations for all new strings
+- Android Auto app for monitoring Nightscout CGM blood glucose data while driving
+- Multi-profile support: monitor multiple Nightscout sources simultaneously with configurable tab icons and per-profile settings
+- Car UI: current glucose value, trend arrow, delta, reading age, and 3-hour history graph with target range band
+- Glucose alerts: high/low notifications with 15-minute cooldown and predictive alerts based on 15-min linear extrapolation
+- Configurable auto-refresh interval (30 s, 1 min, 2 min, 5 min)
+- Profile icon picker with male, female, boy, girl, baby, elderly man, and elderly woman variants
+- Monochrome adaptive icon for Android 13+ themed icon support
+- App UI translated into English, German, Spanish, French, Dutch, Italian, Portuguese, Arabic, Japanese, Chinese (Simplified), and Hindi
+- Unit tests for GlucoseEntry display logic, ProfileSerializer JSON round-trip, and NightscoutRepository
+- GitHub Actions CI workflow (Build, Unit Tests, Lint) and release workflow with signed APK and AAB artifacts
+- Dedicated installation page and configuration guide on the project website
 
 ### Fixed
-- Profile icon now shown in Settings overview list
-- Glucose unit displayed as `mg/dL` / `mmol/L` (was `MG/DL` / `MMOL/L`)
-
-### Changed
-- Icon picker in profile edit screen uses `FlowRow` for dynamic wrapping instead of fixed 4-per-row
-
-- TabTemplate for multi-profile switching (CarApi >= 6, 2–4 profiles); falls back to numbered icon ActionStrip
-- Trend arrow rendered as bitmap image in Car UI row; delta shown below glucose value
-- Configurable auto-refresh interval (30 s / 1 min / 2 min / 5 min) via Settings
-- Configurable tab icon per profile (Person, Home, Heart, Star, Car, Medical) with icon picker in profile edit screen
-- App launcher icon and mipmap assets
-- DHU simulator setup guide (`TESTING.md`)
-- `AppPreferencesDataStore` for persisting app-level preferences
-- History endpoint (`getEntries`) in Nightscout API client
-
-### Fixed
-- App not appearing in Android Auto (missing `com.google.android.gms.car.application` meta-data)
-- Crash on `ActionStrip` exceeding max 1 titled action
-- Glucose unit labels shown in uppercase (now `mg/dL` / `mmol/L`)
-- Java 17 toolchain required for Kotlin 2.0.21 compatibility
-
-### Added
-- Gradle wrapper (8.9) so CI runners can build without a local Gradle install
-- GitHub Actions CI workflow with separate Build, Unit Tests, and Lint jobs
-- Branch strategy documented in AGENTS.md: `main` is protected, all work on `develop`
-
-### Changed
-- Replaced deprecated `kotlinOptions { jvmTarget }` with `kotlin { jvmToolchain(17) }` in app build script
-- MIT License (Copyright 2026 Nico Wiedemann)
-- Full Android project scaffold: Gradle version catalog, root and app-level build files, ProGuard rules
-- `AndroidManifest.xml` with `CarAppService` (IOT category), `MainActivity`, internet and foreground-service permissions
-- Data layer: `NightscoutProfile` and `GlucoseEntry` domain models, `EntryDto` Moshi DTO, `NightscoutApi` Retrofit interface, `NightscoutApiFactory` with per-URL instance caching and OkHttp logging interceptor
-- Persistence: `ProfileDataStore` (DataStore<Preferences>) and `ProfileSerializer` (Moshi JSON) for storing N Nightscout profiles
-- `NightscoutRepository` singleton (Hilt) exposing profile CRUD, active-profile state, and coroutine-based `getCurrentEntry`
-- Car UI screens: `GlucoseScreen` (PaneTemplate, 60 s polling, ActionStrip for ≤4 sources), `SourceSelectScreen` (ListTemplate for >4 sources), `NoProfilesScreen` (watches for profiles added on phone)
-- Phone settings UI: `SettingsScreen` (profile list), `ProfileEditScreen` (form with Test Connection), `SettingsViewModel`, `ProfileEditViewModel`
-- `MainActivity` with Compose navigation host
-- String resources in English and German (full i18n coverage)
-- ADR 001: architecture, IOT category, and multi-source strategy
-- Unit tests for `NightscoutRepository` (MockK + coroutines-test)
+- App not appearing in Android Auto launcher (missing `com.google.android.gms.car.application` meta-data)
+- Glucose unit labels now correctly shown as `mg/dL` / `mmol/L`

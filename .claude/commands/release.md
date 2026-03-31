@@ -1,7 +1,6 @@
 ---
 description: Bump the app version (major/minor/patch or explicit semver), update CHANGELOG.md, and commit the release.
 allowed-tools: Bash(git status:*), Bash(git pull:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Read, Edit, Bash, AskUserQuestion, TodoWrite, TodoRead
-context: fork
 ---
 
 You are preparing a new release for the AutoSugar Android app. Your job is to determine the new version number, update `app/build.gradle.kts`, restructure `CHANGELOG.md`, and commit the result.

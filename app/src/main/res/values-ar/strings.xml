@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoSugar</string>
+
+    <!-- Car UI -->
+    <string name="label_glucose_value">سكر الدم</string>
+    <string name="label_trend">الاتجاه</string>
+    <string name="label_delta">التغيير</string>
+    <string name="label_unit_mgdl">mg/dL</string>
+    <string name="label_unit_mmoll">mmol/L</string>
+    <string name="action_switch_source">تبديل المصدر</string>
+    <string name="label_loading">جارٍ التحميل…</string>
+    <string name="error_fetch_failed">فشل جلب البيانات</string>
+    <string name="action_retry">إعادة المحاولة</string>
+    <string name="label_no_profiles">لم يتم تكوين أي مصادر.\nافتح AutoSugar على هاتفك لإضافة مصدر Nightscout.</string>
+    <string name="label_graph">3h</string>
+    <string name="label_just_now">الآن</string>
+    <string name="label_n_min_ago">منذ %d دقيقة</string>
+    <string name="label_reading">القراءة: %s</string>
+    <string name="label_received">تم الاستقبال: %s</string>
+
+    <!-- Settings UI -->
+    <string name="label_settings">الإعدادات</string>
+    <string name="btn_add_profile">إضافة مصدر</string>
+    <string name="btn_save">حفظ</string>
+    <string name="btn_delete">حذف</string>
+    <string name="btn_edit">تعديل</string>
+    <string name="btn_test_connection">اختبار الاتصال</string>
+    <string name="hint_display_name">اسم العرض</string>
+    <string name="hint_base_url">رابط Nightscout (مثال: https://mynb.herokuapp.com)</string>
+    <string name="hint_api_token">رمز API</string>
+    <string name="label_unit">وحدة الجلوكوز</string>
+    <string name="label_add_source">إضافة مصدر</string>
+    <string name="label_edit_source">تعديل المصدر</string>
+    <string name="msg_test_success">متصل! مستوى السكر الحالي: %1$s %2$s</string>
+    <string name="msg_test_failed">فشل الاتصال: %1$s</string>
+    <string name="msg_saved">تم حفظ المصدر.</string>
+    <string name="msg_deleted">تم حذف المصدر.</string>
+    <string name="label_no_sources">لا توجد مصادر بعد.\nاضغط + لإضافة رابط Nightscout الخاص بك.</string>
+    <string name="label_tab_icon">أيقونة التبويب</string>
+
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">تنبيهات الجلوكوز</string>
+    <string name="notif_channel_name">تنبيهات الجلوكوز</string>
+    <string name="notif_channel_desc">تنبيهات ارتفاع وانخفاض سكر الدم مع فترة راحة تكرار 15 دقيقة</string>
+    <string name="notif_title_high">ارتفاع السكر</string>
+    <string name="notif_title_low">انخفاض السكر</string>
+    <string name="notif_title_predicted_high">السكر في ارتفاع</string>
+    <string name="notif_title_predicted_low">السكر في انخفاض</string>
+    <string name="notif_text_predicted">متوقع خلال 15 دقيقة: %s</string>
+
+    <!-- Refresh interval -->
+    <string name="label_refresh_interval">فترة التحديث</string>
+    <string name="label_refresh_30s">30 ثانية</string>
+    <string name="label_refresh_1min">دقيقة</string>
+    <string name="label_refresh_2min">دقيقتان</string>
+    <string name="label_refresh_5min">5 دقائق</string>
+    <string name="label_app_version">الإصدار %s</string>
+    <string name="error_invalid_url">يجب أن يبدأ بـ http:// أو https://</string>
+</resources>

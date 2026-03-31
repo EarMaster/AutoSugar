@@ -5,3 +5,7 @@ theme: minima
 
 minima:
   skin: dark
+  logo: /assets/logo.png
+  header_pages:
+    - install.md
+    - privacy-policy.md

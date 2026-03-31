@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoSugar</string>
+
+    <!-- Car UI -->
+    <string name="label_glucose_value">血糖值</string>
+    <string name="label_trend">趋势</string>
+    <string name="label_delta">变化量</string>
+    <string name="label_unit_mgdl">mg/dL</string>
+    <string name="label_unit_mmoll">mmol/L</string>
+    <string name="action_switch_source">切换来源</string>
+    <string name="label_loading">加载中…</string>
+    <string name="error_fetch_failed">数据获取失败</string>
+    <string name="action_retry">重试</string>
+    <string name="label_no_profiles">未配置来源。\n请在手机上打开 AutoSugar，添加 Nightscout 来源。</string>
+    <string name="label_graph">3小时</string>
+    <string name="label_just_now">刚刚</string>
+    <string name="label_n_min_ago">%d 分钟前</string>
+    <string name="label_reading">读数：%s</string>
+    <string name="label_received">已接收：%s</string>
+
+    <!-- Settings UI -->
+    <string name="label_settings">设置</string>
+    <string name="btn_add_profile">添加来源</string>
+    <string name="btn_save">保存</string>
+    <string name="btn_delete">删除</string>
+    <string name="btn_edit">编辑</string>
+    <string name="btn_test_connection">测试连接</string>
+    <string name="hint_display_name">显示名称</string>
+    <string name="hint_base_url">Nightscout 网址（例如 https://mynb.herokuapp.com）</string>
+    <string name="hint_api_token">API 令牌</string>
+    <string name="label_unit">血糖单位</string>
+    <string name="label_add_source">添加来源</string>
+    <string name="label_edit_source">编辑来源</string>
+    <string name="msg_test_success">已连接！当前血糖：%1$s %2$s</string>
+    <string name="msg_test_failed">连接失败：%1$s</string>
+    <string name="msg_saved">来源已保存。</string>
+    <string name="msg_deleted">来源已删除。</string>
+    <string name="label_no_sources">暂无来源。\n点击 + 添加您的 Nightscout 网址。</string>
+    <string name="label_tab_icon">标签图标</string>
+
+    <!-- Glucose alerts -->
+    <string name="label_glucose_alerts">血糖提醒</string>
+    <string name="notif_channel_name">血糖提醒</string>
+    <string name="notif_channel_desc">高低血糖提醒，15 分钟重复间隔</string>
+    <string name="notif_title_high">血糖偏高</string>
+    <string name="notif_title_low">血糖偏低</string>
+    <string name="notif_title_predicted_high">血糖呈上升趋势</string>
+    <string name="notif_title_predicted_low">血糖呈下降趋势</string>
+    <string name="notif_text_predicted">预计 15 分钟后：%s</string>
+
+    <!-- Refresh interval -->
+    <string name="label_refresh_interval">刷新间隔</string>
+    <string name="label_refresh_30s">30 秒</string>
+    <string name="label_refresh_1min">1 分钟</string>
+    <string name="label_refresh_2min">2 分钟</string>
+    <string name="label_refresh_5min">5 分钟</string>
+    <string name="label_app_version">版本 %s</string>
+    <string name="error_invalid_url">必须以 http:// 或 https:// 开头</string>
+</resources>
