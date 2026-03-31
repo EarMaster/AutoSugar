@@ -9,6 +9,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CodeQL security analysis workflow (runs on push/PR to main and develop, weekly schedule)
 
 ### Changed
+- Website: use SVG logo (right-aligned), reorder screenshots by context
 - Website: fix duplicate nav items, add logo, auto dark mode, move screenshots under Configuration section
 - Removed `context: fork` from commit and release command frontmatter
 
