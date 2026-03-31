@@ -1,0 +1,7 @@
+title: AutoSugar
+description: Blood glucose monitoring for Android Auto
+url: "https://autosugar.de"
+theme: minima
+
+minima:
+  skin: dark
