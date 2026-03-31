@@ -1,22 +1,16 @@
 ---
 layout: page
-title: AutoSugar
 ---
+
+<img src="assets/logo.png" alt="AutoSugar" height="80" style="margin-bottom:0.5rem;">
+
+# AutoSugar
 
 Blood glucose monitoring for Android Auto — see your [Nightscout](https://nightscout.github.io) CGM data at a glance, right on your car's display.
 
 <a href="https://play.google.com/store/apps/details?id=de.autosugar"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60"></a>
 
 [Other installation options →](install)
-
-## Screenshots
-
-<div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1rem;">
-  <img src="screenshots/android-auto-glucose-monitor-profile-1.png" alt="Glucose monitor — profile 1" height="220">
-  <img src="screenshots/android-auto-glucose-monitor-profile-2.png" alt="Glucose monitor — profile 2" height="220">
-  <img src="screenshots/android-settings-list-profiles.png" alt="Settings — profiles list" height="220">
-  <img src="screenshots/android-settings-edit-profile.png" alt="Settings — edit profile" height="220">
-</div>
 
 ## Features
 
@@ -34,6 +28,13 @@ Blood glucose monitoring for Android Auto — see your [Nightscout](https://nigh
 5. **Connect Android Auto** — AutoSugar will appear in the app launcher on your car's display.
 
 You can add multiple profiles to monitor different Nightscout sources (e.g. one for yourself and one for your child). Use the profile list in the app to switch or reorder them.
+
+<div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1rem;">
+  <img src="screenshots/android-auto-glucose-monitor-profile-1.png" alt="Glucose monitor — profile 1" height="220">
+  <img src="screenshots/android-auto-glucose-monitor-profile-2.png" alt="Glucose monitor — profile 2" height="220">
+  <img src="screenshots/android-settings-list-profiles.png" alt="Settings — profiles list" height="220">
+  <img src="screenshots/android-settings-edit-profile.png" alt="Settings — edit profile" height="220">
+</div>
 
 ## Source code
 
