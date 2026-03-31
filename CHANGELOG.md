@@ -24,6 +24,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CI: GitHub releases now include both APK and AAB files
 - CI: google-play.yml now triggered automatically from release.yml via workflow_call (no longer needs release: event)
 - CI: CodeQL runs only on PRs and weekly schedule (removed redundant push trigger)
+- CI: main CI workflow now runs only on PRs (removed redundant push trigger)
 - Claude commands: commit and release commands now explicitly use haiku model for faster execution
 - Release command now automatically asks for push confirmation instead of leaving it to manual execution
 - Commit command now uses `git fetch --no-tags origin && git rebase @{u}` for syncing with remote (avoids tag conflicts)
