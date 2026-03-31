@@ -84,4 +84,4 @@ git add app/build.gradle.kts CHANGELOG.md
 git commit -m "chore(release): bump version to X.Y.Z"
 ```
 
-Do **not** push. Tell the user the commit is ready and they can push / open a PR when ready.
+Use `AskUserQuestion` if he wishes to push. If so run `git push`.

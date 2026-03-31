@@ -5,6 +5,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Release command now automatically asks for push confirmation instead of leaving it to manual execution
+
 ## [1.1.0] - 2026-04-01
 
 ### Added
