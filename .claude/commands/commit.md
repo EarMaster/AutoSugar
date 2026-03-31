@@ -1,6 +1,6 @@
 ---
 description: Commit recent changes using a conventional commit message, after syncing with the remote.
-allowed-tools: Bash(git status:*), Bash(git fetch:*), Bash(git rebase:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), AskUserQuestion, Edit, Write
+allowed-tools: Bash(git status:*), Bash(git pull:*), Bash(git merge:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), AskUserQuestion, Edit, Write
 model: haiku
 ---
 Commit recent changes using a conventional commit message, after syncing with the remote.
@@ -9,7 +9,7 @@ Commit recent changes using a conventional commit message, after syncing with th
 
 1. **Check git status** — run `git status` to see staged, unstaged, and untracked files. If there is nothing staged, stage recent changes. If there are unstaged or changed files from previous sessions group them (if possible) and use `AskUserQuestion` to ask the user if these changes shall be commited as well.
 
-2. **Sync** — run `git fetch --no-tags origin && git rebase @{u}` to incorporate upstream changes before committing. If it fails (e.g. conflicts), stop and report the error; do not proceed.
+2. **Sync** — run `git pull --rebase` to incorporate upstream changes before committing. If it fails (e.g. conflicts), stop and report the error; do not proceed.
 
 3. **Analyze the diff** — run `git diff --cached` to understand what is staged.
 
@@ -40,4 +40,6 @@ Commit recent changes using a conventional commit message, after syncing with th
 
 7. **Commit** — once confirmed, run `git commit -m "<message>"`.
 
-8. **Push** — if the user chose to push, run `git push`.
+8. **Merge** — run `git merge --no-edit origin/main` to pull in any commits that landed on `main` (e.g. PR merge commits) so this branch stays up-to-date with the base branch; skip this if already on `main`. If it fails, stop and report the error.
+
+9. **Push** — if the user chose to push, run `git push`.
