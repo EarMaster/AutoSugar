@@ -1,0 +1,62 @@
+name: Google Play Deploy
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: GitHub release tag to deploy (e.g. v1.2.3)
+        required: true
+      track:
+        description: Google Play track to upload to
+        required: false
+        default: beta
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+
+jobs:
+  deploy:
+    name: Upload to Google Play
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Resolve tag
+        id: resolve
+        run: |
+          TAG="${{ inputs.tag || github.event.release.tag_name }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Download AAB from GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.resolve.outputs.tag }}"
+          gh release download "$TAG" \
+            --repo ${{ github.repository }} \
+            --pattern "*.aab" \
+            --dir release-assets
+
+      - name: Prepare what's new
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.resolve.outputs.tag }}"
+          NOTES=$(gh release view "$TAG" --repo ${{ github.repository }} --json body --jq '.body')
+          mkdir -p whatsnew
+          echo "$NOTES" > whatsnew/whatsnew-en-US
+
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: de.autosugar
+          releaseFiles: release-assets/*.aab
+          track: ${{ inputs.track || 'beta' }}
+          whatsNewDirectory: whatsnew/
