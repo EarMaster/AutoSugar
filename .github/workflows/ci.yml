@@ -43,6 +43,7 @@ jobs:
         with:
           name: test-results
           path: app/build/reports/tests/
+          retention-days: 14
 
   lint:
     name: Lint
@@ -66,3 +67,4 @@ jobs:
         with:
           name: lint-report
           path: app/build/reports/lint-results-debug.html
+          retention-days: 14

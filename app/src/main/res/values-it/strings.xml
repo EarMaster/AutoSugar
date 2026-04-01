@@ -16,6 +16,7 @@
     <string name="label_graph">3h</string>
     <string name="label_just_now">proprio ora</string>
     <string name="label_n_min_ago">%d min fa</string>
+    <string name="label_stale_reading">⚠️ Lettura: %s</string>
     <string name="label_reading">Lettura: %s</string>
     <string name="label_received">Ricevuto: %s</string>
 

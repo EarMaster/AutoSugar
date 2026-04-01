@@ -5,6 +5,33 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Instrumented tests (androidTest) for Car app screens: LoadingScreenTest, NoProfilesScreenTest, SourceSelectScreenTest verify correct template types and UI elements
+- Unit tests for GlucoseAlertManager (notification IDs, value formatting, predictive alerts, security exception handling)
+- Unit tests for SettingsViewModel (profiles/refreshInterval StateFlows, alerts/order/interval updates)
+- Unit tests for ProfileEditViewModel (profile loading, connection testing, save/delete operations)
+- Google Play: localized "what's new" text for all 11 supported languages (es-ES, fr-FR, it-IT, nl-NL, pt-PT, ja-JP, zh-CN, hi-IN, ar) for both v1.0.0 and v1.1.0
+
+### Changed
+
+- Google Play deployment: changed default release track from beta to internal
+- Dependencies: bumped hilt 2.52→2.57, coroutines 1.9→1.10.2, datastore 1.1.1→1.2.1, mockk 1.13.12→1.14.7
+- CI: release and deploy workflows now upload native debug symbols to Google Play
+- Refactored GlucoseScreen: extracted graph and trend-arrow rendering into GlucoseGraphRenderer (GlucoseScreen reduced from 568 to 316 lines)
+- Glucose history graph is now cached per data snapshot; re-rendered only when readings change
+- Network errors now show stale cached data (⚠️ indicator) with retry action instead of blank error pane
+
+### Fixed
+
+- Glucose unit conversions now use US locale (3.5 mmol/L, not 3,5 for German devices)
+- Unit tests: JVM tests now return default values for unmocked Android framework APIs
+- Google Play warning about missing native debug symbols for crash and ANR analysis
+- CI: artifact retention now explicitly set to 14 days (was defaulting to 90 days)
+- CI: google-play.yml workflow now uses correct default track (internal, not beta) for automatic releases
+- CI: google-play.yml now dynamically discovers localized "what's new" files by version, supporting all locales
+- Car app: removed blocking call (runBlocking) from session initialization to prevent thread stalls
+- Build: lint errors now cause build failure (previously only warned)
 
 ## [1.1.0] - 2026-04-01
 

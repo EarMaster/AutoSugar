@@ -16,6 +16,7 @@
     <string name="label_graph">3h</string>
     <string name="label_just_now">अभी-अभी</string>
     <string name="label_n_min_ago">%d मिनट पहले</string>
+    <string name="label_stale_reading">⚠️ रीडिंग: %s</string>
     <string name="label_reading">रीडिंग: %s</string>
     <string name="label_received">प्राप्त: %s</string>
 

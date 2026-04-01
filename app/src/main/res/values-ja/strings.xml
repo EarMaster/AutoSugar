@@ -16,6 +16,7 @@
     <string name="label_graph">3時間</string>
     <string name="label_just_now">たった今</string>
     <string name="label_n_min_ago">%d分前</string>
+    <string name="label_stale_reading">⚠️ 測定値: %s</string>
     <string name="label_reading">測定値: %s</string>
     <string name="label_received">受信: %s</string>
 

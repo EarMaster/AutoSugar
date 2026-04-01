@@ -1,0 +1,8 @@
+Version initiale d'AutoSugar – surveillance de la glycémie pour Android Auto.
+
+- Surveillez vos données CGM Nightscout en conduisant
+- Prise en charge multi-profils avec des icônes configurables
+- Valeur de glycémie en direct, flèche de tendance, delta et graphique d'historique sur 3 heures
+- Alertes hypo/hyperglycémie avec notifications prédictives basées sur la tendance
+- Intervalle d'actualisation automatique configurable
+- Disponible en 11 langues

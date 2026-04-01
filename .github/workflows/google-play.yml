@@ -10,7 +10,7 @@ on:
       track:
         description: Google Play track to upload to
         required: false
-        default: beta
+        default: internal
         type: string
   workflow_dispatch:
     inputs:
@@ -20,7 +20,7 @@ on:
       track:
         description: Google Play track to upload to
         required: false
-        default: beta
+        default: internal
         type: choice
         options:
           - internal
@@ -46,23 +46,24 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Download AAB from GitHub Release
+      - name: Download AAB and symbols from GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download "${{ steps.resolve.outputs.tag }}" \
             --repo ${{ github.repository }} \
             --pattern "*.aab" \
+            --pattern "*-symbols.zip" \
             --dir release-assets
 
       - name: Prepare what's new
         run: |
           VERSION="${{ steps.resolve.outputs.version }}"
           mkdir -p whatsnew
-          for locale in en-US de-DE; do
-            FILE="docs/whatsnew/${VERSION}-${locale}"
+          for FILE in docs/whatsnew/${VERSION}-*; do
             if [ -f "$FILE" ]; then
-              cp "$FILE" "whatsnew/whatsnew-${locale}"
+              LOCALE=$(basename "$FILE" | sed "s/^${VERSION}-//")
+              cp "$FILE" "whatsnew/whatsnew-${LOCALE}"
             fi
           done
 
@@ -72,5 +73,6 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: de.autosugar
           releaseFiles: release-assets/*.aab
-          track: ${{ inputs.track || 'beta' }}
+          track: ${{ inputs.track }}
           whatsNewDirectory: whatsnew/
+          debugSymbols: release-assets/*-symbols.zip

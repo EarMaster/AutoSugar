@@ -16,6 +16,7 @@
     <string name="label_graph">3h</string>
     <string name="label_just_now">gerade eben</string>
     <string name="label_n_min_ago">vor %d Min.</string>
+    <string name="label_stale_reading">⚠️ Messung: %s</string>
     <string name="label_reading">Messung: %s</string>
     <string name="label_received">Empfangen: %s</string>
 
