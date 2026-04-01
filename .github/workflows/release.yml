@@ -101,9 +101,10 @@ jobs:
           if [ -f "app/build/outputs/native-debug-symbols/release/${BASE}-symbols.zip" ]; then
             EXTRA_ASSETS="app/build/outputs/native-debug-symbols/release/${BASE}-symbols.zip"
           fi
+          echo '${{ steps.notes.outputs.body }}' > release_notes.txt
           gh release create "${{ steps.version.outputs.tag }}" \
             --title "${{ steps.version.outputs.tag }}" \
-            --notes "${{ steps.notes.outputs.body }}" \
+            --notes-file release_notes.txt \
             "app/build/outputs/apk/release/${BASE}.apk" \
             "app/build/outputs/bundle/release/${BASE}.aab" \
             $EXTRA_ASSETS
