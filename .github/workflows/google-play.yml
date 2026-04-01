@@ -20,7 +20,7 @@ on:
       track:
         description: Google Play track to upload to
         required: false
-        default: beta
+        default: internal
         type: choice
         options:
           - internal

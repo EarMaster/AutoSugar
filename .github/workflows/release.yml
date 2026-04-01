@@ -111,5 +111,5 @@ jobs:
     uses: ./.github/workflows/google-play.yml
     with:
       tag: ${{ needs.release.outputs.tag }}
-      track: beta
+      track: internal
     secrets: inherit

@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Google Play deployment: changed default release track from beta to internal
 
 ## [1.1.0] - 2026-04-01
 
