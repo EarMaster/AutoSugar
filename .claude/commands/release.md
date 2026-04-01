@@ -54,7 +54,7 @@ Single question, two options: "Proceed" and "Cancel / change". If the user cance
 
 **4a. Create What's New files**
 
-Create `docs/whatsnew/X.Y.Z-en-US` and `docs/whatsnew/X.Y.Z-de-DE` with a short user-facing summary of the release (max 500 characters each). Base the content on the `## [Unreleased]` section of `CHANGELOG.md`, but write it in plain language for end users — not a technical log. Do not copy changelog bullet points verbatim.
+Create `docs/whatsnew/X.Y.Z-{LOCALE}` files for all supported locales. Each file should contain a short user-facing summary of the release (max 500 characters). Base the content on the `## [Unreleased]` section of `CHANGELOG.md`, but write it in plain language for end users — not a technical log. Do not copy changelog bullet points verbatim.
 
 Only include changes that are visible or relevant to the user of the app itself. Exclude anything related to CI/CD workflows, GitHub Actions, GitHub Pages, the website, internal tooling, or other infrastructure — users don't see these.
 

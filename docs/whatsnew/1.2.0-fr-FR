@@ -1,0 +1,9 @@
+• Afficher la dernière lecture de glucose connue lors d'une défaillance de connexion : Affiche les données en cache avec une icône d'avertissement et un bouton de réessai au lieu d'un écran d'erreur vide — ainsi vous ne serez jamais complètement sans information.
+
+• Mises à jour graphiques plus rapides : Les graphiques d'historique de glucose sont maintenant mis en cache et ne sont re-rendus que lorsque de nouvelles lectures arrivent, réduisant l'utilisation du CPU lors du sondage.
+
+• Suppression du blocage des threads au démarrage : Amélioration de la réactivité du lancement de l'application en éliminant les appels bloquants.
+
+• Correction du formatage des valeurs de glucose : Assure que les valeurs décimales s'affichent de manière cohérente (par exemple, « 3,5 mmol/L ») sur tous les appareils, quel que soit les paramètres régionaux.
+
+• Couverture de test améliorée : Ajout de tests unitaires et instrumentés complets pour la stabilité et la fiabilité de l'application.
