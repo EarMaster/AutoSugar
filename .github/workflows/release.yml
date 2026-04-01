@@ -86,10 +86,6 @@ jobs:
           BASE="${{ steps.version.outputs.artifact_base }}"
           mv app/build/outputs/apk/release/app-release.apk "app/build/outputs/apk/release/${BASE}.apk"
           mv app/build/outputs/bundle/release/app-release.aab "app/build/outputs/bundle/release/${BASE}.aab"
-          if [ -f "app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip" ]; then
-            mv app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip \
-              "app/build/outputs/native-debug-symbols/release/${BASE}-symbols.zip"
-          fi
 
       - name: Create GitHub Release
         if: steps.tag_check.outputs.exists == 'false'
@@ -98,8 +94,8 @@ jobs:
         run: |
           BASE="${{ steps.version.outputs.artifact_base }}"
           EXTRA_ASSETS=""
-          if [ -f "app/build/outputs/native-debug-symbols/release/${BASE}-symbols.zip" ]; then
-            EXTRA_ASSETS="app/build/outputs/native-debug-symbols/release/${BASE}-symbols.zip"
+          if [ -f "app/build/outputs/mapping/release/mapping.txt" ]; then
+            EXTRA_ASSETS="app/build/outputs/mapping/release/mapping.txt"
           fi
           echo '${{ steps.notes.outputs.body }}' > release_notes.txt
           gh release create "${{ steps.version.outputs.tag }}" \

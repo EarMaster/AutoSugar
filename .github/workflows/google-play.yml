@@ -46,14 +46,14 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Download AAB and symbols from GitHub Release
+      - name: Download AAB and mapping from GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download "${{ steps.resolve.outputs.tag }}" \
             --repo ${{ github.repository }} \
             --pattern "*.aab" \
-            --pattern "*-symbols.zip" \
+            --pattern "mapping.txt" \
             --dir release-assets
 
       - name: Prepare what's new
@@ -75,4 +75,4 @@ jobs:
           releaseFiles: release-assets/*.aab
           track: ${{ inputs.track }}
           whatsNewDirectory: whatsnew/
-          debugSymbols: release-assets/*-symbols.zip
+          mappingFile: release-assets/mapping.txt
