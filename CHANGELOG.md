@@ -14,6 +14,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Google Play warning about missing native debug symbols for crash and ANR analysis
 - CI: artifact retention now explicitly set to 14 days (was defaulting to 90 days)
+- CI: google-play.yml workflow now uses correct default track (internal, not beta) for automatic releases
+- CI: google-play.yml now dynamically discovers localized "what's new" files by version, supporting all locales
 
 ## [1.1.0] - 2026-04-01
 
