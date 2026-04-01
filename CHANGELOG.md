@@ -19,6 +19,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Car app: removed blocking call (runBlocking) from session initialization to prevent thread stalls
 - Build: lint errors now cause build failure (previously only warned)
 
+### Changed
+
+- Refactored GlucoseScreen: extracted graph and trend-arrow rendering into GlucoseGraphRenderer (GlucoseScreen reduced from 568 to 316 lines)
+
 ## [1.1.0] - 2026-04-01
 
 ### Added
