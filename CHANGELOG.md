@@ -7,6 +7,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Instrumented tests (androidTest) for Car app screens: LoadingScreenTest, NoProfilesScreenTest, SourceSelectScreenTest verify correct template types and UI elements
 - Unit tests for GlucoseAlertManager (notification IDs, value formatting, predictive alerts, security exception handling)
 - Unit tests for SettingsViewModel (profiles/refreshInterval StateFlows, alerts/order/interval updates)
 - Unit tests for ProfileEditViewModel (profile loading, connection testing, save/delete operations)
