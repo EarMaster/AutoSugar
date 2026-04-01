@@ -16,6 +16,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CI: artifact retention now explicitly set to 14 days (was defaulting to 90 days)
 - CI: google-play.yml workflow now uses correct default track (internal, not beta) for automatic releases
 - CI: google-play.yml now dynamically discovers localized "what's new" files by version, supporting all locales
+- Car app: removed blocking call (runBlocking) from session initialization to prevent thread stalls
 
 ## [1.1.0] - 2026-04-01
 
