@@ -48,6 +48,10 @@ android {
         compose = true
         buildConfig = true
     }
+
+    lint {
+        abortOnError = true
+    }
 }
 
 dependencies {
