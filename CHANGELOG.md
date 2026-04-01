@@ -13,6 +13,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - Google Play warning about missing native debug symbols for crash and ANR analysis
+- CI: artifact retention now explicitly set to 14 days (was defaulting to 90 days)
 
 ## [1.1.0] - 2026-04-01
 
