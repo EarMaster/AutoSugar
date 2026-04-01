@@ -6,7 +6,13 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Changed
+
 - Google Play deployment: changed default release track from beta to internal
+- CI: release and deploy workflows now upload native debug symbols to Google Play
+
+### Fixed
+
+- Google Play warning about missing native debug symbols for crash and ANR analysis
 
 ## [1.1.0] - 2026-04-01
 
