@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import de.autosugar.R
 import de.autosugar.data.model.GlucoseUnit
+import java.util.Locale
 
 class GlucoseAlertManager(private val context: Context) {
 
@@ -66,7 +67,7 @@ class GlucoseAlertManager(private val context: Context) {
     private fun formatValue(sgv: Int, unit: GlucoseUnit): String {
         val value = when (unit) {
             GlucoseUnit.MG_DL  -> sgv.toString()
-            GlucoseUnit.MMOL_L -> "%.1f".format(sgv / 18.0)
+            GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, sgv / 18.0)
         }
         val label = when (unit) {
             GlucoseUnit.MG_DL  -> context.getString(R.string.label_unit_mgdl)
@@ -75,16 +76,18 @@ class GlucoseAlertManager(private val context: Context) {
         return "$value $label"
     }
 
-    private fun post(id: Int, title: String, text: String) {
+    internal open fun buildNotification(title: String, text: String) =
+        NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_profile_medical)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .build()
+
+    internal open fun post(id: Int, title: String, text: String) {
         try {
-            val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_profile_medical)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .build()
-            nm.notify(id, notification)
+            nm.notify(id, buildNotification(title, text))
         } catch (_: SecurityException) {
             // POST_NOTIFICATIONS not granted on Android 13+ — alerts silently suppressed
         }

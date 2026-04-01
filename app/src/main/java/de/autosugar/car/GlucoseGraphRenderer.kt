@@ -12,6 +12,7 @@ import androidx.car.app.model.CarIcon
 import androidx.core.graphics.drawable.IconCompat
 import de.autosugar.data.model.GlucoseEntry
 import de.autosugar.data.model.GlucoseUnit
+import java.util.Locale
 
 /**
  * Renders the 3-hour glucose history graph as a [CarIcon] bitmap.
@@ -224,7 +225,7 @@ private fun drawDropPin(
 ) {
     val valueLabel = when (unit) {
         GlucoseUnit.MG_DL  -> entry.sgv.toString()
-        GlucoseUnit.MMOL_L -> "%.1f".format(entry.sgv / 18.0)
+        GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, entry.sgv / 18.0)
     }
     dropFill.color = glucoseColor(entry.sgv)
 

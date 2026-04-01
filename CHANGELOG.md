@@ -7,6 +7,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Unit tests for GlucoseAlertManager (notification IDs, value formatting, predictive alerts, security exception handling)
+- Unit tests for SettingsViewModel (profiles/refreshInterval StateFlows, alerts/order/interval updates)
+- Unit tests for ProfileEditViewModel (profile loading, connection testing, save/delete operations)
 - Google Play: localized "what's new" text for all 11 supported languages (es-ES, fr-FR, it-IT, nl-NL, pt-PT, ja-JP, zh-CN, hi-IN, ar) for both v1.0.0 and v1.1.0
 
 ### Changed
@@ -17,6 +20,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Glucose unit conversions now use US locale (3.5 mmol/L, not 3,5 for German devices)
+- Unit tests: JVM tests now return default values for unmocked Android framework APIs
 - Google Play warning about missing native debug symbols for crash and ANR analysis
 - CI: artifact retention now explicitly set to 14 days (was defaulting to 90 days)
 - CI: google-play.yml workflow now uses correct default track (internal, not beta) for automatic releases
