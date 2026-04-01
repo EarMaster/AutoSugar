@@ -1,0 +1,8 @@
+Initial release of AutoSugar – blood glucose monitoring for Android Auto.
+
+- Monitor your Nightscout CGM data while driving
+- Multi-profile support with configurable icons
+- Live glucose value, trend arrow, delta, and 3-hour history graph
+- High/low alerts with predictive notifications based on trend
+- Configurable auto-refresh interval
+- Available in 11 languages

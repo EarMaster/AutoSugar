@@ -1,6 +1,6 @@
 ---
 description: Commit recent changes using a conventional commit message, after syncing with the remote.
-allowed-tools: Bash(git status:*), Bash(git pull:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), AskUserQuestion, Edit, Write
+allowed-tools: Bash(git status:*), Bash(git pull:*), Bash(git merge:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), AskUserQuestion, Edit, Write
 model: haiku
 ---
 Commit recent changes using a conventional commit message, after syncing with the remote.
@@ -40,4 +40,6 @@ Commit recent changes using a conventional commit message, after syncing with th
 
 7. **Commit** — once confirmed, run `git commit -m "<message>"`.
 
-8. **Push** — if the user chose to push, run `git push`.
+8. **Merge** — run `git merge --no-edit origin/main` to pull in any commits that landed on `main` (e.g. PR merge commits) so this branch stays up-to-date with the base branch; skip this if already on `main`. If it fails, stop and report the error.
+
+9. **Push** — if the user chose to push, run `git push`.

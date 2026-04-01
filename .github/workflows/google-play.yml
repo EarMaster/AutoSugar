@@ -36,30 +36,35 @@ jobs:
       contents: read
 
     steps:
-      - name: Resolve tag
+      - uses: actions/checkout@v4
+
+      - name: Resolve tag and version
         id: resolve
         run: |
           TAG="${{ inputs.tag || github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Download AAB from GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="${{ steps.resolve.outputs.tag }}"
-          gh release download "$TAG" \
+          gh release download "${{ steps.resolve.outputs.tag }}" \
             --repo ${{ github.repository }} \
             --pattern "*.aab" \
             --dir release-assets
 
       - name: Prepare what's new
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="${{ steps.resolve.outputs.tag }}"
-          NOTES=$(gh release view "$TAG" --repo ${{ github.repository }} --json body --jq '.body')
+          VERSION="${{ steps.resolve.outputs.version }}"
           mkdir -p whatsnew
-          echo "$NOTES" > whatsnew/whatsnew-en-US
+          for locale in en-US de-DE; do
+            FILE="docs/whatsnew/${VERSION}-${locale}"
+            if [ -f "$FILE" ]; then
+              cp "$FILE" "whatsnew/whatsnew-${locale}"
+            fi
+          done
 
       - name: Upload to Google Play
         uses: r0adkll/upload-google-play@v1
