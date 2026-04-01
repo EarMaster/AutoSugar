@@ -16,6 +16,7 @@
     <string name="label_graph">3u</string>
     <string name="label_just_now">zojuist</string>
     <string name="label_n_min_ago">%d min geleden</string>
+    <string name="label_stale_reading">⚠️ Meting: %s</string>
     <string name="label_reading">Meting: %s</string>
     <string name="label_received">Ontvangen: %s</string>
 

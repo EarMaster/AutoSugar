@@ -16,6 +16,7 @@
     <string name="label_graph">3h</string>
     <string name="label_just_now">à l\'instant</string>
     <string name="label_n_min_ago">il y a %d min</string>
+    <string name="label_stale_reading">⚠️ Lecture : %s</string>
     <string name="label_reading">Lecture : %s</string>
     <string name="label_received">Reçu : %s</string>
 

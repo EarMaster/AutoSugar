@@ -16,6 +16,7 @@
     <string name="label_graph">3小时</string>
     <string name="label_just_now">刚刚</string>
     <string name="label_n_min_ago">%d 分钟前</string>
+    <string name="label_stale_reading">⚠️ 读数：%s</string>
     <string name="label_reading">读数：%s</string>
     <string name="label_received">已接收：%s</string>
 

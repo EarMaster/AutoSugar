@@ -38,6 +38,7 @@
     <string name="label_just_now">just now</string>
     <string name="label_n_min_ago">%d min ago</string>
     <string name="label_reading">Reading: %s</string>
+    <string name="label_stale_reading">⚠️ Reading: %s</string>
     <string name="label_received">Received: %s</string>
 
     <!-- Glucose alerts -->

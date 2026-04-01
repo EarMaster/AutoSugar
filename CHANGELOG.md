@@ -17,6 +17,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Google Play deployment: changed default release track from beta to internal
 - Dependencies: bumped hilt 2.52→2.57, coroutines 1.9→1.10.2, datastore 1.1.1→1.2.1, mockk 1.13.12→1.14.7
 - CI: release and deploy workflows now upload native debug symbols to Google Play
+- Refactored GlucoseScreen: extracted graph and trend-arrow rendering into GlucoseGraphRenderer (GlucoseScreen reduced from 568 to 316 lines)
+- Glucose history graph is now cached per data snapshot; re-rendered only when readings change
+- Network errors now show stale cached data (⚠️ indicator) with retry action instead of blank error pane
 
 ### Fixed
 
@@ -28,10 +31,6 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CI: google-play.yml now dynamically discovers localized "what's new" files by version, supporting all locales
 - Car app: removed blocking call (runBlocking) from session initialization to prevent thread stalls
 - Build: lint errors now cause build failure (previously only warned)
-
-### Changed
-
-- Refactored GlucoseScreen: extracted graph and trend-arrow rendering into GlucoseGraphRenderer (GlucoseScreen reduced from 568 to 316 lines)
 
 ## [1.1.0] - 2026-04-01
 

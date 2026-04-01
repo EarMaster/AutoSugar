@@ -16,6 +16,7 @@
     <string name="label_graph">3h</string>
     <string name="label_just_now">الآن</string>
     <string name="label_n_min_ago">منذ %d دقيقة</string>
+    <string name="label_stale_reading">⚠️ القراءة: %s</string>
     <string name="label_reading">القراءة: %s</string>
     <string name="label_received">تم الاستقبال: %s</string>
 

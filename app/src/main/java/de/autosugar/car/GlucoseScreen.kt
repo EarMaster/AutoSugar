@@ -52,6 +52,15 @@ class GlucoseScreen(
     private var errorMessage: String? = null
     private var pollingJob: Job? = null
 
+    private data class GraphCacheKey(
+        val timestamps: List<Long>,
+        val unit: GlucoseUnit,
+        val bgTargetBottom: Float,
+        val bgTargetTop: Float,
+    )
+    private var cachedGraphKey: GraphCacheKey? = null
+    private var cachedGraphIcon: CarIcon? = null
+
     private val alertManager = GlucoseAlertManager(carContext)
     private val alertCooldownMs = 15 * 60_000L
     private var lastHighAlertMs = 0L
@@ -250,7 +259,7 @@ class GlucoseScreen(
     private fun buildPane(unit: GlucoseUnit): Pane = when {
         isLoading -> Pane.Builder().setLoading(true).build()
 
-        errorMessage != null -> Pane.Builder()
+        errorMessage != null && entry == null -> Pane.Builder()
             .addRow(
                 Row.Builder()
                     .setTitle(carContext.getString(R.string.error_fetch_failed))
@@ -269,8 +278,15 @@ class GlucoseScreen(
             val e = entry!!
             val now = System.currentTimeMillis()
             val statsRow = Row.Builder()
-                .setTitle(carContext.getString(R.string.label_reading, ageString(now - e.dateMs)))
-            if (lastFetchedMs > 0) {
+                .setTitle(
+                    if (errorMessage != null)
+                        carContext.getString(R.string.label_stale_reading, ageString(now - e.dateMs))
+                    else
+                        carContext.getString(R.string.label_reading, ageString(now - e.dateMs))
+                )
+            if (errorMessage != null) {
+                statsRow.addText(errorMessage!!)
+            } else if (lastFetchedMs > 0) {
                 statsRow.addText(carContext.getString(R.string.label_received, ageString(now - lastFetchedMs)))
             }
             val pane = Pane.Builder()
@@ -282,8 +298,26 @@ class GlucoseScreen(
                         .build()
                 )
                 .addRow(statsRow.build())
+            if (errorMessage != null) {
+                pane.addAction(
+                    Action.Builder()
+                        .setTitle(carContext.getString(R.string.action_retry))
+                        .setOnClickListener { lifecycleScope.launch { fetch() } }
+                        .build()
+                )
+            }
             if (history.size >= 2) {
-                pane.setImage(glucoseGraphIcon(history, unit, thresholds.bgTargetBottom.toFloat(), thresholds.bgTargetTop.toFloat()))
+                val key = GraphCacheKey(
+                    timestamps = history.map { it.dateMs },
+                    unit = unit,
+                    bgTargetBottom = thresholds.bgTargetBottom.toFloat(),
+                    bgTargetTop = thresholds.bgTargetTop.toFloat(),
+                )
+                if (cachedGraphKey != key) {
+                    cachedGraphIcon = glucoseGraphIcon(history, unit, key.bgTargetBottom, key.bgTargetTop)
+                    cachedGraphKey = key
+                }
+                pane.setImage(cachedGraphIcon!!)
             }
             pane.build()
         }
@@ -310,6 +344,8 @@ class GlucoseScreen(
         history = emptyList()
         lastFetchedMs = 0L
         isLoading = true
+        cachedGraphKey = null
+        cachedGraphIcon = null
         invalidate()
         lifecycleScope.launch { fetch() }
     }
