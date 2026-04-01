@@ -5,6 +5,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Google Play: localized "what's new" text for all 11 supported languages (es-ES, fr-FR, it-IT, nl-NL, pt-PT, ja-JP, zh-CN, hi-IN, ar) for both v1.0.0 and v1.1.0
+
 ### Changed
 
 - Google Play deployment: changed default release track from beta to internal
