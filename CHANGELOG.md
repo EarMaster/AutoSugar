@@ -12,6 +12,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Google Play deployment: changed default release track from beta to internal
+- Dependencies: bumped hilt 2.52→2.57, coroutines 1.9→1.10.2, datastore 1.1.1→1.2.1, mockk 1.13.12→1.14.7
 - CI: release and deploy workflows now upload native debug symbols to Google Play
 
 ### Fixed
