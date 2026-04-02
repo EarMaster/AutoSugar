@@ -5,6 +5,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Google Play release notes: shortened v1.2.0 what's new text in all 11 languages to stay under 500-character limit (was 672 chars in Arabic)
+- Release command: updated `release.md` to specify max 300 characters for English whatsnew text to ensure translations remain under 500-character GitHub limit
+
 ## [1.2.0] - 2026-04-01
 
 ### Added

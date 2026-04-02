@@ -1,9 +1,5 @@
-• Display last known glucose reading when connection fails: Shows cached data with a warning icon and retry button instead of a blank error screen — so you're never completely without information.
-
-• Faster graph updates: Glucose history graphs are now cached and only re-rendered when new readings arrive, reducing CPU usage during polling.
-
-• Removed thread blocking during startup: Improved app launch responsiveness by eliminating blocking calls.
-
-• Fixed glucose value formatting: Ensures decimal values display consistently (e.g., "3.5 mmol/L") on all devices, regardless of regional settings.
-
-• Enhanced test coverage: Added comprehensive unit and instrumented tests for app stability and reliability.
+• Shows last glucose reading even without connection
+• Faster graph updates
+• Faster app startup
+• Consistent glucose formatting
+• Better test coverage

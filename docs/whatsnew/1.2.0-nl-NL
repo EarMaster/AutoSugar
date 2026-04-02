@@ -1,9 +1,5 @@
-• Laatste bekende glucosemeting weergeven wanneer verbinding mislukt: Geeft gecachte gegevens weer met een waarschuwingspictogram en een knop voor opnieuw proberen in plaats van een leeg foutscherm — dus je bent nooit volledig zonder informatie.
-
-• Snellere grafiekupdates: Glucoseverlopen grafieken worden nu opgeslagen en alleen opnieuw weergegeven wanneer nieuwe metingen binnenkomen, wat het CPU-gebruik tijdens polling verkleint.
-
-• Thread-blokkering bij opstarten verwijderd: Verbeterde responsiviteit bij het starten van de app door het verwijderen van blokkerende aanroepen.
-
-• Glucosewaardeformatering gecorrigeerd: Zorgt ervoor dat decimale waarden consistent worden weergegeven (bijv. « 3,5 mmol/L ») op alle apparaten, ongeacht regionale instellingen.
-
-• Verbeterde testdekking: Uitgebreide unit- en instrumentatietests toegevoegd voor app-stabiliteit en betrouwbaarheid.
+• Toont laatste glucosemeting zelfs zonder verbinding
+• Snellere grafiekupdates
+• Sneller app-opstarten
+• Consistent glucoseformatering
+• Betere testdekking
