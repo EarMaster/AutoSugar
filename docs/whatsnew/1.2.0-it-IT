@@ -1,9 +1,5 @@
-• Visualizza l'ultima lettura nota di glucosio quando la connessione non riesce: Mostra i dati memorizzati nella cache con un'icona di avviso e un pulsante di riprovazione invece di una schermata di errore vuota — così non sarai mai completamente senza informazioni.
-
-• Aggiornamenti grafici più veloci: I grafici della cronologia del glucosio sono ora memorizzati nella cache e vengono renderizzati nuovamente solo quando arrivano nuove letture, riducendo l'utilizzo della CPU durante il polling.
-
-• Rimosso il blocco dei thread all'avvio: Migliorata la reattività del lancio dell'app eliminando le chiamate bloccanti.
-
-• Corretto il formato del valore del glucosio: Garantisce che i valori decimali vengano visualizzati in modo coerente (ad esempio, « 3,5 mmol/L ») su tutti i dispositivi, indipendentemente dalle impostazioni regionali.
-
-• Copertura di test migliorata: Aggiunta di test unitari e strumentati completi per la stabilità e l'affidabilità dell'app.
+• Mostra l'ultima lettura di glucosio anche senza connessione
+• Aggiornamenti grafici più veloci
+• Avvio più rapido dell'app
+• Formattazione consistente della glicemia
+• Migliore copertura dei test

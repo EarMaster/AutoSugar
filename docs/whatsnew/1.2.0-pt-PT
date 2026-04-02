@@ -1,9 +1,5 @@
-• Exibir última leitura de glicose conhecida quando a conexão falha: Mostra dados em cache com um ícone de aviso e botão de tentar novamente em vez de uma tela de erro em branco — para que você nunca fique completamente sem informações.
-
-• Atualizações de gráfico mais rápidas: Os gráficos do histórico de glicose agora são armazenados em cache e apenas re-renderizados quando novas leituras chegam, reduzindo o uso de CPU durante a sondagem.
-
-• Bloqueio de thread removido durante a inicialização: Melhorou a capacidade de resposta do lançamento do aplicativo eliminando chamadas bloqueantes.
-
-• Formatação de valor de glicose corrigida: Garante que os valores decimais sejam exibidos consistentemente (por exemplo, « 3,5 mmol/L ») em todos os dispositivos, independentemente das configurações regionais.
-
-• Cobertura de teste aprimorada: Adicionados testes unitários e instrumentados abrangentes para estabilidade e confiabilidade do aplicativo.
+• Exibe última leitura de glicose mesmo sem conexão
+• Atualizações de gráfico mais rápidas
+• Inicialização mais rápida do app
+• Formatação consistente de glicose
+• Melhor cobertura de testes

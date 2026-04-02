@@ -1,9 +1,5 @@
-• Letzten Glukosewert bei Verbindungsfehlern anzeigen: Gecacherte Daten mit Warnsymbol und Schaltfläche zum Wiederholen statt leerer Fehlermeldung — damit haben Sie immer einen Überblick.
-
-• Schnellere Graph-Updates: Glukose-Verlaufsgraphen werden jetzt zwischengespeichert und nur bei neuen Messwerten neu gerendert, was die CPU-Last beim Abrufen senkt.
-
-• Thread-Blockierung beim Start entfernt: Verbesserte App-Startgeschwindigkeit durch Eliminierung von Blockierungsaufrufen.
-
-• Formatierung von Glukosewerten korrigiert: Dezimalwerte werden jetzt konsistent angezeigt (z. B. „3,5 mmol/L") auf allen Geräten, unabhängig von Regionaleinstellungen.
-
-• Verbesserte Testabdeckung: Umfassende Unit- und Integrationstests für Stabilität und Zuverlässigkeit der App.
+• Zeigt letzte Glukosemessung auch ohne Verbindung an
+• Schnellere Graph-Updates
+• Schnellerer App-Start
+• Einheitliche Glukose-Formatierung
+• Bessere Testabdeckung
