@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat
 import de.autosugar.R
 import de.autosugar.data.model.GlucoseUnit
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class GlucoseAlertManager(private val context: Context) {
 
@@ -32,7 +33,7 @@ class GlucoseAlertManager(private val context: Context) {
         )
     }
 
-    fun sendHighAlert(sgv: Int, unit: GlucoseUnit) {
+    fun sendHighAlert(sgv: Double, unit: GlucoseUnit) {
         post(
             id = NOTIF_HIGH,
             title = context.getString(R.string.notif_title_high),
@@ -40,7 +41,7 @@ class GlucoseAlertManager(private val context: Context) {
         )
     }
 
-    fun sendLowAlert(sgv: Int, unit: GlucoseUnit) {
+    fun sendLowAlert(sgv: Double, unit: GlucoseUnit) {
         post(
             id = NOTIF_LOW,
             title = context.getString(R.string.notif_title_low),
@@ -48,7 +49,7 @@ class GlucoseAlertManager(private val context: Context) {
         )
     }
 
-    fun sendPredictedHighAlert(projectedSgv: Int, unit: GlucoseUnit) {
+    fun sendPredictedHighAlert(projectedSgv: Double, unit: GlucoseUnit) {
         post(
             id = NOTIF_PREDICTED_HIGH,
             title = context.getString(R.string.notif_title_predicted_high),
@@ -56,7 +57,7 @@ class GlucoseAlertManager(private val context: Context) {
         )
     }
 
-    fun sendPredictedLowAlert(projectedSgv: Int, unit: GlucoseUnit) {
+    fun sendPredictedLowAlert(projectedSgv: Double, unit: GlucoseUnit) {
         post(
             id = NOTIF_PREDICTED_LOW,
             title = context.getString(R.string.notif_title_predicted_low),
@@ -64,9 +65,9 @@ class GlucoseAlertManager(private val context: Context) {
         )
     }
 
-    private fun formatValue(sgv: Int, unit: GlucoseUnit): String {
+    private fun formatValue(sgv: Double, unit: GlucoseUnit): String {
         val value = when (unit) {
-            GlucoseUnit.MG_DL  -> sgv.toString()
+            GlucoseUnit.MG_DL  -> sgv.roundToInt().toString()
             GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, sgv / 18.0)
         }
         val label = when (unit) {

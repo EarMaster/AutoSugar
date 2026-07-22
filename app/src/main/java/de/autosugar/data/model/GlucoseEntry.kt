@@ -1,8 +1,10 @@
 package de.autosugar.data.model
 
+import kotlin.math.roundToInt
+
 data class GlucoseEntry(
-    /** Raw value always in mg/dL as returned by Nightscout. */
-    val sgv: Int,
+    /** Raw value always in mg/dL as returned by Nightscout. Some sources (e.g. Juggluco) send fractional values. */
+    val sgv: Double,
     /** Nightscout direction string, e.g. "Flat", "SingleUp", "DoubleUp", "FortyFiveUp", etc. */
     val direction: String,
     /** ISO-8601 date string from the entry. */
@@ -14,7 +16,7 @@ data class GlucoseEntry(
 ) {
     /** Returns the display value converted to the requested unit. */
     fun displayValue(unit: GlucoseUnit): String = when (unit) {
-        GlucoseUnit.MG_DL  -> sgv.toString()
+        GlucoseUnit.MG_DL  -> sgv.roundToInt().toString()
         GlucoseUnit.MMOL_L -> "%.1f".format(sgv / 18.0)
     }
 

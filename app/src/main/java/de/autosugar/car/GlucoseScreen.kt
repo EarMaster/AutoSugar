@@ -138,13 +138,13 @@ class GlucoseScreen(
         if (projected15 > thresholds.bgHigh && sgv <= thresholds.bgHigh &&
             now - lastPredictedHighAlertMs > alertCooldownMs
         ) {
-            alertManager.sendPredictedHighAlert(projected15.toInt(), profile.unit)
+            alertManager.sendPredictedHighAlert(projected15, profile.unit)
             lastPredictedHighAlertMs = now
         }
         if (projected15 < thresholds.bgLow && sgv >= thresholds.bgLow &&
             now - lastPredictedLowAlertMs > alertCooldownMs
         ) {
-            alertManager.sendPredictedLowAlert(projected15.toInt(), profile.unit)
+            alertManager.sendPredictedLowAlert(projected15, profile.unit)
             lastPredictedLowAlertMs = now
         }
     }

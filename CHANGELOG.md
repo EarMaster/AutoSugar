@@ -5,6 +5,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Nightscout entries with a fractional `sgv` (e.g. from Juggluco/Libre 2 sources, which don't round the value) no longer crash JSON parsing; `sgv` is now handled as a `Double` throughout and rounded for mg/dL display (#13)
+
 ## [1.2.1] - 2026-07-22
 
 ### Changed

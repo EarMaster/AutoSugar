@@ -35,7 +35,7 @@ class NightscoutRepository @Inject constructor(
         )
         val latest = entries.firstOrNull() ?: error("No entries returned")
         val previous = entries.getOrNull(1)
-        val delta = previous?.let { (latest.sgv - it.sgv).toDouble() }
+        val delta = previous?.let { latest.sgv - it.sgv }
         GlucoseEntry(
             sgv = latest.sgv,
             direction = latest.direction ?: "NOT COMPUTABLE",
@@ -58,7 +58,7 @@ class NightscoutRepository @Inject constructor(
         val latest = entries.firstOrNull() ?: error("No entries returned")
         val previous = entries.getOrNull(1)
 
-        val delta = previous?.let { (latest.sgv - it.sgv).toDouble() }
+        val delta = previous?.let { latest.sgv - it.sgv }
 
         GlucoseEntry(
             sgv = latest.sgv,
