@@ -159,7 +159,7 @@ class NightscoutRepositoryTest {
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getStatus(any()) } returns StatusDto(
             settings = SettingsDto(
-                thresholds = ThresholdsDto(bgHigh = 180, bgTargetTop = 160, bgTargetBottom = 80, bgLow = 70),
+                thresholds = ThresholdsDto(bgHigh = 180.0, bgTargetTop = 160.0, bgTargetBottom = 80.0, bgLow = 70.0),
             ),
         )
 
@@ -176,13 +176,31 @@ class NightscoutRepositoryTest {
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getStatus(any()) } returns StatusDto(
             settings = SettingsDto(
-                thresholds = ThresholdsDto(bgHigh = null, bgTargetTop = 160, bgTargetBottom = 80, bgLow = null),
+                thresholds = ThresholdsDto(bgHigh = null, bgTargetTop = 160.0, bgTargetBottom = 80.0, bgLow = null),
             ),
         )
 
         val thresholds = repository.getThresholds("test-id").getOrThrow()
         assertEquals(70, thresholds.bgLow)
         assertEquals(180, thresholds.bgHigh)
+    }
+
+    @Test
+    fun `getThresholds rounds fractional threshold values`() = runTest {
+        // Regression for #13: Nightscout settings.thresholds can also carry non-integer values
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = SettingsDto(
+                thresholds = ThresholdsDto(bgHigh = 180.6, bgTargetTop = 160.4, bgTargetBottom = 80.5, bgLow = 70.2),
+            ),
+        )
+
+        val thresholds = repository.getThresholds("test-id").getOrThrow()
+        assertEquals(70, thresholds.bgLow)
+        assertEquals(81, thresholds.bgTargetBottom)
+        assertEquals(160, thresholds.bgTargetTop)
+        assertEquals(181, thresholds.bgHigh)
     }
 
     @Test

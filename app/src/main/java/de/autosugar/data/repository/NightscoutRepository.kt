@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToInt
 
 @Singleton
 class NightscoutRepository @Inject constructor(
@@ -77,10 +78,10 @@ class NightscoutRepository @Inject constructor(
         val api = apiFactory.get(profile.baseUrl)
         val t = api.getStatus(token = profile.apiToken.ifBlank { null }).settings?.thresholds
         GlucoseThresholds(
-            bgLow          = t?.bgLow          ?: 70,
-            bgTargetBottom = t?.bgTargetBottom ?: error("bgTargetBottom not in status response"),
-            bgTargetTop    = t?.bgTargetTop    ?: error("bgTargetTop not in status response"),
-            bgHigh         = t?.bgHigh         ?: 180,
+            bgLow          = t?.bgLow?.roundToInt()          ?: 70,
+            bgTargetBottom = t?.bgTargetBottom?.roundToInt() ?: error("bgTargetBottom not in status response"),
+            bgTargetTop    = t?.bgTargetTop?.roundToInt()    ?: error("bgTargetTop not in status response"),
+            bgHigh         = t?.bgHigh?.roundToInt()         ?: 180,
         )
     }
 

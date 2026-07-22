@@ -22,8 +22,8 @@ data class SettingsDto(
 
 @JsonClass(generateAdapter = true)
 data class ThresholdsDto(
-    val bgHigh: Int?,
-    val bgTargetTop: Int?,
-    val bgTargetBottom: Int?,
-    val bgLow: Int?,
+    val bgHigh: Double?,
+    val bgTargetTop: Double?,
+    val bgTargetBottom: Double?,
+    val bgLow: Double?,
 )
