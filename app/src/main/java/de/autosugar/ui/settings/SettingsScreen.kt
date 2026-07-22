@@ -84,10 +84,15 @@ fun SettingsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.label_settings)) })
+            TopAppBar(
+                title = { Text(stringResource(R.string.label_settings)) }
+            )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddProfile) {
+            FloatingActionButton(
+                onClick = onAddProfile,
+                modifier = Modifier.padding(bottom = 8.dp) // Extra spacing from nav bar
+            ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.btn_add_profile))
             }
         },
@@ -95,12 +100,11 @@ fun SettingsScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .pointerInput(Unit) {
                     detectDragGesturesAfterLongPress(
                         onDragStart = { offset ->
                             isDragging = true
-                            dragState.onDragStart(offset.y)
+                            dragState.onDragStart(offset.y - padding.calculateTopPadding().toPx())
                         },
                         onDrag = { change, dragAmount ->
                             change.consume()
@@ -123,7 +127,12 @@ fun SettingsScreen(
             LazyColumn(
                 state = lazyListState,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(
+                    top = padding.calculateTopPadding() + 16.dp,
+                    bottom = padding.calculateBottomPadding() + 80.dp, // Space for FAB
+                    start = 16.dp,
+                    end = 16.dp
+                ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 item {

@@ -1,18 +1,19 @@
 [versions]
-agp                  = "8.13.2"
-kotlin               = "2.0.21"
+agp                  = "9.1.1"
+kotlin               = "2.1.10"
 compose-bom          = "2024.09.03"
 car-app              = "1.4.0"
 retrofit             = "2.11.0"
 okhttp               = "4.12.0"
-moshi                = "1.15.1"
+moshi                = "1.15.2"
 datastore            = "1.2.1"
 lifecycle            = "2.8.7"
 coroutines           = "1.10.2"
-hilt                 = "2.57"
+hilt                 = "2.60.1"
 androidx-core        = "1.13.1"
 activity-compose     = "1.9.3"
 navigation-compose   = "2.8.4"
+ksp                  = "2.1.10-1.0.29"
 
 [libraries]
 androidx-core-ktx           = { module = "androidx.core:core-ktx",                          version.ref = "androidx-core" }
@@ -51,3 +52,4 @@ kotlin-android      = { id = "org.jetbrains.kotlin.android",          version.re
 kotlin-kapt         = { id = "org.jetbrains.kotlin.kapt",             version.ref = "kotlin" }
 hilt-android        = { id = "com.google.dagger.hilt.android",        version.ref = "hilt" }
 kotlin-compose      = { id = "org.jetbrains.kotlin.plugin.compose",   version.ref = "kotlin" }
+google-ksp          = { id = "com.google.devtools.ksp",               version.ref = "ksp" }

@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-07-22
+
+### Changed
+
+- Updated to the latest Android SDK version (API 36)
+- Updated toolchain: Kotlin 2.1.10, Hilt 2.60.1, Gradle Plugin 9.1.1
+- Added edge-to-edge support for mobile settings and profile edit screens
+
 ### Fixed
 
 - Google Play release notes: shortened v1.2.0 what's new text in all 11 languages to stay under 500-character limit (was 672 chars in Arabic)
