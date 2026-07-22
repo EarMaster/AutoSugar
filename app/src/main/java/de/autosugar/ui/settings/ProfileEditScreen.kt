@@ -151,11 +151,13 @@ fun ProfileEditScreen(
     ) { padding ->
         Column(
             modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            Spacer(Modifier.height(padding.calculateTopPadding() + 4.dp))
+
             // ── Connection fields ─────────────────────────────────────────
             OutlinedTextField(
                 value = displayName,
@@ -306,6 +308,8 @@ fun ProfileEditScreen(
                     Text(stringResource(R.string.btn_delete))
                 }
             }
+
+            Spacer(Modifier.height(padding.calculateBottomPadding() + 16.dp))
         }
     }
 }
