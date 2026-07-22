@@ -1,0 +1,1 @@
+• Fixed crashes when connecting to CGM sources that send decimal glucose readings (e.g., Juggluco with Libre 2)
