@@ -57,13 +57,13 @@ class NightscoutRepositoryTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
-            EntryDto(sgv = 120, direction = "Flat", date = 1_000_000L, dateString = "2024-01-01T12:00:00Z", delta = -3.0),
+            EntryDto(sgv = 120.0, direction = "Flat", date = 1_000_000L, dateString = "2024-01-01T12:00:00Z", delta = -3.0),
         )
 
         val result = repository.getCurrentEntry("test-id")
         assertTrue(result.isSuccess)
         val entry = result.getOrThrow()
-        assertEquals(120, entry.sgv)
+        assertEquals(120.0, entry.sgv, 0.0)
         assertEquals("Flat", entry.direction)
         assertEquals("→", entry.trendArrow)
         assertEquals("-3", entry.displayDelta(GlucoseUnit.MG_DL))
@@ -74,8 +74,8 @@ class NightscoutRepositoryTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
-            EntryDto(sgv = 120, direction = "Flat", date = 1_000_000L, dateString = null, delta = -3.0),
-            EntryDto(sgv = 100, direction = "Flat", date = 900_000L, dateString = null, delta = null),
+            EntryDto(sgv = 120.0, direction = "Flat", date = 1_000_000L, dateString = null, delta = -3.0),
+            EntryDto(sgv = 100.0, direction = "Flat", date = 900_000L, dateString = null, delta = null),
         )
 
         val entry = repository.getCurrentEntry("test-id").getOrThrow()
@@ -88,8 +88,8 @@ class NightscoutRepositoryTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
-            EntryDto(sgv = 120, direction = "Flat", date = 1_000_000L, dateString = null, delta = null),
-            EntryDto(sgv = 110, direction = "Flat", date = 900_000L, dateString = null, delta = null),
+            EntryDto(sgv = 120.0, direction = "Flat", date = 1_000_000L, dateString = null, delta = null),
+            EntryDto(sgv = 110.0, direction = "Flat", date = 900_000L, dateString = null, delta = null),
         )
 
         val entry = repository.getCurrentEntry("test-id").getOrThrow()
@@ -101,7 +101,7 @@ class NightscoutRepositoryTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
-            EntryDto(sgv = 120, direction = "Flat", date = 1_000_000L, dateString = null, delta = null),
+            EntryDto(sgv = 120.0, direction = "Flat", date = 1_000_000L, dateString = null, delta = null),
         )
 
         val entry = repository.getCurrentEntry("test-id").getOrThrow()
@@ -113,7 +113,7 @@ class NightscoutRepositoryTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
-            EntryDto(sgv = 120, direction = null, date = 1_000_000L, dateString = null, delta = null),
+            EntryDto(sgv = 120.0, direction = null, date = 1_000_000L, dateString = null, delta = null),
         )
 
         val entry = repository.getCurrentEntry("test-id").getOrThrow()
@@ -159,7 +159,7 @@ class NightscoutRepositoryTest {
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getStatus(any()) } returns StatusDto(
             settings = SettingsDto(
-                thresholds = ThresholdsDto(bgHigh = 180, bgTargetTop = 160, bgTargetBottom = 80, bgLow = 70),
+                thresholds = ThresholdsDto(bgHigh = 180.0, bgTargetTop = 160.0, bgTargetBottom = 80.0, bgLow = 70.0),
             ),
         )
 
@@ -176,13 +176,31 @@ class NightscoutRepositoryTest {
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getStatus(any()) } returns StatusDto(
             settings = SettingsDto(
-                thresholds = ThresholdsDto(bgHigh = null, bgTargetTop = 160, bgTargetBottom = 80, bgLow = null),
+                thresholds = ThresholdsDto(bgHigh = null, bgTargetTop = 160.0, bgTargetBottom = 80.0, bgLow = null),
             ),
         )
 
         val thresholds = repository.getThresholds("test-id").getOrThrow()
         assertEquals(70, thresholds.bgLow)
         assertEquals(180, thresholds.bgHigh)
+    }
+
+    @Test
+    fun `getThresholds rounds fractional threshold values`() = runTest {
+        // Regression for #13: Nightscout settings.thresholds can also carry non-integer values
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = SettingsDto(
+                thresholds = ThresholdsDto(bgHigh = 180.6, bgTargetTop = 160.4, bgTargetBottom = 80.5, bgLow = 70.2),
+            ),
+        )
+
+        val thresholds = repository.getThresholds("test-id").getOrThrow()
+        assertEquals(70, thresholds.bgLow)
+        assertEquals(81, thresholds.bgTargetBottom)
+        assertEquals(160, thresholds.bgTargetTop)
+        assertEquals(181, thresholds.bgHigh)
     }
 
     @Test
@@ -212,16 +230,16 @@ class NightscoutRepositoryTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getEntries(any(), any()) } returns listOf(
-            EntryDto(sgv = 120, direction = "Flat", date = 1_000_000L, dateString = "2024-01-01T12:00:00Z", delta = -2.0),
-            EntryDto(sgv = 115, direction = "FortyFiveDown", date = 900_000L, dateString = null, delta = null),
+            EntryDto(sgv = 120.0, direction = "Flat", date = 1_000_000L, dateString = "2024-01-01T12:00:00Z", delta = -2.0),
+            EntryDto(sgv = 115.0, direction = "FortyFiveDown", date = 900_000L, dateString = null, delta = null),
         )
 
         val history = repository.getHistory("test-id").getOrThrow()
         assertEquals(2, history.size)
-        assertEquals(120, history[0].sgv)
+        assertEquals(120.0, history[0].sgv, 0.0)
         assertEquals("Flat", history[0].direction)
         assertEquals(-2.0, history[0].delta)
-        assertEquals(115, history[1].sgv)
+        assertEquals(115.0, history[1].sgv, 0.0)
         assertNull(history[1].delta)
     }
 
@@ -231,6 +249,19 @@ class NightscoutRepositoryTest {
 
         val result = repository.getHistory("nonexistent")
         assertTrue(result.isFailure)
+    }
+
+    @Test
+    fun `getCurrentEntry preserves fractional sgv from sources like Juggluco`() = runTest {
+        // Regression for #13: Juggluco sends sgv as a float; Nightscout stores it as-is.
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
+            EntryDto(sgv = 136.86445264101732, direction = "Flat", date = 1_000_000L, dateString = null, delta = null),
+        )
+
+        val entry = repository.getCurrentEntry("test-id").getOrThrow()
+        assertEquals(136.86445264101732, entry.sgv, 0.0)
     }
 
     // endregion

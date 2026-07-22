@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class EntryDto(
-    val sgv: Int,
+    val sgv: Double,
     val direction: String?,
     val date: Long,
     @Json(name = "dateString") val dateString: String?,

@@ -14,7 +14,7 @@ class GlucoseEntryTest {
     }
 
     private fun entry(
-        sgv: Int = 120,
+        sgv: Double = 120.0,
         direction: String = "Flat",
         delta: Double? = null,
     ) = GlucoseEntry(
@@ -29,23 +29,34 @@ class GlucoseEntryTest {
 
     @Test
     fun `displayValue returns raw sgv for mg_dL`() {
-        assertEquals("120", entry(sgv = 120).displayValue(GlucoseUnit.MG_DL))
+        assertEquals("120", entry(sgv = 120.0).displayValue(GlucoseUnit.MG_DL))
     }
 
     @Test
     fun `displayValue converts 180 mg_dL to 10_0 mmol_L`() {
-        assertEquals("10.0", entry(sgv = 180).displayValue(GlucoseUnit.MMOL_L))
+        assertEquals("10.0", entry(sgv = 180.0).displayValue(GlucoseUnit.MMOL_L))
     }
 
     @Test
     fun `displayValue rounds mmol_L to one decimal place`() {
         // 100 / 18.0 = 5.555… → 5.6
-        assertEquals("5.6", entry(sgv = 100).displayValue(GlucoseUnit.MMOL_L))
+        assertEquals("5.6", entry(sgv = 100.0).displayValue(GlucoseUnit.MMOL_L))
     }
 
     @Test
     fun `displayValue converts 90 mg_dL to 5_0 mmol_L`() {
-        assertEquals("5.0", entry(sgv = 90).displayValue(GlucoseUnit.MMOL_L))
+        assertEquals("5.0", entry(sgv = 90.0).displayValue(GlucoseUnit.MMOL_L))
+    }
+
+    @Test
+    fun `displayValue rounds fractional sgv to nearest int for mg_dL`() {
+        // Regression for #13: Juggluco sends fractional sgv values (e.g. from Libre 2 via xDrip-style sources)
+        assertEquals("137", entry(sgv = 136.86445264101732).displayValue(GlucoseUnit.MG_DL))
+    }
+
+    @Test
+    fun `displayValue converts fractional sgv to mmol_L`() {
+        assertEquals("7.6", entry(sgv = 136.86445264101732).displayValue(GlucoseUnit.MMOL_L))
     }
 
     // endregion

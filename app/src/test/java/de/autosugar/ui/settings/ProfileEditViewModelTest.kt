@@ -93,7 +93,7 @@ class ProfileEditViewModelTest {
         viewModel.unit.value = GlucoseUnit.MG_DL
 
         val fakeEntry = de.autosugar.data.model.GlucoseEntry(
-            sgv = 110, direction = "Flat", dateIso = "2024-01-01T00:00:00Z",
+            sgv = 110.0, direction = "Flat", dateIso = "2024-01-01T00:00:00Z",
             delta = 2.0, dateMs = 0L,
         )
         coEvery { mockRepository.testConnection(any()) } returns Result.success(fakeEntry)
@@ -122,7 +122,7 @@ class ProfileEditViewModelTest {
     @Test
     fun `testConnection sets tokenOverpowered when token has elevated permissions`() = runTest {
         val fakeEntry = de.autosugar.data.model.GlucoseEntry(
-            sgv = 90, direction = "Flat", dateIso = "2024-01-01T00:00:00Z",
+            sgv = 90.0, direction = "Flat", dateIso = "2024-01-01T00:00:00Z",
             delta = null, dateMs = 0L,
         )
         coEvery { mockRepository.testConnection(any()) } returns Result.success(fakeEntry)
