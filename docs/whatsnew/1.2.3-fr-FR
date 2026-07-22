@@ -1,0 +1,4 @@
+• Correction des écrans dupliqués dans Android Auto lors du changement de source
+• Nightscout auto-hébergé en HTTP non chiffré (ex. via VPN) se connecte désormais correctement
+• Correction de problèmes d'affichage du glucose/graphique dans certaines langues
+• Le jeton Nightscout n'est plus inclus dans les sauvegardes Android

@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-07-23
+
 ### Security
 
 - Profile credentials (Nightscout API tokens) are now excluded from Android backup so they are no longer included in cloud/adb backups

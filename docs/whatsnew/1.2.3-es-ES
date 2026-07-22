@@ -1,0 +1,4 @@
+• Corregidas pantallas duplicadas en Android Auto al cambiar de fuente
+• Nightscout autoalojado por HTTP sin cifrar (p. ej. vía VPN) ahora se conecta correctamente
+• Corregidos problemas de visualización de glucosa/gráfico en algunos idiomas
+• El token de Nightscout ya no se incluye en las copias de seguridad de Android
