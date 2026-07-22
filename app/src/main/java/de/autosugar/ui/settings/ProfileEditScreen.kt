@@ -102,12 +102,14 @@ fun ProfileEditScreen(
     }
 
     val isLoading = uiState is ProfileEditUiState.Loading
+    val urlScheme = runCatching { java.net.URI(baseUrl.trim()).scheme }.getOrNull()
     val isValidUrl = runCatching {
         val uri = java.net.URI(baseUrl.trim())
         uri.scheme in listOf("http", "https") &&
             !uri.host.isNullOrEmpty() &&
             uri.host.contains('.')
     }.getOrDefault(false)
+    val isCleartextUrl = isValidUrl && urlScheme == "http"
     val canSave = !isLoading && displayName.isNotBlank() && isValidUrl
 
     val title = if (profileId == null) {
@@ -180,9 +182,11 @@ fun ProfileEditScreen(
                     imeAction = ImeAction.Next,
                 ),
                 isError = baseUrl.isNotBlank() && !isValidUrl,
-                supportingText = if (baseUrl.isNotBlank() && !isValidUrl) {
-                    { Text(stringResource(R.string.error_invalid_url)) }
-                } else null,
+                supportingText = when {
+                    baseUrl.isNotBlank() && !isValidUrl -> { { Text(stringResource(R.string.error_invalid_url)) } }
+                    isCleartextUrl -> { { Text(stringResource(R.string.warning_cleartext_url)) } }
+                    else -> null
+                },
                 enabled = !isLoading,
             )
             OutlinedTextField(

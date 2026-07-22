@@ -13,6 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/Theme.AutoSugar"
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true">
 
         <!-- Phone-side entry point -->

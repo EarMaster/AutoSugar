@@ -128,7 +128,7 @@ private fun drawTimeLabelsAndDropPins(
         if (i % 2 != 1) return@forEachIndexed
         val label = when (unit) {
             GlucoseUnit.MG_DL  -> sgv.toInt().toString()
-            GlucoseUnit.MMOL_L -> "%.0f".format(sgv / 18f)
+            GlucoseUnit.MMOL_L -> "%.0f".format(Locale.US, sgv / 18f)
         }
         canvas.drawText(label, yLabelX, y - 5f, labelPaint)
     }
@@ -142,7 +142,7 @@ private fun drawTimeLabelsAndDropPins(
         labelPaint.color = Color.argb(160, 200, 200, 200)
         labelPaint.textAlign = Paint.Align.CENTER
         canvas.drawText(
-            "%02d:30".format(cal.get(java.util.Calendar.HOUR_OF_DAY)),
+            "%02d:30".format(Locale.US, cal.get(java.util.Calendar.HOUR_OF_DAY)),
             xOf(tHalf), pad + plotH - 4f, labelPaint,
         )
         tHalf += msPerHour
@@ -194,7 +194,7 @@ private fun drawDropPinsAndHourLines(
             labelPaint.color = Color.argb(160, 200, 200, 200)
             labelPaint.textAlign = Paint.Align.CENTER
             canvas.drawText(
-                "%02d:00".format(cal.get(java.util.Calendar.HOUR_OF_DAY)),
+                "%02d:00".format(Locale.US, cal.get(java.util.Calendar.HOUR_OF_DAY)),
                 x, pad + plotH - 4f, labelPaint,
             )
         }

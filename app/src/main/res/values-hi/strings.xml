@@ -59,4 +59,5 @@
     <string name="label_app_version">संस्करण %s</string>
     <string name="error_invalid_url">http:// या https:// से शुरू होना चाहिए</string>
     <string name="warning_token_overpowered">इस टोकन में लिखने की अनुमतियाँ हैं। AutoSugar को केवल पढ़ने की पहुँच चाहिए — बेहतर सुरक्षा के लिए रीड-ओनली टोकन की अनुशंसा की जाती है।</string>
+    <string name="warning_cleartext_url">असुरक्षित — केवल किसी विश्वसनीय नेटवर्क या VPN पर उपयोग करें</string>
 </resources>

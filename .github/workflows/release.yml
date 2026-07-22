@@ -91,13 +91,14 @@ jobs:
         if: steps.tag_check.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BODY: ${{ steps.notes.outputs.body }}
         run: |
           BASE="${{ steps.version.outputs.artifact_base }}"
           EXTRA_ASSETS=""
           if [ -f "app/build/outputs/mapping/release/mapping.txt" ]; then
             EXTRA_ASSETS="app/build/outputs/mapping/release/mapping.txt"
           fi
-          echo '${{ steps.notes.outputs.body }}' > release_notes.txt
+          printf '%s\n' "$RELEASE_BODY" > release_notes.txt
           gh release create "${{ steps.version.outputs.tag }}" \
             --title "${{ steps.version.outputs.tag }}" \
             --notes-file release_notes.txt \

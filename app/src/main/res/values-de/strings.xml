@@ -59,4 +59,5 @@
     <string name="label_app_version">Version %s</string>
     <string name="error_invalid_url">Muss mit http:// oder https:// beginnen</string>
     <string name="warning_token_overpowered">Dieses Token hat Schreibrechte. AutoSugar benötigt nur Lesezugriff – ein Token mit reinen Leserechten wird für mehr Sicherheit empfohlen.</string>
+    <string name="warning_cleartext_url">Unverschlüsselt – nur in einem vertrauenswürdigen Netzwerk oder VPN verwenden</string>
 </resources>

@@ -5,6 +5,24 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Security
+
+- Profile credentials (Nightscout API tokens) are now excluded from Android backup so they are no longer included in cloud/adb backups
+- Android Auto host validation now restricts to Google's known Auto/Automotive hosts in release builds instead of accepting any host
+- Cleartext HTTP is now explicitly permitted via a network security config for self-hosted Nightscout instances reached over a VPN/LAN without TLS; the profile editor warns when an `http://` URL is entered
+
+### Fixed
+
+- Duplicate glucose screens no longer get pushed onto the navigation stack when profiles change while a screen is covered by another
+- mmol/L values and graph time labels now render consistently regardless of device locale
+- Threshold fetch no longer fails entirely when target-range values are missing from the Nightscout status response; sensible defaults are used instead
+- mg/dL delta display now rounds instead of truncating, matching the main reading
+- Release workflow no longer breaks when changelog notes contain an apostrophe (shell quoting fix)
+
+### Changed
+
+- `NightscoutApiFactory`'s per-host API client cache is now thread-safe
+
 ## [1.2.2] - 2026-07-22
 
 ### Fixed

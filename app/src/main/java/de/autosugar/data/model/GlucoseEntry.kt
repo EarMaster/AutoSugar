@@ -1,5 +1,6 @@
 package de.autosugar.data.model
 
+import java.util.Locale
 import kotlin.math.roundToInt
 
 data class GlucoseEntry(
@@ -17,7 +18,7 @@ data class GlucoseEntry(
     /** Returns the display value converted to the requested unit. */
     fun displayValue(unit: GlucoseUnit): String = when (unit) {
         GlucoseUnit.MG_DL  -> sgv.roundToInt().toString()
-        GlucoseUnit.MMOL_L -> "%.1f".format(sgv / 18.0)
+        GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, sgv / 18.0)
     }
 
     /** Returns the delta converted to the requested unit with sign prefix. */
@@ -29,8 +30,8 @@ data class GlucoseEntry(
         }
         val sign = if (converted >= 0) "+" else ""
         return when (unit) {
-            GlucoseUnit.MG_DL  -> "$sign${converted.toInt()}"
-            GlucoseUnit.MMOL_L -> "$sign${"%.1f".format(converted)}"
+            GlucoseUnit.MG_DL  -> "$sign${converted.roundToInt()}"
+            GlucoseUnit.MMOL_L -> "$sign${"%.1f".format(Locale.US, converted)}"
         }
     }
 

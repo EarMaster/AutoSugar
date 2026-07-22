@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import de.autosugar.R
 import de.autosugar.data.repository.NightscoutRepository
 import de.autosugar.data.storage.AppPreferencesDataStore
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class NoProfilesScreen(
@@ -18,13 +19,10 @@ class NoProfilesScreen(
 
     init {
         lifecycleScope.launch {
-            repository.profilesFlow.collect { profiles ->
-                if (profiles.isNotEmpty()) {
-                    val id = profiles.first().id
-                    repository.setActiveProfile(id)
-                    screenManager.push(GlucoseScreen(carContext, repository, appPrefs, id))
-                }
-            }
+            val profiles = repository.profilesFlow.first { it.isNotEmpty() }
+            val id = profiles.first().id
+            repository.setActiveProfile(id)
+            screenManager.push(GlucoseScreen(carContext, repository, appPrefs, id))
         }
     }
 
