@@ -59,9 +59,12 @@ class GlucoseScreen(
 
     private data class GraphCacheKey(
         val timestamps: List<Long>,
+        val sgvs: List<Double>,
         val unit: GlucoseUnit,
         val bgTargetBottom: Float,
         val bgTargetTop: Float,
+        val bgLow: Int,
+        val bgHigh: Int,
     )
     private var cachedGraphKey: GraphCacheKey? = null
     private var cachedGraphIcon: CarIcon? = null
@@ -340,12 +343,17 @@ class GlucoseScreen(
             if (history.size >= 2) {
                 val key = GraphCacheKey(
                     timestamps = history.map { it.dateMs },
+                    sgvs = history.map { it.sgv },
                     unit = unit,
                     bgTargetBottom = thresholds.bgTargetBottom.toFloat(),
                     bgTargetTop = thresholds.bgTargetTop.toFloat(),
+                    bgLow = thresholds.bgLow,
+                    bgHigh = thresholds.bgHigh,
                 )
                 if (cachedGraphKey != key) {
-                    cachedGraphIcon = glucoseGraphIcon(history, unit, key.bgTargetBottom, key.bgTargetTop)
+                    cachedGraphIcon = glucoseGraphIcon(
+                        history, unit, key.bgTargetBottom, key.bgTargetTop, key.bgLow, key.bgHigh,
+                    )
                     cachedGraphKey = key
                 }
                 pane.setImage(cachedGraphIcon!!)
