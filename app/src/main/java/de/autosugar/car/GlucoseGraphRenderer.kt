@@ -12,6 +12,7 @@ import androidx.car.app.model.CarIcon
 import androidx.core.graphics.drawable.IconCompat
 import de.autosugar.data.model.GlucoseEntry
 import de.autosugar.data.model.GlucoseUnit
+import de.autosugar.data.model.MG_DL_PER_MMOL_L
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -239,7 +240,7 @@ private fun drawDropPin(
 ) {
     val valueLabel = when (unit) {
         GlucoseUnit.MG_DL  -> entry.sgv.roundToInt().toString()
-        GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, entry.sgv / 18.0)
+        GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, entry.sgv / MG_DL_PER_MMOL_L)
     }
     dropFill.color = colorOf(entry.sgv)
 

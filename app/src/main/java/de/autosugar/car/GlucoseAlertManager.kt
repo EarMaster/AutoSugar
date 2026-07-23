@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import de.autosugar.R
 import de.autosugar.data.model.GlucoseUnit
+import de.autosugar.data.model.MG_DL_PER_MMOL_L
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -82,7 +83,7 @@ class GlucoseAlertManager(private val context: Context) {
     private fun formatValue(sgv: Double, unit: GlucoseUnit): String {
         val value = when (unit) {
             GlucoseUnit.MG_DL  -> sgv.roundToInt().toString()
-            GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, sgv / 18.0)
+            GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, sgv / MG_DL_PER_MMOL_L)
         }
         val label = when (unit) {
             GlucoseUnit.MG_DL  -> context.getString(R.string.label_unit_mgdl)

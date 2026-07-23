@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- mmol/L conversion now uses the exact glucose factor (18.0156) via a shared constant, and near-zero deltas no longer render as "-0"/"-0.0"
 - Predictive (trending high/low) alerts now scale the 15-minute projection to the source's actual reading cadence instead of assuming 5-minute intervals, reducing false/missed predictions for 1- or 15-minute sources
 - The history graph no longer renders blank/garbled when the target range collapses to a single value (division-by-zero guard), and swapped target bounds from the server are normalised instead of inverting the band
 - Denying the notification permission when enabling alerts now turns the alerts toggle back off, instead of leaving it on while alerts silently never fire
