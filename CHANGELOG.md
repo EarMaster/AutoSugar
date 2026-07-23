@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- The refresh interval is now clamped to a minimum of 30 seconds when read or written, preventing a stored 0/negative value from causing a tight, server-hammering fetch loop
 - Concurrent profile edits (e.g. toggling an alert while another change is saving) can no longer clobber each other; profile add/remove/alert-toggle now apply atomically within a single storage transaction
 - The history graph's line, dots, and value pins are now coloured using the profile's own low/high alert thresholds instead of hard-coded 70/180, so the at-a-glance colour matches when an alert would actually fire
 - The graph is now redrawn when a reading's value changes for an existing timestamp (e.g. a backfilled correction), not only when timestamps change

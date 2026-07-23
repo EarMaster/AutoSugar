@@ -20,12 +20,18 @@ private val REFRESH_INTERVAL_KEY = intPreferencesKey("refresh_interval_seconds")
 class AppPreferencesDataStore @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
+    companion object {
+        /** Lowest allowed refresh interval; guards against a tight, server-hammering fetch loop. */
+        const val MIN_REFRESH_SECONDS = 30
+        const val DEFAULT_REFRESH_SECONDS = 60
+    }
+
     val refreshIntervalSeconds: Flow<Int> = context.appPrefsDataStore.data
-        .map { prefs -> prefs[REFRESH_INTERVAL_KEY] ?: 60 }
+        .map { prefs -> (prefs[REFRESH_INTERVAL_KEY] ?: DEFAULT_REFRESH_SECONDS).coerceAtLeast(MIN_REFRESH_SECONDS) }
 
     suspend fun setRefreshInterval(seconds: Int) {
         context.appPrefsDataStore.edit { prefs ->
-            prefs[REFRESH_INTERVAL_KEY] = seconds
+            prefs[REFRESH_INTERVAL_KEY] = seconds.coerceAtLeast(MIN_REFRESH_SECONDS)
         }
     }
 }
