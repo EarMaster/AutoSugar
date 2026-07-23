@@ -163,11 +163,11 @@ class GlucoseScreen(
         if (now - currentEntry.dateMs > staleAfterMs) return
 
         val id = profile.id
-        if (sgv > thresholds.bgHigh && now - (lastHighAlertMs[id] ?: 0L) > alertCooldownMs) {
+        if (sgv >= thresholds.bgHigh && now - (lastHighAlertMs[id] ?: 0L) > alertCooldownMs) {
             alertManager.sendHighAlert(id, profile.displayName, sgv, profile.unit)
             lastHighAlertMs[id] = now
         }
-        if (sgv < thresholds.bgLow && now - (lastLowAlertMs[id] ?: 0L) > alertCooldownMs) {
+        if (sgv <= thresholds.bgLow && now - (lastLowAlertMs[id] ?: 0L) > alertCooldownMs) {
             alertManager.sendLowAlert(id, profile.displayName, sgv, profile.unit)
             lastLowAlertMs[id] = now
         }
@@ -177,13 +177,13 @@ class GlucoseScreen(
         // the actual sampling cadence rather than assuming a fixed 5-minute interval.
         val projected15 = sgv + delta * projectionSteps()
 
-        if (projected15 > thresholds.bgHigh && sgv <= thresholds.bgHigh &&
+        if (projected15 > thresholds.bgHigh && sgv < thresholds.bgHigh &&
             now - (lastPredictedHighAlertMs[id] ?: 0L) > alertCooldownMs
         ) {
             alertManager.sendPredictedHighAlert(id, profile.displayName, projected15, profile.unit)
             lastPredictedHighAlertMs[id] = now
         }
-        if (projected15 < thresholds.bgLow && sgv >= thresholds.bgLow &&
+        if (projected15 < thresholds.bgLow && sgv > thresholds.bgLow &&
             now - (lastPredictedLowAlertMs[id] ?: 0L) > alertCooldownMs
         ) {
             alertManager.sendPredictedLowAlert(id, profile.displayName, projected15, profile.unit)
