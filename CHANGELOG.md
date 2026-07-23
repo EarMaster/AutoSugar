@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Concurrent profile edits (e.g. toggling an alert while another change is saving) can no longer clobber each other; profile add/remove/alert-toggle now apply atomically within a single storage transaction
 - The history graph's line, dots, and value pins are now coloured using the profile's own low/high alert thresholds instead of hard-coded 70/180, so the at-a-glance colour matches when an alert would actually fire
 - The graph is now redrawn when a reading's value changes for an existing timestamp (e.g. a backfilled correction), not only when timestamps change
 - Non-sgv Nightscout records (calibration/meter-BG entries) in the feed no longer break history/current-reading loading; such records are now skipped instead of failing the whole response

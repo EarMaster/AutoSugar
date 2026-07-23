@@ -22,6 +22,7 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -302,35 +303,34 @@ class NightscoutRepositoryTest {
 
     @Test
     fun `saveProfile adds new profile when id not in list`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(emptyList())
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coEvery { mockDataStore.save(capture(savedSlot)) } just Runs
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
         justRun { mockFactory.invalidate(any()) }
 
         repository.saveProfile(profile)
 
-        assertEquals(1, savedSlot.captured.size)
-        assertEquals(profile, savedSlot.captured[0])
+        val result = transformSlot.captured(emptyList())
+        assertEquals(1, result.size)
+        assertEquals(profile, result[0])
     }
 
     @Test
     fun `saveProfile updates existing profile in place`() = runTest {
         val updated = profile.copy(displayName = "Updated")
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coEvery { mockDataStore.save(capture(savedSlot)) } just Runs
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
         justRun { mockFactory.invalidate(any()) }
 
         repository.saveProfile(updated)
 
-        assertEquals(1, savedSlot.captured.size)
-        assertEquals("Updated", savedSlot.captured[0].displayName)
+        val result = transformSlot.captured(listOf(profile))
+        assertEquals(1, result.size)
+        assertEquals("Updated", result[0].displayName)
     }
 
     @Test
     fun `saveProfile invalidates api factory cache`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        coJustRun { mockDataStore.save(any()) }
+        coJustRun { mockDataStore.update(any()) }
         justRun { mockFactory.invalidate(any()) }
 
         repository.saveProfile(profile)
@@ -344,19 +344,17 @@ class NightscoutRepositoryTest {
 
     @Test
     fun `deleteProfile removes profile from dataStore`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coEvery { mockDataStore.save(capture(savedSlot)) } just Runs
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
 
         repository.deleteProfile("test-id")
 
-        assertTrue(savedSlot.captured.isEmpty())
+        assertTrue(transformSlot.captured(listOf(profile)).isEmpty())
     }
 
     @Test
     fun `deleteProfile clears activeProfileId when deleted profile was active`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        coJustRun { mockDataStore.save(any()) }
+        coJustRun { mockDataStore.update(any()) }
         repository.setActiveProfile("test-id")
 
         repository.deleteProfile("test-id")
@@ -366,14 +364,25 @@ class NightscoutRepositoryTest {
 
     @Test
     fun `deleteProfile does not clear activeProfileId when different profile is deleted`() = runTest {
-        val other = profile.copy(id = "other-id", displayName = "Other")
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile, other))
-        coJustRun { mockDataStore.save(any()) }
+        coJustRun { mockDataStore.update(any()) }
         repository.setActiveProfile("test-id")
 
         repository.deleteProfile("other-id")
 
         assertEquals("test-id", repository.activeProfileId.value)
+    }
+
+    @Test
+    fun `setAlertsEnabled toggles only the matching profile`() = runTest {
+        val other = profile.copy(id = "other-id", alertsEnabled = false)
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
+
+        repository.setAlertsEnabled("test-id", true)
+
+        val result = transformSlot.captured(listOf(profile, other))
+        assertTrue(result.first { it.id == "test-id" }.alertsEnabled)
+        assertFalse(result.first { it.id == "other-id" }.alertsEnabled)
     }
 
     // endregion

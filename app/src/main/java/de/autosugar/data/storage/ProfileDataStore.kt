@@ -33,4 +33,16 @@ class ProfileDataStore @Inject constructor(
             prefs[PROFILES_KEY] = serializer.toJson(profiles)
         }
     }
+
+    /**
+     * Atomically reads the current profile list, applies [transform], and persists the
+     * result inside a single DataStore edit. Prevents lost updates when concurrent
+     * callers would otherwise read-modify-write over each other.
+     */
+    suspend fun update(transform: (List<NightscoutProfile>) -> List<NightscoutProfile>) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[PROFILES_KEY]?.let { serializer.fromJson(it) } ?: emptyList()
+            prefs[PROFILES_KEY] = serializer.toJson(transform(current))
+        }
+    }
 }

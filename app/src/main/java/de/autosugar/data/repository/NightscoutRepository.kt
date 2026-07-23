@@ -113,18 +113,25 @@ class NightscoutRepository @Inject constructor(
     }
 
     suspend fun saveProfile(profile: NightscoutProfile) {
-        val profiles = dataStore.profilesFlow.first().toMutableList()
-        val idx = profiles.indexOfFirst { it.id == profile.id }
-        if (idx >= 0) profiles[idx] = profile else profiles.add(profile)
-        dataStore.save(profiles)
+        dataStore.update { profiles ->
+            val idx = profiles.indexOfFirst { it.id == profile.id }
+            if (idx >= 0) profiles.toMutableList().also { it[idx] = profile }
+            else profiles + profile
+        }
         // Invalidate cached API instance in case URL changed
         apiFactory.invalidate(profile.baseUrl)
     }
 
     suspend fun deleteProfile(id: String) {
-        val profiles = dataStore.profilesFlow.first().filter { it.id != id }
-        dataStore.save(profiles)
+        dataStore.update { profiles -> profiles.filter { it.id != id } }
         if (_activeProfileId.value == id) _activeProfileId.value = null
+    }
+
+    /** Atomically toggles the alerts flag for a single profile without clobbering concurrent edits. */
+    suspend fun setAlertsEnabled(id: String, enabled: Boolean) {
+        dataStore.update { profiles ->
+            profiles.map { if (it.id == id) it.copy(alertsEnabled = enabled) else it }
+        }
     }
 
     suspend fun saveAll(profiles: List<NightscoutProfile>) {
