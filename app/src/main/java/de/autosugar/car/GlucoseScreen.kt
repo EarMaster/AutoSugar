@@ -162,9 +162,9 @@ class GlucoseScreen(
         }
 
         val delta = currentEntry.delta ?: return
-        // Assumes ~5-min reading cadence: 3 readings × 5 min = 15 min ahead. Sources
-        // posting at other intervals will skew this projection.
-        val projected15 = sgv + delta * 3
+        // delta is the change over one reading interval; project 15 minutes ahead using
+        // the actual sampling cadence rather than assuming a fixed 5-minute interval.
+        val projected15 = sgv + delta * projectionSteps()
 
         if (projected15 > thresholds.bgHigh && sgv <= thresholds.bgHigh &&
             now - (lastPredictedHighAlertMs[id] ?: 0L) > alertCooldownMs
@@ -178,6 +178,19 @@ class GlucoseScreen(
             alertManager.sendPredictedLowAlert(id, profile.displayName, projected15, profile.unit)
             lastPredictedLowAlertMs[id] = now
         }
+    }
+
+    /**
+     * How many reading intervals fit into a 15-minute look-ahead, derived from the median
+     * gap between recent history points. Falls back to a 5-minute cadence when unknown, so
+     * sources posting at 1- or 15-minute intervals project correctly instead of over/under.
+     */
+    private fun projectionSteps(): Double {
+        val gaps = history.zipWithNext { a, b -> b.dateMs - a.dateMs }
+            .filter { it in 60_000L..15 * 60_000L }
+            .sorted()
+        val intervalMs = if (gaps.isEmpty()) 5 * 60_000L else gaps[gaps.size / 2]
+        return 15 * 60_000.0 / intervalMs
     }
 
     override fun onGetTemplate(): Template {

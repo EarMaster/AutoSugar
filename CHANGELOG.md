@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Predictive (trending high/low) alerts now scale the 15-minute projection to the source's actual reading cadence instead of assuming 5-minute intervals, reducing false/missed predictions for 1- or 15-minute sources
 - The history graph no longer renders blank/garbled when the target range collapses to a single value (division-by-zero guard), and swapped target bounds from the server are normalised instead of inverting the band
 - Denying the notification permission when enabling alerts now turns the alerts toggle back off, instead of leaving it on while alerts silently never fire
 - The "token has write permissions" warning now works: the Nightscout `authorized` object was modelled as an integer bitmask that never matched the real response, so over-privileged tokens were never flagged. It now parses the actual Shiro permission strings (`permissionGroups`)
