@@ -105,9 +105,10 @@ fun ProfileEditScreen(
     val urlScheme = runCatching { java.net.URI(baseUrl.trim()).scheme }.getOrNull()
     val isValidUrl = runCatching {
         val uri = java.net.URI(baseUrl.trim())
-        uri.scheme in listOf("http", "https") &&
-            !uri.host.isNullOrEmpty() &&
-            uri.host.contains('.')
+        // Any non-empty host is accepted (localhost, an internal DNS name, or an IPv6
+        // literal) since Nightscout is commonly self-hosted on a LAN/VPN without a
+        // dotted public domain.
+        uri.scheme in listOf("http", "https") && !uri.host.isNullOrEmpty()
     }.getOrDefault(false)
     val isCleartextUrl = isValidUrl && urlScheme == "http"
     val canSave = !isLoading && displayName.isNotBlank() && isValidUrl
