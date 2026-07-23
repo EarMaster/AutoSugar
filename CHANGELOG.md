@@ -11,6 +11,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- The "Test Connection" button is now enabled only for a valid URL (matching the Save button), avoiding an opaque error when testing a malformed URL
+- Reordering profiles no longer writes to storage when the order did not actually change
 - Android Auto now returns to the no-profiles screen when the last profile is deleted, and falls back to a valid profile if the active one was removed or points at a since-deleted profile
 - Added a dark (`-night`) app theme so the phone UI's window background and system bars follow the system dark mode instead of flashing white on launch
 - The `dateIso` field now holds a real ISO-8601 timestamp when the entry has no dateString, instead of the raw epoch-millis digits

@@ -234,7 +234,7 @@ fun ProfileEditScreen(
             }
             OutlinedButton(
                 onClick = { viewModel.testConnection() },
-                enabled = !isLoading && baseUrl.isNotBlank(),
+                enabled = !isLoading && isValidUrl,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.btn_test_connection))
