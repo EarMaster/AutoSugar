@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Android Auto now returns to the no-profiles screen when the last profile is deleted, and falls back to a valid profile if the active one was removed or points at a since-deleted profile
 - Added a dark (`-night`) app theme so the phone UI's window background and system bars follow the system dark mode instead of flashing white on launch
 - The `dateIso` field now holds a real ISO-8601 timestamp when the entry has no dateString, instead of the raw epoch-millis digits
 - mmol/L conversion now uses the exact glucose factor (18.0156) via a shared constant, and near-zero deltas no longer render as "-0"/"-0.0"

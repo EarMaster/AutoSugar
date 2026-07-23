@@ -86,8 +86,19 @@ class GlucoseScreen(
     init {
         lifecycleScope.launch {
             repository.profilesFlow.collect { updated ->
+                if (updated.isEmpty()) {
+                    // All profiles were removed — return to the no-profiles screen instead
+                    // of rendering an orphaned reading.
+                    screenManager.push(NoProfilesScreen(carContext, repository, appPrefs))
+                    return@collect
+                }
                 profiles = updated
-                invalidate()
+                if (profiles.none { it.id == activeProfileId }) {
+                    // The active profile was deleted; fall back to the first remaining one.
+                    switchTo(profiles.first().id)
+                } else {
+                    invalidate()
+                }
             }
         }
 

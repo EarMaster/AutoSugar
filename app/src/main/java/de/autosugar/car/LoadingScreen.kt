@@ -23,7 +23,10 @@ class LoadingScreen(
             val nextScreen = when {
                 profiles.isEmpty() -> NoProfilesScreen(carContext, repository, appPrefs)
                 else -> {
-                    val activeId = repository.activeProfileId.value ?: profiles.first().id
+                    // Ignore a stale active id that points at a since-deleted profile.
+                    val activeId = repository.activeProfileId.value
+                        ?.takeIf { id -> profiles.any { it.id == id } }
+                        ?: profiles.first().id
                     repository.setActiveProfile(activeId)
                     GlucoseScreen(carContext, repository, appPrefs, activeId)
                 }
