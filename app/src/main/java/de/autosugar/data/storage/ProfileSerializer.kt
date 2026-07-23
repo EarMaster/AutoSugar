@@ -23,7 +23,8 @@ class ProfileSerializer @Inject constructor() {
         adapter.toJson(profiles.map { it.toJson() })
 
     fun fromJson(json: String): List<NightscoutProfile> =
-        adapter.fromJson(json)?.map { it.toModel() } ?: emptyList()
+        runCatching { adapter.fromJson(json)?.map { it.toModel() } }
+            .getOrNull() ?: emptyList()
 }
 
 // Separate JSON DTO to avoid coupling the domain model to Moshi annotations.
@@ -53,7 +54,8 @@ private fun NightscoutProfileJson.toModel() = NightscoutProfile(
     displayName = displayName,
     baseUrl = baseUrl,
     apiToken = apiToken,
-    unit = de.autosugar.data.model.GlucoseUnit.valueOf(unit),
+    unit = runCatching { de.autosugar.data.model.GlucoseUnit.valueOf(unit) }
+        .getOrDefault(de.autosugar.data.model.GlucoseUnit.MG_DL),
     icon = runCatching { de.autosugar.data.model.ProfileIcon.valueOf(icon) }
         .getOrDefault(de.autosugar.data.model.ProfileIcon.PERSON),
     alertsEnabled = alertsEnabled,
