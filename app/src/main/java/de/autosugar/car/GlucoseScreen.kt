@@ -69,6 +69,11 @@ class GlucoseScreen(
     private var cachedGraphKey: GraphCacheKey? = null
     private var cachedGraphIcon: CarIcon? = null
 
+    // onGetTemplate can fire frequently; cache the small generated bitmaps so they are
+    // not re-rendered on the main thread on every rebuild.
+    private val trendIconCache = mutableMapOf<String, CarIcon>()
+    private val numberIconCache = mutableMapOf<Pair<Int, Boolean>, CarIcon>()
+
     private val alertManager = GlucoseAlertManager(carContext)
     private val alertCooldownMs = 15 * 60_000L
 
@@ -281,9 +286,12 @@ class GlucoseScreen(
                 // The upper bound of 5 here is unreachable in practice since the ">4"
                 // branch above already matches size 5 — this only ever runs for 2..4.
                 profiles.forEachIndexed { index, profile ->
+                    val active = profile.id == activeProfileId
                     builder.addAction(
                         Action.Builder()
-                            .setIcon(profileNumberIcon(index + 1, profile.id == activeProfileId))
+                            .setIcon(numberIconCache.getOrPut(index + 1 to active) {
+                                profileNumberIcon(index + 1, active)
+                            })
                             .setOnClickListener { switchTo(profile.id) }
                             .build()
                     )
@@ -351,7 +359,10 @@ class GlucoseScreen(
                 .addRow(
                     Row.Builder()
                         .setTitle("${e.displayValue(unit)} ${unitLabel(unit)}")
-                        .setImage(trendArrowIcon(e.direction), Row.IMAGE_TYPE_LARGE)
+                        .setImage(
+                            trendIconCache.getOrPut(e.direction) { trendArrowIcon(e.direction) },
+                            Row.IMAGE_TYPE_LARGE,
+                        )
                         .addText("${e.displayDelta(unit) ?: "-"} ${unitLabel(unit)}")
                         .build()
                 )

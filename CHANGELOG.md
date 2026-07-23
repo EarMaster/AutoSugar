@@ -9,6 +9,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - The Nightscout API token is now redacted from debug HTTP logs, so it can no longer leak into logcat or a captured bug report even when HTTP logging is enabled
 
+### Performance
+
+- Trend-arrow and numbered-profile icons on the Android Auto screen are now cached instead of re-rendered on the main thread on every template rebuild
+
 ### Fixed
 
 - Removed unused string resources across all locales, and a local `assembleRelease` without signing environment variables now produces an unsigned build instead of failing with a cryptic keystore error
