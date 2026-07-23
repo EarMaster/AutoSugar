@@ -63,6 +63,11 @@ class GlucoseScreen(
 
     private val alertManager = GlucoseAlertManager(carContext)
     private val alertCooldownMs = 15 * 60_000L
+
+    // A reading older than this is considered stale (≥2 missed 5-min CGM readings):
+    // it is labelled as such in the UI and never triggers alerts, since acting on
+    // outdated glucose data is worse than not alerting at all.
+    private val staleAfterMs = 12 * 60_000L
     private var lastHighAlertMs = 0L
     private var lastLowAlertMs = 0L
     private var lastPredictedHighAlertMs = 0L
@@ -122,6 +127,9 @@ class GlucoseScreen(
 
         val sgv = currentEntry.sgv
         val now = System.currentTimeMillis()
+
+        // Never alert on stale data — the true current value is unknown.
+        if (now - currentEntry.dateMs > staleAfterMs) return
 
         if (sgv > thresholds.bgHigh && now - lastHighAlertMs > alertCooldownMs) {
             alertManager.sendHighAlert(sgv, profile.unit)
@@ -281,9 +289,10 @@ class GlucoseScreen(
         else -> {
             val e = entry!!
             val now = System.currentTimeMillis()
+            val stale = errorMessage != null || now - e.dateMs > staleAfterMs
             val statsRow = Row.Builder()
                 .setTitle(
-                    if (errorMessage != null)
+                    if (stale)
                         carContext.getString(R.string.label_stale_reading, ageString(now - e.dateMs))
                     else
                         carContext.getString(R.string.label_reading, ageString(now - e.dateMs))
