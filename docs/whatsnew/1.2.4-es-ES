@@ -1,0 +1,5 @@
+• Las lecturas antiguas ahora se marcan y ya no provocan falsas alarmas
+• Las alertas son por fuente, indican la fuente y no se bloquean entre sí
+• Corregido que se mostrara brevemente la fuente equivocada al cambiar
+• Los colores del gráfico siguen ahora tus propios umbrales alto/bajo
+• Añadido modo oscuro; ya se pueden guardar URLs de Nightscout en localhost/LAN

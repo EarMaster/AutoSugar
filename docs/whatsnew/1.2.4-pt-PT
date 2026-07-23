@@ -1,0 +1,5 @@
+• As leituras desatualizadas são agora assinaladas e já não geram alarmes falsos
+• Os alertas são por fonte, indicam a fonte e não se bloqueiam entre si
+• Corrigida a apresentação breve da fonte errada após a troca
+• As cores do gráfico seguem agora os seus próprios limites alto/baixo
+• Adicionado modo escuro; URLs Nightscout em localhost/LAN já podem ser guardados

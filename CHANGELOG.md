@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-07-23
+
 ### Security
 
 - The Nightscout API token is now redacted from debug HTTP logs, so it can no longer leak into logcat or a captured bug report even when HTTP logging is enabled

@@ -1,0 +1,5 @@
+• Verouderde metingen worden nu gemarkeerd en geven geen valse meldingen meer
+• Meldingen zijn nu per bron, noemen de bron en blokkeren elkaar niet meer
+• Kort de verkeerde bron tonen na het wisselen is opgelost
+• Grafiekkleuren volgen nu je eigen hoog/laag-drempels
+• Donkere modus toegevoegd; localhost/LAN Nightscout-URL's kunnen nu worden opgeslagen
