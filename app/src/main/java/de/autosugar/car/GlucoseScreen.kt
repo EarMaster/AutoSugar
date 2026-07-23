@@ -73,10 +73,12 @@ class GlucoseScreen(
     // it is labelled as such in the UI and never triggers alerts, since acting on
     // outdated glucose data is worse than not alerting at all.
     private val staleAfterMs = 12 * 60_000L
-    private var lastHighAlertMs = 0L
-    private var lastLowAlertMs = 0L
-    private var lastPredictedHighAlertMs = 0L
-    private var lastPredictedLowAlertMs = 0L
+    // Cooldown timers are keyed by profile id so switching profiles does not let one
+    // profile's recent alert suppress a genuine alert for another profile.
+    private val lastHighAlertMs = mutableMapOf<String, Long>()
+    private val lastLowAlertMs = mutableMapOf<String, Long>()
+    private val lastPredictedHighAlertMs = mutableMapOf<String, Long>()
+    private val lastPredictedLowAlertMs = mutableMapOf<String, Long>()
 
     init {
         lifecycleScope.launch {
@@ -146,13 +148,14 @@ class GlucoseScreen(
         // Never alert on stale data — the true current value is unknown.
         if (now - currentEntry.dateMs > staleAfterMs) return
 
-        if (sgv > thresholds.bgHigh && now - lastHighAlertMs > alertCooldownMs) {
-            alertManager.sendHighAlert(sgv, profile.unit)
-            lastHighAlertMs = now
+        val id = profile.id
+        if (sgv > thresholds.bgHigh && now - (lastHighAlertMs[id] ?: 0L) > alertCooldownMs) {
+            alertManager.sendHighAlert(id, profile.displayName, sgv, profile.unit)
+            lastHighAlertMs[id] = now
         }
-        if (sgv < thresholds.bgLow && now - lastLowAlertMs > alertCooldownMs) {
-            alertManager.sendLowAlert(sgv, profile.unit)
-            lastLowAlertMs = now
+        if (sgv < thresholds.bgLow && now - (lastLowAlertMs[id] ?: 0L) > alertCooldownMs) {
+            alertManager.sendLowAlert(id, profile.displayName, sgv, profile.unit)
+            lastLowAlertMs[id] = now
         }
 
         val delta = currentEntry.delta ?: return
@@ -161,16 +164,16 @@ class GlucoseScreen(
         val projected15 = sgv + delta * 3
 
         if (projected15 > thresholds.bgHigh && sgv <= thresholds.bgHigh &&
-            now - lastPredictedHighAlertMs > alertCooldownMs
+            now - (lastPredictedHighAlertMs[id] ?: 0L) > alertCooldownMs
         ) {
-            alertManager.sendPredictedHighAlert(projected15, profile.unit)
-            lastPredictedHighAlertMs = now
+            alertManager.sendPredictedHighAlert(id, profile.displayName, projected15, profile.unit)
+            lastPredictedHighAlertMs[id] = now
         }
         if (projected15 < thresholds.bgLow && sgv >= thresholds.bgLow &&
-            now - lastPredictedLowAlertMs > alertCooldownMs
+            now - (lastPredictedLowAlertMs[id] ?: 0L) > alertCooldownMs
         ) {
-            alertManager.sendPredictedLowAlert(projected15, profile.unit)
-            lastPredictedLowAlertMs = now
+            alertManager.sendPredictedLowAlert(id, profile.displayName, projected15, profile.unit)
+            lastPredictedLowAlertMs[id] = now
         }
     }
 

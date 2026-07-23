@@ -9,6 +9,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Glucose readings that are stale (older than 12 minutes) are now labelled as stale in Android Auto even when the network fetch itself succeeded, and no longer trigger high/low/predicted alerts — acting on outdated CGM data is worse than not alerting
 - Switching between profiles can no longer momentarily display one profile's glucose data under another profile's name; an in-flight fetch that has been superseded now discards its results
+- Glucose alerts are now tracked per profile: one profile's recent alert no longer suppresses a genuine alert for another, each profile's alerts use distinct notification IDs so they no longer replace each other, and the notification now names the profile it is about
 
 ## [1.2.3] - 2026-07-23
 
