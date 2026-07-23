@@ -3,9 +3,6 @@
     <string name="app_name">AutoSugar</string>
 
     <!-- Car UI -->
-    <string name="label_glucose_value">血糖値</string>
-    <string name="label_trend">トレンド</string>
-    <string name="label_delta">変化量</string>
     <string name="label_unit_mgdl">mg/dL</string>
     <string name="label_unit_mmoll">mmol/L</string>
     <string name="action_switch_source">ソース切替</string>
@@ -13,7 +10,6 @@
     <string name="error_fetch_failed">データの取得に失敗しました</string>
     <string name="action_retry">再試行</string>
     <string name="label_no_profiles">ソースが設定されていません。\nスマートフォンでAutoSugarを開き、Nightscoutソースを追加してください。</string>
-    <string name="label_graph">3時間</string>
     <string name="label_just_now">たった今</string>
     <string name="label_n_min_ago">%d分前</string>
     <string name="label_stale_reading">⚠️ 測定値: %s</string>
@@ -25,7 +21,6 @@
     <string name="btn_add_profile">ソースを追加</string>
     <string name="btn_save">保存</string>
     <string name="btn_delete">削除</string>
-    <string name="btn_edit">編集</string>
     <string name="btn_test_connection">接続テスト</string>
     <string name="hint_display_name">表示名</string>
     <string name="hint_base_url">Nightscout URL（例: https://mynb.herokuapp.com）</string>
@@ -35,8 +30,6 @@
     <string name="label_edit_source">ソースを編集</string>
     <string name="msg_test_success">接続成功！現在の血糖値: %1$s %2$s</string>
     <string name="msg_test_failed">接続失敗: %1$s</string>
-    <string name="msg_saved">ソースを保存しました。</string>
-    <string name="msg_deleted">ソースを削除しました。</string>
     <string name="label_no_sources">ソースがありません。\n+をタップしてNightscout URLを追加してください。</string>
     <string name="label_tab_icon">タブアイコン</string>
 

@@ -3,9 +3,6 @@
     <string name="app_name">AutoSugar</string>
 
     <!-- Car UI -->
-    <string name="label_glucose_value">Bloedglucose</string>
-    <string name="label_trend">Trend</string>
-    <string name="label_delta">Verandering</string>
     <string name="label_unit_mgdl">mg/dL</string>
     <string name="label_unit_mmoll">mmol/L</string>
     <string name="action_switch_source">Bron wisselen</string>
@@ -13,7 +10,6 @@
     <string name="error_fetch_failed">Ophalen van gegevens mislukt</string>
     <string name="action_retry">Opnieuw proberen</string>
     <string name="label_no_profiles">Geen bronnen geconfigureerd.\nOpen AutoSugar op je telefoon om een Nightscout-bron toe te voegen.</string>
-    <string name="label_graph">3u</string>
     <string name="label_just_now">zojuist</string>
     <string name="label_n_min_ago">%d min geleden</string>
     <string name="label_stale_reading">⚠️ Meting: %s</string>
@@ -25,7 +21,6 @@
     <string name="btn_add_profile">Bron toevoegen</string>
     <string name="btn_save">Opslaan</string>
     <string name="btn_delete">Verwijderen</string>
-    <string name="btn_edit">Bewerken</string>
     <string name="btn_test_connection">Verbinding testen</string>
     <string name="hint_display_name">Weergavenaam</string>
     <string name="hint_base_url">Nightscout-URL (bijv. https://mynb.herokuapp.com)</string>
@@ -35,8 +30,6 @@
     <string name="label_edit_source">Bron bewerken</string>
     <string name="msg_test_success">Verbonden! Huidige glucose: %1$s %2$s</string>
     <string name="msg_test_failed">Verbinding mislukt: %1$s</string>
-    <string name="msg_saved">Bron opgeslagen.</string>
-    <string name="msg_deleted">Bron verwijderd.</string>
     <string name="label_no_sources">Nog geen bronnen.\nTik op + om je Nightscout-URL toe te voegen.</string>
     <string name="label_tab_icon">Tabpictogram</string>
 

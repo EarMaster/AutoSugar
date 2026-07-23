@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Removed unused string resources across all locales, and a local `assembleRelease` without signing environment variables now produces an unsigned build instead of failing with a cryptic keystore error
 - A reading exactly at the low/high threshold now triggers an alert (boundaries are inclusive); predictive alerts fire only while the reading is still strictly inside the range
 - The "Test Connection" button is now enabled only for a valid URL (matching the Save button), avoiding an opaque error when testing a malformed URL
 - Reordering profiles no longer writes to storage when the order did not actually change
