@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark counterpart of the app theme; keeps the window background and system bars
+         dark in night mode so there is no white flash before Compose draws. -->
+    <style name="Theme.AutoSugar" parent="android:Theme.Material.NoActionBar" />
+</resources>

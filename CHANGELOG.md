@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Added a dark (`-night`) app theme so the phone UI's window background and system bars follow the system dark mode instead of flashing white on launch
 - The `dateIso` field now holds a real ISO-8601 timestamp when the entry has no dateString, instead of the raw epoch-millis digits
 - mmol/L conversion now uses the exact glucose factor (18.0156) via a shared constant, and near-zero deltas no longer render as "-0"/"-0.0"
 - Predictive (trending high/low) alerts now scale the 15-minute projection to the source's actual reading cadence instead of assuming 5-minute intervals, reducing false/missed predictions for 1- or 15-minute sources
