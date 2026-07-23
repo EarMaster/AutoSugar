@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- CI, release, and CodeQL workflows now run on JDK 21 to match the project's Java 21 source/target level; previously they provisioned JDK 17, which cannot compile the app
 - Glucose readings that are stale (older than 12 minutes) are now labelled as stale in Android Auto even when the network fetch itself succeeded, and no longer trigger high/low/predicted alerts — acting on outdated CGM data is worse than not alerting
 - Switching between profiles can no longer momentarily display one profile's glucose data under another profile's name; an in-flight fetch that has been superseded now discards its results
 - Glucose alerts are now tracked per profile: one profile's recent alert no longer suppresses a genuine alert for another, each profile's alerts use distinct notification IDs so they no longer replace each other, and the notification now names the profile it is about
