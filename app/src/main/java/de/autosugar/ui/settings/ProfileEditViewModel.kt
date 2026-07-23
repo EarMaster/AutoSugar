@@ -17,7 +17,8 @@ import javax.inject.Inject
 sealed interface ProfileEditUiState {
     data object Idle : ProfileEditUiState
     data object Loading : ProfileEditUiState
-    data class TestSuccess(val message: String) : ProfileEditUiState
+    /** Carries structured data so the UI layer can render a localized message. */
+    data class TestSuccess(val value: String, val unit: GlucoseUnit) : ProfileEditUiState
     data class Error(val message: String) : ProfileEditUiState
     data object Saved : ProfileEditUiState
     data object Deleted : ProfileEditUiState
@@ -67,10 +68,8 @@ class ProfileEditViewModel @Inject constructor(
                         repository.hasElevatedPermissions(tempProfile)
                     }.getOrDefault(false)
                     _uiState.value = ProfileEditUiState.TestSuccess(
-                        "${entry.displayValue(tempProfile.unit)} ${when (tempProfile.unit) {
-                            GlucoseUnit.MG_DL -> "mg/dL"
-                            GlucoseUnit.MMOL_L -> "mmol/L"
-                        }}"
+                        value = entry.displayValue(tempProfile.unit),
+                        unit = tempProfile.unit,
                     )
                 }
                 .onFailure { e ->

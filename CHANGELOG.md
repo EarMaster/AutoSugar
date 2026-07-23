@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- The connection test success and failure messages now use the existing translated string resources instead of a hard-coded English "BG:"/raw error, so they appear in the app's language
 - The profile URL validator no longer rejects dot-less hosts, so `https://localhost`, internal DNS names, and IPv6 literals — the documented LAN/VPN self-hosting scenario — can now be saved
 - The refresh interval is now clamped to a minimum of 30 seconds when read or written, preventing a stored 0/negative value from causing a tight, server-hammering fetch loop
 - Concurrent profile edits (e.g. toggling an alert while another change is saving) can no longer clobber each other; profile add/remove/alert-toggle now apply atomically within a single storage transaction
