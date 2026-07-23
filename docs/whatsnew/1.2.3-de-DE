@@ -1,0 +1,4 @@
+• Doppelte Bildschirme in Android Auto beim Quellenwechsel behoben
+• Selbstgehostetes Nightscout über reines HTTP (z. B. via VPN) verbindet sich jetzt korrekt
+• Anzeigefehler bei Glukosewerten und Grafik in einigen Sprachen behoben
+• Nightscout-Token wird nicht mehr in Android-Backups gesichert

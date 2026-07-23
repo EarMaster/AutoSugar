@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Nightscout instances are frequently self-hosted on a home network or LAN and reached
+   over a VPN without a public TLS certificate. Cleartext is intentionally permitted here;
+   the editor UI warns the user when they enter an http:// URL.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

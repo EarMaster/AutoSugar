@@ -1,0 +1,4 @@
+• Dubbele schermen in Android Auto bij het wisselen van bron opgelost
+• Zelf gehoste Nightscout via onversleuteld HTTP (bijv. via VPN) maakt nu correct verbinding
+• Weergaveproblemen met glucose/grafiek in sommige talen opgelost
+• Nightscout-token wordt niet meer opgenomen in Android-back-ups

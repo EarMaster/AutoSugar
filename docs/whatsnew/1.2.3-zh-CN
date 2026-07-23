@@ -1,0 +1,4 @@
+• 修复切换数据源时 Android Auto 出现重复屏幕的问题
+• 通过明文 HTTP(例如经 VPN)连接自建 Nightscout 现在可以正常工作
+• 修复部分语言下血糖值和图表显示异常的问题
+• Nightscout 令牌不再包含在 Android 备份中

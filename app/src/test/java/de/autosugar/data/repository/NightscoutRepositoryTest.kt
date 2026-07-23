@@ -204,13 +204,16 @@ class NightscoutRepositoryTest {
     }
 
     @Test
-    fun `getThresholds returns failure when bgTargetBottom is missing`() = runTest {
+    fun `getThresholds falls back to defaults when settings is null`() = runTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getStatus(any()) } returns StatusDto(settings = null)
 
-        val result = repository.getThresholds("test-id")
-        assertTrue(result.isFailure)
+        val thresholds = repository.getThresholds("test-id").getOrThrow()
+        assertEquals(70, thresholds.bgLow)
+        assertEquals(70, thresholds.bgTargetBottom)
+        assertEquals(180, thresholds.bgTargetTop)
+        assertEquals(180, thresholds.bgHigh)
     }
 
     @Test

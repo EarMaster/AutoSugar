@@ -79,8 +79,8 @@ class NightscoutRepository @Inject constructor(
         val t = api.getStatus(token = profile.apiToken.ifBlank { null }).settings?.thresholds
         GlucoseThresholds(
             bgLow          = t?.bgLow?.roundToInt()          ?: 70,
-            bgTargetBottom = t?.bgTargetBottom?.roundToInt() ?: error("bgTargetBottom not in status response"),
-            bgTargetTop    = t?.bgTargetTop?.roundToInt()    ?: error("bgTargetTop not in status response"),
+            bgTargetBottom = t?.bgTargetBottom?.roundToInt() ?: 70,
+            bgTargetTop    = t?.bgTargetTop?.roundToInt()    ?: 180,
             bgHigh         = t?.bgHigh?.roundToInt()         ?: 180,
         )
     }

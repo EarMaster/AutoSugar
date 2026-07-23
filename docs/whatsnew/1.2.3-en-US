@@ -1,0 +1,4 @@
+• Fixed duplicate screens in Android Auto when switching sources
+• Self-hosted Nightscout over plain HTTP (e.g. via VPN) now connects
+• Fixed glucose/graph display issues in some languages
+• Nightscout token no longer included in Android backups

@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,11 +20,11 @@ class NightscoutApiFactory @Inject constructor() {
         .build()
 
     /** Cache of one Retrofit-backed API instance per normalized base URL. */
-    private val cache = mutableMapOf<String, NightscoutApi>()
+    private val cache = ConcurrentHashMap<String, NightscoutApi>()
 
     fun get(baseUrl: String): NightscoutApi {
         val normalized = baseUrl.trimEnd('/') + "/"
-        return cache.getOrPut(normalized) { buildApi(normalized) }
+        return cache.computeIfAbsent(normalized) { buildApi(it) }
     }
 
     fun invalidate(baseUrl: String) {

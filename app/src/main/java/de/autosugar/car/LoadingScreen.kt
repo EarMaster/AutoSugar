@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import de.autosugar.R
 import de.autosugar.data.repository.NightscoutRepository
 import de.autosugar.data.storage.AppPreferencesDataStore
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class LoadingScreen(
@@ -18,17 +19,16 @@ class LoadingScreen(
 
     init {
         lifecycleScope.launch {
-            repository.profilesFlow.collect { profiles ->
-                val nextScreen = when {
-                    profiles.isEmpty() -> NoProfilesScreen(carContext, repository, appPrefs)
-                    else -> {
-                        val activeId = repository.activeProfileId.value ?: profiles.first().id
-                        repository.setActiveProfile(activeId)
-                        GlucoseScreen(carContext, repository, appPrefs, activeId)
-                    }
+            val profiles = repository.profilesFlow.first()
+            val nextScreen = when {
+                profiles.isEmpty() -> NoProfilesScreen(carContext, repository, appPrefs)
+                else -> {
+                    val activeId = repository.activeProfileId.value ?: profiles.first().id
+                    repository.setActiveProfile(activeId)
+                    GlucoseScreen(carContext, repository, appPrefs, activeId)
                 }
-                screenManager.push(nextScreen)
             }
+            screenManager.push(nextScreen)
         }
     }
 

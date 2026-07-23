@@ -133,7 +133,9 @@ class GlucoseScreen(
         }
 
         val delta = currentEntry.delta ?: return
-        val projected15 = sgv + delta * 3  // 3 readings × ~5 min = 15 min ahead
+        // Assumes ~5-min reading cadence: 3 readings × 5 min = 15 min ahead. Sources
+        // posting at other intervals will skew this projection.
+        val projected15 = sgv + delta * 3
 
         if (projected15 > thresholds.bgHigh && sgv <= thresholds.bgHigh &&
             now - lastPredictedHighAlertMs > alertCooldownMs
@@ -157,7 +159,7 @@ class GlucoseScreen(
         }
     }
 
-    // region TabTemplate (CarApi >= 6, 2–5 profiles)
+    // region TabTemplate (CarApi >= 6, 2–4 profiles)
 
     @RequiresCarApi(6)
     private fun buildTabTemplate(): Template {
@@ -222,7 +224,9 @@ class GlucoseScreen(
                     .build()
             ).build()
             profiles.size in 2..5 -> {
-                // Numbered icon fallback when TabTemplate is unavailable
+                // Numbered icon fallback when TabTemplate is unavailable (CarApi < 6).
+                // The upper bound of 5 here is unreachable in practice since the ">4"
+                // branch above already matches size 5 — this only ever runs for 2..4.
                 profiles.forEachIndexed { index, profile ->
                     builder.addAction(
                         Action.Builder()

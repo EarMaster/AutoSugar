@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Legacy Auto Backup rules (API 26-30). See data_extraction_rules.xml for API 31+.
+   https://developer.android.com/guide/topics/data/autobackup#XMLSyntax
+-->
+<full-backup-content>
+    <exclude domain="file" path="datastore/profiles.preferences_pb" />
+</full-backup-content>
