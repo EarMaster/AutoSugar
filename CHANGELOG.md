@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Denying the notification permission when enabling alerts now turns the alerts toggle back off, instead of leaving it on while alerts silently never fire
 - The "token has write permissions" warning now works: the Nightscout `authorized` object was modelled as an integer bitmask that never matched the real response, so over-privileged tokens were never flagged. It now parses the actual Shiro permission strings (`permissionGroups`)
 - The connection test success and failure messages now use the existing translated string resources instead of a hard-coded English "BG:"/raw error, so they appear in the app's language
 - The profile URL validator no longer rejects dot-less hosts, so `https://localhost`, internal DNS names, and IPv6 literals — the documented LAN/VPN self-hosting scenario — can now be saved

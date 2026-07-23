@@ -85,7 +85,12 @@ fun ProfileEditScreen(
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { /* no-op: we gracefully handle missing permission in GlucoseAlertManager */ }
+    ) { granted ->
+        // Without notification permission, alerts can never be delivered. Turn the
+        // toggle back off so it reflects reality instead of staying on while alerts
+        // silently never fire.
+        if (!granted) viewModel.alertsEnabled.value = false
+    }
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
