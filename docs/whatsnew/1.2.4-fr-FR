@@ -1,0 +1,5 @@
+• Les mesures obsolètes sont désormais signalées et ne déclenchent plus de fausses alertes
+• Les alertes sont par source, nomment la source et ne se bloquent plus entre elles
+• Correction de l'affichage bref de la mauvaise source après un changement
+• Les couleurs du graphique suivent maintenant vos propres seuils haut/bas
+• Mode sombre ajouté ; les URL Nightscout en localhost/LAN peuvent être enregistrées

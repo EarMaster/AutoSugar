@@ -17,6 +17,11 @@ import org.junit.Test
 
 class GlucoseAlertManagerTest {
 
+    private companion object {
+        const val PROFILE_ID = "test-profile"
+        const val PROFILE_NAME = "Test User"
+    }
+
     private val mockNm = mockk<NotificationManager>(relaxed = true)
     private val mockContext = mockk<Context>(relaxed = true)
 
@@ -49,26 +54,34 @@ class GlucoseAlertManagerTest {
     @Test
     fun `sendHighAlert formats mg dL value as integer`() {
         val manager = buildManager()
-        manager.sendHighAlert(sgv = 210.0, unit = GlucoseUnit.MG_DL)
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, sgv = 210.0, unit = GlucoseUnit.MG_DL)
 
-        verify { manager.post(1001, any(), match { it.contains("210 mg/dL") }) }
+        verify { manager.post(any(), any(), match { it.contains("210 mg/dL") }) }
     }
 
     @Test
     fun `sendLowAlert formats mmol L value with one decimal`() {
         val manager = buildManager()
-        manager.sendLowAlert(sgv = 63.0, unit = GlucoseUnit.MMOL_L)
+        manager.sendLowAlert(PROFILE_ID, PROFILE_NAME, sgv = 63.0, unit = GlucoseUnit.MMOL_L)
 
-        verify { manager.post(1002, any(), match { it.contains("3.5 mmol/L") }) }
+        verify { manager.post(any(), any(), match { it.contains("3.5 mmol/L") }) }
     }
 
     @Test
     fun `sendHighAlert rounds fractional sgv for mg dL`() {
         // Regression for #13: fractional sgv values (e.g. from Juggluco) must round for display
         val manager = buildManager()
-        manager.sendHighAlert(sgv = 210.6, unit = GlucoseUnit.MG_DL)
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, sgv = 210.6, unit = GlucoseUnit.MG_DL)
 
-        verify { manager.post(1001, any(), match { it.contains("211 mg/dL") }) }
+        verify { manager.post(any(), any(), match { it.contains("211 mg/dL") }) }
+    }
+
+    @Test
+    fun `alert title includes the profile name`() {
+        val manager = buildManager()
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, sgv = 210.0, unit = GlucoseUnit.MG_DL)
+
+        verify { manager.post(any(), match { it.contains(PROFILE_NAME) }, any()) }
     }
 
     // endregion
@@ -81,8 +94,8 @@ class GlucoseAlertManagerTest {
         val idSlots = mutableListOf<Int>()
         justRun { manager.post(capture(idSlots), any(), any()) }
 
-        manager.sendHighAlert(180.0, GlucoseUnit.MG_DL)
-        manager.sendLowAlert(60.0, GlucoseUnit.MG_DL)
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, 180.0, GlucoseUnit.MG_DL)
+        manager.sendLowAlert(PROFILE_ID, PROFILE_NAME, 60.0, GlucoseUnit.MG_DL)
 
         assertEquals(2, idSlots.size)
         assertTrue("Expected distinct notification IDs", idSlots[0] != idSlots[1])
@@ -94,12 +107,24 @@ class GlucoseAlertManagerTest {
         val idSlots = mutableListOf<Int>()
         justRun { manager.post(capture(idSlots), any(), any()) }
 
-        manager.sendHighAlert(200.0, GlucoseUnit.MG_DL)
-        manager.sendLowAlert(55.0, GlucoseUnit.MG_DL)
-        manager.sendPredictedHighAlert(195.0, GlucoseUnit.MG_DL)
-        manager.sendPredictedLowAlert(65.0, GlucoseUnit.MG_DL)
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, 200.0, GlucoseUnit.MG_DL)
+        manager.sendLowAlert(PROFILE_ID, PROFILE_NAME, 55.0, GlucoseUnit.MG_DL)
+        manager.sendPredictedHighAlert(PROFILE_ID, PROFILE_NAME, 195.0, GlucoseUnit.MG_DL)
+        manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, 65.0, GlucoseUnit.MG_DL)
 
         assertEquals(4, idSlots.distinct().size)
+    }
+
+    @Test
+    fun `same alert type for different profiles uses distinct notification IDs`() {
+        val manager = buildManager()
+        val idSlots = mutableListOf<Int>()
+        justRun { manager.post(capture(idSlots), any(), any()) }
+
+        manager.sendLowAlert("profile-a", "Alice", 60.0, GlucoseUnit.MG_DL)
+        manager.sendLowAlert("profile-b", "Bob", 60.0, GlucoseUnit.MG_DL)
+
+        assertEquals("Two profiles must not share a notification ID", 2, idSlots.distinct().size)
     }
 
     // endregion
@@ -109,17 +134,17 @@ class GlucoseAlertManagerTest {
     @Test
     fun `sendPredictedHighAlert includes predicted value in notification text`() {
         val manager = buildManager()
-        manager.sendPredictedHighAlert(projectedSgv = 200.0, unit = GlucoseUnit.MG_DL)
+        manager.sendPredictedHighAlert(PROFILE_ID, PROFILE_NAME, projectedSgv = 200.0, unit = GlucoseUnit.MG_DL)
 
-        verify { manager.post(1003, any(), match { it.contains("200 mg/dL") }) }
+        verify { manager.post(any(), any(), match { it.contains("200 mg/dL") }) }
     }
 
     @Test
     fun `sendPredictedLowAlert includes predicted value in notification text`() {
         val manager = buildManager()
-        manager.sendPredictedLowAlert(projectedSgv = 60.0, unit = GlucoseUnit.MG_DL)
+        manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, projectedSgv = 60.0, unit = GlucoseUnit.MG_DL)
 
-        verify { manager.post(1004, any(), match { it.contains("60 mg/dL") }) }
+        verify { manager.post(any(), any(), match { it.contains("60 mg/dL") }) }
     }
 
     // endregion
@@ -133,7 +158,7 @@ class GlucoseAlertManagerTest {
         every { mockNm.notify(any(), any()) } throws SecurityException("No permission")
 
         // Should not throw — SecurityException from nm.notify is suppressed inside post()
-        manager.sendHighAlert(200.0, GlucoseUnit.MG_DL)
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, 200.0, GlucoseUnit.MG_DL)
     }
 
     // endregion

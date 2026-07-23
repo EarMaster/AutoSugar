@@ -3,9 +3,6 @@
     <string name="app_name">AutoSugar</string>
 
     <!-- Car UI -->
-    <string name="label_glucose_value">रक्त शर्करा</string>
-    <string name="label_trend">प्रवृत्ति</string>
-    <string name="label_delta">परिवर्तन</string>
     <string name="label_unit_mgdl">mg/dL</string>
     <string name="label_unit_mmoll">mmol/L</string>
     <string name="action_switch_source">स्रोत बदलें</string>
@@ -13,7 +10,6 @@
     <string name="error_fetch_failed">डेटा प्राप्त करने में विफल</string>
     <string name="action_retry">पुनः प्रयास करें</string>
     <string name="label_no_profiles">कोई स्रोत कॉन्फ़िगर नहीं है।\nNightscout स्रोत जोड़ने के लिए अपने फ़ोन पर AutoSugar खोलें।</string>
-    <string name="label_graph">3h</string>
     <string name="label_just_now">अभी-अभी</string>
     <string name="label_n_min_ago">%d मिनट पहले</string>
     <string name="label_stale_reading">⚠️ रीडिंग: %s</string>
@@ -25,7 +21,6 @@
     <string name="btn_add_profile">स्रोत जोड़ें</string>
     <string name="btn_save">सहेजें</string>
     <string name="btn_delete">हटाएं</string>
-    <string name="btn_edit">संपादित करें</string>
     <string name="btn_test_connection">कनेक्शन जांचें</string>
     <string name="hint_display_name">प्रदर्शन नाम</string>
     <string name="hint_base_url">Nightscout URL (उदा. https://mynb.herokuapp.com)</string>
@@ -35,8 +30,6 @@
     <string name="label_edit_source">स्रोत संपादित करें</string>
     <string name="msg_test_success">कनेक्ट हो गया! वर्तमान BG: %1$s %2$s</string>
     <string name="msg_test_failed">कनेक्शन विफल: %1$s</string>
-    <string name="msg_saved">स्रोत सहेजा गया।</string>
-    <string name="msg_deleted">स्रोत हटा दिया गया।</string>
     <string name="label_no_sources">अभी कोई स्रोत नहीं।\nअपना Nightscout URL जोड़ने के लिए + दबाएं।</string>
     <string name="label_tab_icon">टैब आइकन</string>
 

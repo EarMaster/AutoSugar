@@ -39,7 +39,7 @@ class GlucoseEntryTest {
 
     @Test
     fun `displayValue rounds mmol_L to one decimal place`() {
-        // 100 / 18.0 = 5.555… → 5.6
+        // 100 / 18.0156 = 5.55… → 5.6
         assertEquals("5.6", entry(sgv = 100.0).displayValue(GlucoseUnit.MMOL_L))
     }
 

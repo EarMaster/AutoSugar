@@ -113,7 +113,11 @@ fun SettingsScreen(
                         onDragEnd = {
                             isDragging = false
                             dragState.onDragEnd()
-                            viewModel.saveOrder(localProfiles.toList())
+                            // Only persist if the order actually changed (a long-press on empty
+                            // space or a drag that ended where it started should not write).
+                            if (localProfiles.map { it.id } != profiles.map { it.id }) {
+                                viewModel.saveOrder(localProfiles.toList())
+                            }
                         },
                         onDragCancel = {
                             isDragging = false

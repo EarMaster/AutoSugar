@@ -5,6 +5,43 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-07-23
+
+### Security
+
+- The Nightscout API token is now redacted from debug HTTP logs, so it can no longer leak into logcat or a captured bug report even when HTTP logging is enabled
+
+### Performance
+
+- Trend-arrow and numbered-profile icons on the Android Auto screen are now cached instead of re-rendered on the main thread on every template rebuild
+
+### Fixed
+
+- Removed unused string resources across all locales, and a local `assembleRelease` without signing environment variables now produces an unsigned build instead of failing with a cryptic keystore error
+- A reading exactly at the low/high threshold now triggers an alert (boundaries are inclusive); predictive alerts fire only while the reading is still strictly inside the range
+- The "Test Connection" button is now enabled only for a valid URL (matching the Save button), avoiding an opaque error when testing a malformed URL
+- Reordering profiles no longer writes to storage when the order did not actually change
+- Android Auto now returns to the no-profiles screen when the last profile is deleted, and falls back to a valid profile if the active one was removed or points at a since-deleted profile
+- Added a dark (`-night`) app theme so the phone UI's window background and system bars follow the system dark mode instead of flashing white on launch
+- The `dateIso` field now holds a real ISO-8601 timestamp when the entry has no dateString, instead of the raw epoch-millis digits
+- mmol/L conversion now uses the exact glucose factor (18.0156) via a shared constant, and near-zero deltas no longer render as "-0"/"-0.0"
+- Predictive (trending high/low) alerts now scale the 15-minute projection to the source's actual reading cadence instead of assuming 5-minute intervals, reducing false/missed predictions for 1- or 15-minute sources
+- The history graph no longer renders blank/garbled when the target range collapses to a single value (division-by-zero guard), and swapped target bounds from the server are normalised instead of inverting the band
+- Denying the notification permission when enabling alerts now turns the alerts toggle back off, instead of leaving it on while alerts silently never fire
+- The "token has write permissions" warning now works: the Nightscout `authorized` object was modelled as an integer bitmask that never matched the real response, so over-privileged tokens were never flagged. It now parses the actual Shiro permission strings (`permissionGroups`)
+- The connection test success and failure messages now use the existing translated string resources instead of a hard-coded English "BG:"/raw error, so they appear in the app's language
+- The profile URL validator no longer rejects dot-less hosts, so `https://localhost`, internal DNS names, and IPv6 literals — the documented LAN/VPN self-hosting scenario — can now be saved
+- The refresh interval is now clamped to a minimum of 30 seconds when read or written, preventing a stored 0/negative value from causing a tight, server-hammering fetch loop
+- Concurrent profile edits (e.g. toggling an alert while another change is saving) can no longer clobber each other; profile add/remove/alert-toggle now apply atomically within a single storage transaction
+- The history graph's line, dots, and value pins are now coloured using the profile's own low/high alert thresholds instead of hard-coded 70/180, so the at-a-glance colour matches when an alert would actually fire
+- The graph is now redrawn when a reading's value changes for an existing timestamp (e.g. a backfilled correction), not only when timestamps change
+- Non-sgv Nightscout records (calibration/meter-BG entries) in the feed no longer break history/current-reading loading; such records are now skipped instead of failing the whole response
+- CI, release, and CodeQL workflows now run on JDK 21 to match the project's Java 21 source/target level; previously they provisioned JDK 17, which cannot compile the app
+- Glucose readings that are stale (older than 12 minutes) are now labelled as stale in Android Auto even when the network fetch itself succeeded, and no longer trigger high/low/predicted alerts — acting on outdated CGM data is worse than not alerting
+- Switching between profiles can no longer momentarily display one profile's glucose data under another profile's name; an in-flight fetch that has been superseded now discards its results
+- Glucose alerts are now tracked per profile: one profile's recent alert no longer suppresses a genuine alert for another, each profile's alerts use distinct notification IDs so they no longer replace each other, and the notification now names the profile it is about
+- A single corrupt, legacy, or truncated stored profile no longer makes the entire profile list inaccessible: an unknown glucose-unit value falls back to mg/dL, and malformed profile JSON falls back to an empty list instead of crashing every screen
+
 ## [1.2.3] - 2026-07-23
 
 ### Security

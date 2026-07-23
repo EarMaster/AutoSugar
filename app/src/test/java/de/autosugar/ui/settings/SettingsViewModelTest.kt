@@ -70,35 +70,17 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setAlertsEnabled saves all profiles with toggled flag`() = runTest {
-        backgroundScope.launch { viewModel.profiles.collect {} }
-        advanceUntilIdle()
-
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coJustRun { mockRepository.saveAll(capture(savedSlot)) }
+    fun `setAlertsEnabled delegates to repository atomic toggle`() = runTest {
+        val idSlot = slot<String>()
+        val enabledSlot = slot<Boolean>()
+        coJustRun { mockRepository.setAlertsEnabled(capture(idSlot), capture(enabledSlot)) }
 
         viewModel.setAlertsEnabled("id-1", enabled = true)
         advanceUntilIdle()
 
-        val saved = savedSlot.captured
-        assertEquals(true, saved.find { it.id == "id-1" }?.alertsEnabled)
-        assertEquals(true, saved.find { it.id == "id-2" }?.alertsEnabled)
-    }
-
-    @Test
-    fun `setAlertsEnabled does not change other profiles`() = runTest {
-        backgroundScope.launch { viewModel.profiles.collect {} }
-        advanceUntilIdle()
-
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coJustRun { mockRepository.saveAll(capture(savedSlot)) }
-
-        viewModel.setAlertsEnabled("id-2", enabled = false)
-        advanceUntilIdle()
-
-        val saved = savedSlot.captured
-        assertEquals(false, saved.find { it.id == "id-1" }?.alertsEnabled)
-        assertEquals(false, saved.find { it.id == "id-2" }?.alertsEnabled)
+        assertEquals("id-1", idSlot.captured)
+        assertEquals(true, enabledSlot.captured)
+        coVerify(exactly = 1) { mockRepository.setAlertsEnabled("id-1", true) }
     }
 
     @Test

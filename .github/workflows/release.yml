@@ -62,7 +62,7 @@ jobs:
         if: steps.tag_check.outputs.exists == 'false'
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
       - uses: gradle/actions/setup-gradle@v3
         if: steps.tag_check.outputs.exists == 'false'

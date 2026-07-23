@@ -1,0 +1,5 @@
+• Stale readings are now flagged and no longer trigger false alerts
+• Alerts are per-source, name the source, and don't block each other
+• Fixed the wrong source briefly showing after switching
+• Graph colours now follow your own high/low thresholds
+• Added dark mode; localhost/LAN Nightscout URLs can now be saved

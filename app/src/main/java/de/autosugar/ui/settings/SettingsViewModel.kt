@@ -25,12 +25,7 @@ class SettingsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 60)
 
     fun setAlertsEnabled(id: String, enabled: Boolean) {
-        viewModelScope.launch {
-            val updated = profiles.value.map { p ->
-                if (p.id == id) p.copy(alertsEnabled = enabled) else p
-            }
-            repository.saveAll(updated)
-        }
+        viewModelScope.launch { repository.setAlertsEnabled(id, enabled) }
     }
 
     fun saveOrder(ordered: List<NightscoutProfile>) {

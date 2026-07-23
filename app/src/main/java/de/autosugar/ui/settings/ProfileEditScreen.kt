@@ -49,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -80,21 +81,37 @@ fun ProfileEditScreen(
     val alertsEnabled by viewModel.alertsEnabled.collectAsState()
     val tokenOverpowered by viewModel.tokenOverpowered.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { /* no-op: we gracefully handle missing permission in GlucoseAlertManager */ }
+    ) { granted ->
+        // Without notification permission, alerts can never be delivered. Turn the
+        // toggle back off so it reflects reality instead of staying on while alerts
+        // silently never fire.
+        if (!granted) viewModel.alertsEnabled.value = false
+    }
 
     LaunchedEffect(uiState) {
         when (val state = uiState) {
             is ProfileEditUiState.Saved -> onNavigateUp()
             is ProfileEditUiState.Deleted -> onNavigateUp()
             is ProfileEditUiState.TestSuccess -> {
-                snackbarHostState.showSnackbar("BG: ${state.message}")
+                val unitLabel = context.getString(
+                    when (state.unit) {
+                        GlucoseUnit.MG_DL -> R.string.label_unit_mgdl
+                        GlucoseUnit.MMOL_L -> R.string.label_unit_mmoll
+                    }
+                )
+                snackbarHostState.showSnackbar(
+                    context.getString(R.string.msg_test_success, state.value, unitLabel)
+                )
                 viewModel.clearState()
             }
             is ProfileEditUiState.Error -> {
-                snackbarHostState.showSnackbar(state.message)
+                snackbarHostState.showSnackbar(
+                    context.getString(R.string.msg_test_failed, state.message)
+                )
                 viewModel.clearState()
             }
             else -> Unit
@@ -105,9 +122,10 @@ fun ProfileEditScreen(
     val urlScheme = runCatching { java.net.URI(baseUrl.trim()).scheme }.getOrNull()
     val isValidUrl = runCatching {
         val uri = java.net.URI(baseUrl.trim())
-        uri.scheme in listOf("http", "https") &&
-            !uri.host.isNullOrEmpty() &&
-            uri.host.contains('.')
+        // Any non-empty host is accepted (localhost, an internal DNS name, or an IPv6
+        // literal) since Nightscout is commonly self-hosted on a LAN/VPN without a
+        // dotted public domain.
+        uri.scheme in listOf("http", "https") && !uri.host.isNullOrEmpty()
     }.getOrDefault(false)
     val isCleartextUrl = isValidUrl && urlScheme == "http"
     val canSave = !isLoading && displayName.isNotBlank() && isValidUrl
@@ -216,7 +234,7 @@ fun ProfileEditScreen(
             }
             OutlinedButton(
                 onClick = { viewModel.testConnection() },
-                enabled = !isLoading && baseUrl.isNotBlank(),
+                enabled = !isLoading && isValidUrl,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.btn_test_connection))

@@ -62,6 +62,21 @@ class ProfileSerializerTest {
     }
 
     @Test
+    fun `fromJson falls back to MG_DL for unknown unit`() {
+        val json = """[{"id":"x","displayName":"X","baseUrl":"http://x.test","apiToken":"","unit":"mgdl","icon":"PERSON","alertsEnabled":false}]"""
+        val result = serializer.fromJson(json)
+        assertEquals(1, result.size)
+        assertEquals(GlucoseUnit.MG_DL, result[0].unit)
+    }
+
+    @Test
+    fun `fromJson returns empty list for malformed json instead of throwing`() {
+        // A truncated/corrupt store must not crash the profiles Flow for every screen.
+        assertTrue(serializer.fromJson("""[{"id":"x","displayNam""").isEmpty())
+        assertTrue(serializer.fromJson("not json at all").isEmpty())
+    }
+
+    @Test
     fun `toJson and fromJson handle multiple profiles`() {
         val profiles = listOf(
             profile,

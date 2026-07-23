@@ -14,17 +14,24 @@ android {
         applicationId = "de.autosugar"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.2.3"
+        versionCode = 9
+        versionName = "1.2.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Release signing is driven by environment variables (set in CI). When they are
+    // absent — e.g. a local `assembleRelease` — skip the signing config so the build
+    // produces an unsigned APK instead of failing with a cryptic keystore error.
+    val hasReleaseKeystore = System.getenv("KEYSTORE_PATH") != null
+
     signingConfigs {
-        create("release") {
-            storeFile = System.getenv("KEYSTORE_PATH")?.let { rootProject.file(it) }
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
+        if (hasReleaseKeystore) {
+            create("release") {
+                storeFile = System.getenv("KEYSTORE_PATH")?.let { rootProject.file(it) }
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
         }
     }
 
@@ -33,7 +40,7 @@ android {
             buildConfigField("Boolean", "ENABLE_HTTP_LOGGING", "true")
         }
         release {
-            signingConfig = signingConfigs.getByName("release")
+            if (hasReleaseKeystore) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             buildConfigField("Boolean", "ENABLE_HTTP_LOGGING", "false")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

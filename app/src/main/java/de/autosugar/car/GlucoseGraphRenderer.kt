@@ -12,6 +12,7 @@ import androidx.car.app.model.CarIcon
 import androidx.core.graphics.drawable.IconCompat
 import de.autosugar.data.model.GlucoseEntry
 import de.autosugar.data.model.GlucoseUnit
+import de.autosugar.data.model.MG_DL_PER_MMOL_L
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -22,13 +23,18 @@ import kotlin.math.roundToInt
  * @param unit         Display unit for labels and colour thresholds.
  * @param bgTargetBottom Lower bound of the target range band (mg/dL).
  * @param bgTargetTop    Upper bound of the target range band (mg/dL).
+ * @param bgLow          Low alert boundary (mg/dL) — values below are drawn red.
+ * @param bgHigh         High alert boundary (mg/dL) — values above are drawn amber.
  */
 internal fun glucoseGraphIcon(
     entries: List<GlucoseEntry>,
     unit: GlucoseUnit,
     bgTargetBottom: Float,
     bgTargetTop: Float,
+    bgLow: Int,
+    bgHigh: Int,
 ): CarIcon {
+    val colorOf = { sgv: Double -> glucoseColor(sgv, bgLow, bgHigh) }
     val w = 600
     val h = 400
     val pad = 16f
@@ -38,19 +44,24 @@ internal fun glucoseGraphIcon(
     val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bmp)
 
-    val offset = (bgTargetTop - bgTargetBottom) * 0.25f
-    val yMin = minOf(entries.minOf { it.sgv }.toFloat(), bgTargetBottom - offset).coerceAtLeast(0f)
-    val yMax = maxOf(entries.maxOf { it.sgv }.toFloat(), bgTargetTop + offset)
+    // Normalise target bounds in case the server returns them swapped or equal.
+    val bandBottom = minOf(bgTargetBottom, bgTargetTop)
+    val bandTop = maxOf(bgTargetBottom, bgTargetTop)
+    val offset = (bandTop - bandBottom) * 0.25f
+    val yMin = minOf(entries.minOf { it.sgv }.toFloat(), bandBottom - offset).coerceAtLeast(0f)
+    val yMax = maxOf(entries.maxOf { it.sgv }.toFloat(), bandTop + offset)
+    // Guard against a zero span (all values equal and band collapsed) → division by zero.
+    val yRange = (yMax - yMin).takeIf { it > 0f } ?: 1f
     val tMin = entries.first().dateMs
     val tMax = entries.last().dateMs
     val tRange = (tMax - tMin).coerceAtLeast(1L).toFloat()
 
     fun xOf(ms: Long) = pad + (ms - tMin).toFloat() / tRange * plotW
-    fun yOf(sgv: Float) = pad + plotH * (1f - (sgv.coerceIn(yMin, yMax) - yMin) / (yMax - yMin))
+    fun yOf(sgv: Float) = pad + plotH * (1f - (sgv.coerceIn(yMin, yMax) - yMin) / yRange)
 
     // Target range band
     canvas.drawRect(
-        pad, yOf(bgTargetTop), pad + plotW, yOf(bgTargetBottom),
+        pad, yOf(bandTop), pad + plotW, yOf(bandBottom),
         Paint().apply { color = Color.argb(55, 100, 220, 100); style = Paint.Style.FILL },
     )
 
@@ -82,12 +93,12 @@ internal fun glucoseGraphIcon(
         drawTimeLabelsAndDropPins(
             canvas, entries, unit, yGridMgdl, edgeMargin,
             tMin, tMax, pad, plotW, plotH, labelPaint, gridPaint,
-            ::xOf, ::yOf,
+            ::xOf, ::yOf, colorOf,
         )
     }
 
-    drawColorCodedLine(canvas, entries, ::xOf, ::yOf)
-    drawNewestDot(canvas, entries, ::xOf, ::yOf)
+    drawColorCodedLine(canvas, entries, ::xOf, ::yOf, colorOf)
+    drawNewestDot(canvas, entries, ::xOf, ::yOf, colorOf)
 
     return CarIcon.Builder(IconCompat.createWithBitmap(bmp)).build()
 }
@@ -107,6 +118,7 @@ private fun drawTimeLabelsAndDropPins(
     gridPaint: Paint,
     xOf: (Long) -> Float,
     yOf: (Float) -> Float,
+    colorOf: (Double) -> Int,
 ) {
     val msPerHour = 3_600_000L
     val ms20      = 20 * 60_000L
@@ -150,7 +162,7 @@ private fun drawTimeLabelsAndDropPins(
 
     drawDropPinsAndHourLines(
         canvas, entries, unit, tMin, tMax, ms20, msPerHour,
-        pad, plotH, labelPaint, gridPaint, xOf, yOf,
+        pad, plotH, labelPaint, gridPaint, xOf, yOf, colorOf,
     )
 }
 
@@ -168,6 +180,7 @@ private fun drawDropPinsAndHourLines(
     gridPaint: Paint,
     xOf: (Long) -> Float,
     yOf: (Float) -> Float,
+    colorOf: (Double) -> Int,
 ) {
     val dropTailH  = 10f
     val dropBodyW  = 46f
@@ -202,7 +215,7 @@ private fun drawDropPinsAndHourLines(
         val closest = entries.minByOrNull { kotlin.math.abs(it.dateMs - t) }
         if (closest != null) {
             drawDropPin(canvas, closest, unit, x, dropFill, dropText, dropBodyW, dropBodyH,
-                dropCorner, dropTailW, dropTailH, minTipY, yOf)
+                dropCorner, dropTailW, dropTailH, minTipY, yOf, colorOf)
         }
 
         t += ms20
@@ -223,12 +236,13 @@ private fun drawDropPin(
     dropTailH: Float,
     minTipY: Float,
     yOf: (Float) -> Float,
+    colorOf: (Double) -> Int,
 ) {
     val valueLabel = when (unit) {
         GlucoseUnit.MG_DL  -> entry.sgv.roundToInt().toString()
-        GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, entry.sgv / 18.0)
+        GlucoseUnit.MMOL_L -> "%.1f".format(Locale.US, entry.sgv / MG_DL_PER_MMOL_L)
     }
-    dropFill.color = glucoseColor(entry.sgv)
+    dropFill.color = colorOf(entry.sgv)
 
     val tipY       = (yOf(entry.sgv.toFloat()) - 3f).coerceAtLeast(minTipY)
     val bodyBottom = tipY - dropTailH
@@ -261,6 +275,7 @@ private fun drawColorCodedLine(
     entries: List<GlucoseEntry>,
     xOf: (Long) -> Float,
     yOf: (Float) -> Float,
+    colorOf: (Double) -> Int,
 ) {
     val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -269,7 +284,7 @@ private fun drawColorCodedLine(
         strokeCap = Paint.Cap.ROUND
     }
     for (i in 0 until entries.lastIndex) {
-        linePaint.color = glucoseColor(entries[i].sgv)
+        linePaint.color = colorOf(entries[i].sgv)
         canvas.drawLine(
             xOf(entries[i].dateMs),     yOf(entries[i].sgv.toFloat()),
             xOf(entries[i + 1].dateMs), yOf(entries[i + 1].sgv.toFloat()),
@@ -283,22 +298,26 @@ private fun drawNewestDot(
     entries: List<GlucoseEntry>,
     xOf: (Long) -> Float,
     yOf: (Float) -> Float,
+    colorOf: (Double) -> Int,
 ) {
     val last = entries.last()
     canvas.drawCircle(
         xOf(last.dateMs), yOf(last.sgv.toFloat()), 7f,
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = glucoseColor(last.sgv)
+            color = colorOf(last.sgv)
             style = Paint.Style.FILL
         },
     )
 }
 
-/** Returns the display colour for a glucose value in mg/dL. */
-internal fun glucoseColor(sgv: Double): Int = when {
-    sgv < 70  -> Color.rgb(255, 80,  80)
-    sgv > 180 -> Color.rgb(255, 200, 60)
-    else      -> Color.WHITE
+/**
+ * Returns the display colour for a glucose value in mg/dL, using the profile's own
+ * low/high alert boundaries so the graph colour matches when an alert would fire.
+ */
+internal fun glucoseColor(sgv: Double, bgLow: Int, bgHigh: Int): Int = when {
+    sgv < bgLow  -> Color.rgb(255, 80,  80)
+    sgv > bgHigh -> Color.rgb(255, 200, 60)
+    else         -> Color.WHITE
 }
 
 // region Trend arrow

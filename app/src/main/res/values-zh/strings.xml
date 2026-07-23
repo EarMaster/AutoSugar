@@ -3,9 +3,6 @@
     <string name="app_name">AutoSugar</string>
 
     <!-- Car UI -->
-    <string name="label_glucose_value">血糖值</string>
-    <string name="label_trend">趋势</string>
-    <string name="label_delta">变化量</string>
     <string name="label_unit_mgdl">mg/dL</string>
     <string name="label_unit_mmoll">mmol/L</string>
     <string name="action_switch_source">切换来源</string>
@@ -13,7 +10,6 @@
     <string name="error_fetch_failed">数据获取失败</string>
     <string name="action_retry">重试</string>
     <string name="label_no_profiles">未配置来源。\n请在手机上打开 AutoSugar，添加 Nightscout 来源。</string>
-    <string name="label_graph">3小时</string>
     <string name="label_just_now">刚刚</string>
     <string name="label_n_min_ago">%d 分钟前</string>
     <string name="label_stale_reading">⚠️ 读数：%s</string>
@@ -25,7 +21,6 @@
     <string name="btn_add_profile">添加来源</string>
     <string name="btn_save">保存</string>
     <string name="btn_delete">删除</string>
-    <string name="btn_edit">编辑</string>
     <string name="btn_test_connection">测试连接</string>
     <string name="hint_display_name">显示名称</string>
     <string name="hint_base_url">Nightscout 网址（例如 https://mynb.herokuapp.com）</string>
@@ -35,8 +30,6 @@
     <string name="label_edit_source">编辑来源</string>
     <string name="msg_test_success">已连接！当前血糖：%1$s %2$s</string>
     <string name="msg_test_failed">连接失败：%1$s</string>
-    <string name="msg_saved">来源已保存。</string>
-    <string name="msg_deleted">来源已删除。</string>
     <string name="label_no_sources">暂无来源。\n点击 + 添加您的 Nightscout 网址。</string>
     <string name="label_tab_icon">标签图标</string>
 

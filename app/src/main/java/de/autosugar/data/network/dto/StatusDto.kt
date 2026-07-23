@@ -11,8 +11,11 @@ data class StatusDto(
 /** Subset of the Nightscout `/api/v1/status.json` `authorized` object. */
 @JsonClass(generateAdapter = true)
 data class AuthorizedDto(
-    /** Permission bitmask per resource pattern (e.g. `{"*": 1}`). READ=1, CREATE=2, UPDATE=4, DELETE=8. */
-    val permissions: Map<String, Int> = emptyMap(),
+    /**
+     * One entry per granted role, each a list of Apache-Shiro permission strings such as
+     * `*:*:read` (read-only), `api:treatments:create` (write) or `*` (admin/full access).
+     */
+    val permissionGroups: List<List<String>> = emptyList(),
 )
 
 @JsonClass(generateAdapter = true)

@@ -3,9 +3,6 @@
     <string name="app_name">AutoSugar</string>
 
     <!-- Car UI -->
-    <string name="label_glucose_value">Glicemia</string>
-    <string name="label_trend">Tendência</string>
-    <string name="label_delta">Variação</string>
     <string name="label_unit_mgdl">mg/dL</string>
     <string name="label_unit_mmoll">mmol/L</string>
     <string name="action_switch_source">Trocar fonte</string>
@@ -13,7 +10,6 @@
     <string name="error_fetch_failed">Falha ao obter dados</string>
     <string name="action_retry">Tentar novamente</string>
     <string name="label_no_profiles">Nenhuma fonte configurada.\nAbra o AutoSugar no seu telefone para adicionar uma fonte Nightscout.</string>
-    <string name="label_graph">3h</string>
     <string name="label_just_now">agora mesmo</string>
     <string name="label_n_min_ago">há %d min</string>
     <string name="label_stale_reading">⚠️ Leitura: %s</string>
@@ -25,7 +21,6 @@
     <string name="btn_add_profile">Adicionar fonte</string>
     <string name="btn_save">Salvar</string>
     <string name="btn_delete">Excluir</string>
-    <string name="btn_edit">Editar</string>
     <string name="btn_test_connection">Testar conexão</string>
     <string name="hint_display_name">Nome de exibição</string>
     <string name="hint_base_url">URL do Nightscout (ex. https://mynb.herokuapp.com)</string>
@@ -35,8 +30,6 @@
     <string name="label_edit_source">Editar fonte</string>
     <string name="msg_test_success">Conectado! Glicemia atual: %1$s %2$s</string>
     <string name="msg_test_failed">Falha na conexão: %1$s</string>
-    <string name="msg_saved">Fonte salva.</string>
-    <string name="msg_deleted">Fonte excluída.</string>
     <string name="label_no_sources">Nenhuma fonte ainda.\nToque em + para adicionar sua URL do Nightscout.</string>
     <string name="label_tab_icon">Ícone de guia</string>
 

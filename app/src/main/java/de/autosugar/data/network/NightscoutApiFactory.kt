@@ -15,6 +15,11 @@ import javax.inject.Singleton
 @Singleton
 class NightscoutApiFactory @Inject constructor() {
 
+    private companion object {
+        /** Matches the `token=` query parameter value in a logged request line. */
+        val TOKEN_QUERY = Regex("""token=[^&\s]+""")
+    }
+
     private val moshi: Moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
         .build()
@@ -32,7 +37,13 @@ class NightscoutApiFactory @Inject constructor() {
     }
 
     private fun buildApi(baseUrl: String): NightscoutApi {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
+        // The API token is passed as a `?token=` query parameter, so it appears in the
+        // request line that BODY-level logging prints. Redact it so it never reaches
+        // logcat or a captured bug report even when HTTP logging is enabled in debug.
+        val logger = HttpLoggingInterceptor.Logger { message ->
+            HttpLoggingInterceptor.Logger.DEFAULT.log(TOKEN_QUERY.replace(message, "token=REDACTED"))
+        }
+        val loggingInterceptor = HttpLoggingInterceptor(logger).apply {
             level = if (BuildConfig.ENABLE_HTTP_LOGGING) {
                 HttpLoggingInterceptor.Level.BODY
             } else {

@@ -4,6 +4,7 @@ import de.autosugar.data.model.GlucoseUnit
 import de.autosugar.data.model.NightscoutProfile
 import de.autosugar.data.network.NightscoutApi
 import de.autosugar.data.network.NightscoutApiFactory
+import de.autosugar.data.network.dto.AuthorizedDto
 import de.autosugar.data.network.dto.EntryDto
 import de.autosugar.data.network.dto.SettingsDto
 import de.autosugar.data.network.dto.StatusDto
@@ -22,6 +23,7 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -97,7 +99,7 @@ class NightscoutRepositoryTest {
     }
 
     @Test
-    fun `getCurrentEntry uses date toString when dateString is null`() = runTest {
+    fun `getCurrentEntry formats epoch as ISO-8601 when dateString is null`() = runTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
@@ -105,7 +107,7 @@ class NightscoutRepositoryTest {
         )
 
         val entry = repository.getCurrentEntry("test-id").getOrThrow()
-        assertEquals("1000000", entry.dateIso)
+        assertEquals(java.time.Instant.ofEpochMilli(1_000_000L).toString(), entry.dateIso)
     }
 
     @Test
@@ -247,6 +249,35 @@ class NightscoutRepositoryTest {
     }
 
     @Test
+    fun `getHistory skips non-sgv records instead of failing`() = runTest {
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getEntries(any(), any()) } returns listOf(
+            EntryDto(sgv = 120.0, direction = "Flat", date = 1_000_000L, dateString = null, delta = null),
+            EntryDto(sgv = null, direction = null, date = 950_000L, dateString = null, delta = null), // e.g. cal/mbg record
+            EntryDto(sgv = 110.0, direction = "Flat", date = 900_000L, dateString = null, delta = null),
+        )
+
+        val history = repository.getHistory("test-id").getOrThrow()
+        assertEquals(2, history.size)
+        assertEquals(120.0, history[0].sgv, 0.0)
+        assertEquals(110.0, history[1].sgv, 0.0)
+    }
+
+    @Test
+    fun `getCurrentEntry skips leading non-sgv record`() = runTest {
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
+            EntryDto(sgv = null, direction = null, date = 1_000_000L, dateString = null, delta = null),
+            EntryDto(sgv = 118.0, direction = "Flat", date = 900_000L, dateString = null, delta = null),
+        )
+
+        val entry = repository.getCurrentEntry("test-id").getOrThrow()
+        assertEquals(118.0, entry.sgv, 0.0)
+    }
+
+    @Test
     fun `getHistory returns failure when profile not found`() = runTest {
         every { mockDataStore.profilesFlow } returns flowOf(emptyList())
 
@@ -273,35 +304,34 @@ class NightscoutRepositoryTest {
 
     @Test
     fun `saveProfile adds new profile when id not in list`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(emptyList())
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coEvery { mockDataStore.save(capture(savedSlot)) } just Runs
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
         justRun { mockFactory.invalidate(any()) }
 
         repository.saveProfile(profile)
 
-        assertEquals(1, savedSlot.captured.size)
-        assertEquals(profile, savedSlot.captured[0])
+        val result = transformSlot.captured(emptyList())
+        assertEquals(1, result.size)
+        assertEquals(profile, result[0])
     }
 
     @Test
     fun `saveProfile updates existing profile in place`() = runTest {
         val updated = profile.copy(displayName = "Updated")
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coEvery { mockDataStore.save(capture(savedSlot)) } just Runs
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
         justRun { mockFactory.invalidate(any()) }
 
         repository.saveProfile(updated)
 
-        assertEquals(1, savedSlot.captured.size)
-        assertEquals("Updated", savedSlot.captured[0].displayName)
+        val result = transformSlot.captured(listOf(profile))
+        assertEquals(1, result.size)
+        assertEquals("Updated", result[0].displayName)
     }
 
     @Test
     fun `saveProfile invalidates api factory cache`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        coJustRun { mockDataStore.save(any()) }
+        coJustRun { mockDataStore.update(any()) }
         justRun { mockFactory.invalidate(any()) }
 
         repository.saveProfile(profile)
@@ -315,19 +345,17 @@ class NightscoutRepositoryTest {
 
     @Test
     fun `deleteProfile removes profile from dataStore`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        val savedSlot = slot<List<NightscoutProfile>>()
-        coEvery { mockDataStore.save(capture(savedSlot)) } just Runs
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
 
         repository.deleteProfile("test-id")
 
-        assertTrue(savedSlot.captured.isEmpty())
+        assertTrue(transformSlot.captured(listOf(profile)).isEmpty())
     }
 
     @Test
     fun `deleteProfile clears activeProfileId when deleted profile was active`() = runTest {
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
-        coJustRun { mockDataStore.save(any()) }
+        coJustRun { mockDataStore.update(any()) }
         repository.setActiveProfile("test-id")
 
         repository.deleteProfile("test-id")
@@ -337,14 +365,69 @@ class NightscoutRepositoryTest {
 
     @Test
     fun `deleteProfile does not clear activeProfileId when different profile is deleted`() = runTest {
-        val other = profile.copy(id = "other-id", displayName = "Other")
-        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile, other))
-        coJustRun { mockDataStore.save(any()) }
+        coJustRun { mockDataStore.update(any()) }
         repository.setActiveProfile("test-id")
 
         repository.deleteProfile("other-id")
 
         assertEquals("test-id", repository.activeProfileId.value)
+    }
+
+    @Test
+    fun `setAlertsEnabled toggles only the matching profile`() = runTest {
+        val other = profile.copy(id = "other-id", alertsEnabled = false)
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
+
+        repository.setAlertsEnabled("test-id", true)
+
+        val result = transformSlot.captured(listOf(profile, other))
+        assertTrue(result.first { it.id == "test-id" }.alertsEnabled)
+        assertFalse(result.first { it.id == "other-id" }.alertsEnabled)
+    }
+
+    // endregion
+
+    // region hasElevatedPermissions
+
+    @Test
+    fun `hasElevatedPermissions is false for a read-only token`() = runTest {
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = null,
+            authorized = AuthorizedDto(permissionGroups = listOf(listOf("*:*:read"))),
+        )
+
+        assertFalse(repository.hasElevatedPermissions(profile))
+    }
+
+    @Test
+    fun `hasElevatedPermissions is true for an admin token`() = runTest {
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = null,
+            authorized = AuthorizedDto(permissionGroups = listOf(listOf("*"))),
+        )
+
+        assertTrue(repository.hasElevatedPermissions(profile))
+    }
+
+    @Test
+    fun `hasElevatedPermissions is true when any group grants write`() = runTest {
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = null,
+            authorized = AuthorizedDto(
+                permissionGroups = listOf(listOf("*:*:read"), listOf("api:treatments:create")),
+            ),
+        )
+
+        assertTrue(repository.hasElevatedPermissions(profile))
+    }
+
+    @Test
+    fun `hasElevatedPermissions is false for a blank token`() = runTest {
+        assertFalse(repository.hasElevatedPermissions(profile.copy(apiToken = "")))
     }
 
     // endregion

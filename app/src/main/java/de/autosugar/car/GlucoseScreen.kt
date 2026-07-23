@@ -52,27 +52,58 @@ class GlucoseScreen(
     private var errorMessage: String? = null
     private var pollingJob: Job? = null
 
+    // Monotonically increasing token identifying the most recent fetch. A fetch whose
+    // token no longer matches has been superseded (e.g. by a profile switch) and must
+    // not write its results, so profile A's data can never render under profile B.
+    private var fetchGeneration = 0
+
     private data class GraphCacheKey(
         val timestamps: List<Long>,
+        val sgvs: List<Double>,
         val unit: GlucoseUnit,
         val bgTargetBottom: Float,
         val bgTargetTop: Float,
+        val bgLow: Int,
+        val bgHigh: Int,
     )
     private var cachedGraphKey: GraphCacheKey? = null
     private var cachedGraphIcon: CarIcon? = null
 
+    // onGetTemplate can fire frequently; cache the small generated bitmaps so they are
+    // not re-rendered on the main thread on every rebuild.
+    private val trendIconCache = mutableMapOf<String, CarIcon>()
+    private val numberIconCache = mutableMapOf<Pair<Int, Boolean>, CarIcon>()
+
     private val alertManager = GlucoseAlertManager(carContext)
     private val alertCooldownMs = 15 * 60_000L
-    private var lastHighAlertMs = 0L
-    private var lastLowAlertMs = 0L
-    private var lastPredictedHighAlertMs = 0L
-    private var lastPredictedLowAlertMs = 0L
+
+    // A reading older than this is considered stale (≥2 missed 5-min CGM readings):
+    // it is labelled as such in the UI and never triggers alerts, since acting on
+    // outdated glucose data is worse than not alerting at all.
+    private val staleAfterMs = 12 * 60_000L
+    // Cooldown timers are keyed by profile id so switching profiles does not let one
+    // profile's recent alert suppress a genuine alert for another profile.
+    private val lastHighAlertMs = mutableMapOf<String, Long>()
+    private val lastLowAlertMs = mutableMapOf<String, Long>()
+    private val lastPredictedHighAlertMs = mutableMapOf<String, Long>()
+    private val lastPredictedLowAlertMs = mutableMapOf<String, Long>()
 
     init {
         lifecycleScope.launch {
             repository.profilesFlow.collect { updated ->
+                if (updated.isEmpty()) {
+                    // All profiles were removed — return to the no-profiles screen instead
+                    // of rendering an orphaned reading.
+                    screenManager.push(NoProfilesScreen(carContext, repository, appPrefs))
+                    return@collect
+                }
                 profiles = updated
-                invalidate()
+                if (profiles.none { it.id == activeProfileId }) {
+                    // The active profile was deleted; fall back to the first remaining one.
+                    switchTo(profiles.first().id)
+                } else {
+                    invalidate()
+                }
             }
         }
 
@@ -90,13 +121,22 @@ class GlucoseScreen(
     }
 
     private suspend fun fetch() {
+        val gen = ++fetchGeneration
         isLoading = entry == null
         errorMessage = null
         coroutineScope {
             val entryResult = async { repository.getCurrentEntry(activeProfileId) }
             val historyResult = async { repository.getHistory(activeProfileId, count = 36) }
             val thresholdsResult = async { repository.getThresholds(activeProfileId) }
-            entryResult.await()
+            val entryRes = entryResult.await()
+            val historyRes = historyResult.await()
+            val thresholdsRes = thresholdsResult.await()
+
+            // Discard results if a newer fetch has started (e.g. after switchTo),
+            // otherwise the just-switched-away profile could overwrite the current one.
+            if (gen != fetchGeneration) return@coroutineScope
+
+            entryRes
                 .onSuccess { result ->
                     entry = result
                     lastFetchedMs = System.currentTimeMillis()
@@ -106,11 +146,12 @@ class GlucoseScreen(
                     isLoading = false
                     errorMessage = e.message ?: carContext.getString(R.string.error_fetch_failed)
                 }
-            historyResult.await()
+            historyRes
                 .onSuccess { h -> history = h.sortedBy { it.dateMs } }
-            thresholdsResult.await()
+            thresholdsRes
                 .onSuccess { t -> thresholds = t }
         }
+        if (gen != fetchGeneration) return
         checkAlerts()
         invalidate()
     }
@@ -123,32 +164,49 @@ class GlucoseScreen(
         val sgv = currentEntry.sgv
         val now = System.currentTimeMillis()
 
-        if (sgv > thresholds.bgHigh && now - lastHighAlertMs > alertCooldownMs) {
-            alertManager.sendHighAlert(sgv, profile.unit)
-            lastHighAlertMs = now
+        // Never alert on stale data — the true current value is unknown.
+        if (now - currentEntry.dateMs > staleAfterMs) return
+
+        val id = profile.id
+        if (sgv >= thresholds.bgHigh && now - (lastHighAlertMs[id] ?: 0L) > alertCooldownMs) {
+            alertManager.sendHighAlert(id, profile.displayName, sgv, profile.unit)
+            lastHighAlertMs[id] = now
         }
-        if (sgv < thresholds.bgLow && now - lastLowAlertMs > alertCooldownMs) {
-            alertManager.sendLowAlert(sgv, profile.unit)
-            lastLowAlertMs = now
+        if (sgv <= thresholds.bgLow && now - (lastLowAlertMs[id] ?: 0L) > alertCooldownMs) {
+            alertManager.sendLowAlert(id, profile.displayName, sgv, profile.unit)
+            lastLowAlertMs[id] = now
         }
 
         val delta = currentEntry.delta ?: return
-        // Assumes ~5-min reading cadence: 3 readings × 5 min = 15 min ahead. Sources
-        // posting at other intervals will skew this projection.
-        val projected15 = sgv + delta * 3
+        // delta is the change over one reading interval; project 15 minutes ahead using
+        // the actual sampling cadence rather than assuming a fixed 5-minute interval.
+        val projected15 = sgv + delta * projectionSteps()
 
-        if (projected15 > thresholds.bgHigh && sgv <= thresholds.bgHigh &&
-            now - lastPredictedHighAlertMs > alertCooldownMs
+        if (projected15 > thresholds.bgHigh && sgv < thresholds.bgHigh &&
+            now - (lastPredictedHighAlertMs[id] ?: 0L) > alertCooldownMs
         ) {
-            alertManager.sendPredictedHighAlert(projected15, profile.unit)
-            lastPredictedHighAlertMs = now
+            alertManager.sendPredictedHighAlert(id, profile.displayName, projected15, profile.unit)
+            lastPredictedHighAlertMs[id] = now
         }
-        if (projected15 < thresholds.bgLow && sgv >= thresholds.bgLow &&
-            now - lastPredictedLowAlertMs > alertCooldownMs
+        if (projected15 < thresholds.bgLow && sgv > thresholds.bgLow &&
+            now - (lastPredictedLowAlertMs[id] ?: 0L) > alertCooldownMs
         ) {
-            alertManager.sendPredictedLowAlert(projected15, profile.unit)
-            lastPredictedLowAlertMs = now
+            alertManager.sendPredictedLowAlert(id, profile.displayName, projected15, profile.unit)
+            lastPredictedLowAlertMs[id] = now
         }
+    }
+
+    /**
+     * How many reading intervals fit into a 15-minute look-ahead, derived from the median
+     * gap between recent history points. Falls back to a 5-minute cadence when unknown, so
+     * sources posting at 1- or 15-minute intervals project correctly instead of over/under.
+     */
+    private fun projectionSteps(): Double {
+        val gaps = history.zipWithNext { a, b -> b.dateMs - a.dateMs }
+            .filter { it in 60_000L..15 * 60_000L }
+            .sorted()
+        val intervalMs = if (gaps.isEmpty()) 5 * 60_000L else gaps[gaps.size / 2]
+        return 15 * 60_000.0 / intervalMs
     }
 
     override fun onGetTemplate(): Template {
@@ -228,9 +286,12 @@ class GlucoseScreen(
                 // The upper bound of 5 here is unreachable in practice since the ">4"
                 // branch above already matches size 5 — this only ever runs for 2..4.
                 profiles.forEachIndexed { index, profile ->
+                    val active = profile.id == activeProfileId
                     builder.addAction(
                         Action.Builder()
-                            .setIcon(profileNumberIcon(index + 1, profile.id == activeProfileId))
+                            .setIcon(numberIconCache.getOrPut(index + 1 to active) {
+                                profileNumberIcon(index + 1, active)
+                            })
                             .setOnClickListener { switchTo(profile.id) }
                             .build()
                     )
@@ -281,9 +342,10 @@ class GlucoseScreen(
         else -> {
             val e = entry!!
             val now = System.currentTimeMillis()
+            val stale = errorMessage != null || now - e.dateMs > staleAfterMs
             val statsRow = Row.Builder()
                 .setTitle(
-                    if (errorMessage != null)
+                    if (stale)
                         carContext.getString(R.string.label_stale_reading, ageString(now - e.dateMs))
                     else
                         carContext.getString(R.string.label_reading, ageString(now - e.dateMs))
@@ -297,7 +359,10 @@ class GlucoseScreen(
                 .addRow(
                     Row.Builder()
                         .setTitle("${e.displayValue(unit)} ${unitLabel(unit)}")
-                        .setImage(trendArrowIcon(e.direction), Row.IMAGE_TYPE_LARGE)
+                        .setImage(
+                            trendIconCache.getOrPut(e.direction) { trendArrowIcon(e.direction) },
+                            Row.IMAGE_TYPE_LARGE,
+                        )
                         .addText("${e.displayDelta(unit) ?: "-"} ${unitLabel(unit)}")
                         .build()
                 )
@@ -313,12 +378,17 @@ class GlucoseScreen(
             if (history.size >= 2) {
                 val key = GraphCacheKey(
                     timestamps = history.map { it.dateMs },
+                    sgvs = history.map { it.sgv },
                     unit = unit,
                     bgTargetBottom = thresholds.bgTargetBottom.toFloat(),
                     bgTargetTop = thresholds.bgTargetTop.toFloat(),
+                    bgLow = thresholds.bgLow,
+                    bgHigh = thresholds.bgHigh,
                 )
                 if (cachedGraphKey != key) {
-                    cachedGraphIcon = glucoseGraphIcon(history, unit, key.bgTargetBottom, key.bgTargetTop)
+                    cachedGraphIcon = glucoseGraphIcon(
+                        history, unit, key.bgTargetBottom, key.bgTargetTop, key.bgLow, key.bgHigh,
+                    )
                     cachedGraphKey = key
                 }
                 pane.setImage(cachedGraphIcon!!)

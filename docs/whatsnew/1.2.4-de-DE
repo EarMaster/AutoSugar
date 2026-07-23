@@ -1,0 +1,5 @@
+• Veraltete Messwerte werden jetzt markiert und lösen keine Fehlalarme mehr aus
+• Alarme sind jetzt pro Quelle, nennen die Quelle und blockieren sich nicht gegenseitig
+• Kurzzeitig falsch angezeigte Quelle nach dem Wechsel behoben
+• Graphenfarben richten sich jetzt nach deinen eigenen Grenzwerten
+• Dunkelmodus ergänzt; localhost/LAN-Nightscout-URLs lassen sich jetzt speichern

@@ -3,9 +3,6 @@
     <string name="app_name">AutoSugar</string>
 
     <!-- Car UI -->
-    <string name="label_glucose_value">Blutzucker</string>
-    <string name="label_trend">Trend</string>
-    <string name="label_delta">Änderung</string>
     <string name="label_unit_mgdl">mg/dL</string>
     <string name="label_unit_mmoll">mmol/L</string>
     <string name="action_switch_source">Quelle wechseln</string>
@@ -13,7 +10,6 @@
     <string name="error_fetch_failed">Datenabruf fehlgeschlagen</string>
     <string name="action_retry">Wiederholen</string>
     <string name="label_no_profiles">Keine Quellen konfiguriert.\nÖffne AutoSugar auf deinem Smartphone, um eine Nightscout-Quelle hinzuzufügen.</string>
-    <string name="label_graph">3h</string>
     <string name="label_just_now">gerade eben</string>
     <string name="label_n_min_ago">vor %d Min.</string>
     <string name="label_stale_reading">⚠️ Messung: %s</string>
@@ -25,7 +21,6 @@
     <string name="btn_add_profile">Quelle hinzufügen</string>
     <string name="btn_save">Speichern</string>
     <string name="btn_delete">Löschen</string>
-    <string name="btn_edit">Bearbeiten</string>
     <string name="btn_test_connection">Verbindung testen</string>
     <string name="hint_display_name">Anzeigename</string>
     <string name="hint_base_url">Nightscout-URL (z. B. https://mynb.herokuapp.com)</string>
@@ -35,8 +30,6 @@
     <string name="label_edit_source">Quelle bearbeiten</string>
     <string name="msg_test_success">Verbunden! Aktueller BZ: %1$s %2$s</string>
     <string name="msg_test_failed">Verbindung fehlgeschlagen: %1$s</string>
-    <string name="msg_saved">Quelle gespeichert.</string>
-    <string name="msg_deleted">Quelle gelöscht.</string>
     <string name="label_no_sources">Noch keine Quellen.\nTippe auf +, um deine Nightscout-URL hinzuzufügen.</string>
     <string name="label_tab_icon">Tab-Symbol</string>
 

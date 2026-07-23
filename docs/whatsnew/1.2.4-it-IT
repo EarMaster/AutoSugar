@@ -1,0 +1,5 @@
+• Le letture obsolete ora vengono segnalate e non generano più falsi allarmi
+• Gli avvisi sono per sorgente, ne indicano il nome e non si bloccano a vicenda
+• Corretta la breve visualizzazione della sorgente sbagliata dopo il cambio
+• I colori del grafico seguono ora le tue soglie alta/bassa
+• Aggiunta modalità scura; gli URL Nightscout su localhost/LAN ora si salvano
