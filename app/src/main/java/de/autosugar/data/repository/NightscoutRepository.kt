@@ -109,7 +109,17 @@ class NightscoutRepository @Inject constructor(
         if (profile.apiToken.isBlank()) return false
         val api = apiFactory.get(profile.baseUrl)
         val authorized = api.getStatus(token = profile.apiToken).authorized ?: return false
-        return authorized.permissions.values.any { it > 1 }
+        return authorized.permissionGroups.flatten().any { grantsWrite(it) }
+    }
+
+    /**
+     * True if a Shiro permission string grants anything beyond read. Format is
+     * `domain:resource:action`; the action segment being absent (e.g. `*` or `api:*`) or
+     * anything other than `read` means the token can write.
+     */
+    private fun grantsWrite(permission: String): Boolean {
+        val action = permission.split(":").getOrNull(2) ?: return true
+        return action != "read"
     }
 
     suspend fun saveProfile(profile: NightscoutProfile) {

@@ -4,6 +4,7 @@ import de.autosugar.data.model.GlucoseUnit
 import de.autosugar.data.model.NightscoutProfile
 import de.autosugar.data.network.NightscoutApi
 import de.autosugar.data.network.NightscoutApiFactory
+import de.autosugar.data.network.dto.AuthorizedDto
 import de.autosugar.data.network.dto.EntryDto
 import de.autosugar.data.network.dto.SettingsDto
 import de.autosugar.data.network.dto.StatusDto
@@ -383,6 +384,50 @@ class NightscoutRepositoryTest {
         val result = transformSlot.captured(listOf(profile, other))
         assertTrue(result.first { it.id == "test-id" }.alertsEnabled)
         assertFalse(result.first { it.id == "other-id" }.alertsEnabled)
+    }
+
+    // endregion
+
+    // region hasElevatedPermissions
+
+    @Test
+    fun `hasElevatedPermissions is false for a read-only token`() = runTest {
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = null,
+            authorized = AuthorizedDto(permissionGroups = listOf(listOf("*:*:read"))),
+        )
+
+        assertFalse(repository.hasElevatedPermissions(profile))
+    }
+
+    @Test
+    fun `hasElevatedPermissions is true for an admin token`() = runTest {
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = null,
+            authorized = AuthorizedDto(permissionGroups = listOf(listOf("*"))),
+        )
+
+        assertTrue(repository.hasElevatedPermissions(profile))
+    }
+
+    @Test
+    fun `hasElevatedPermissions is true when any group grants write`() = runTest {
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = null,
+            authorized = AuthorizedDto(
+                permissionGroups = listOf(listOf("*:*:read"), listOf("api:treatments:create")),
+            ),
+        )
+
+        assertTrue(repository.hasElevatedPermissions(profile))
+    }
+
+    @Test
+    fun `hasElevatedPermissions is false for a blank token`() = runTest {
+        assertFalse(repository.hasElevatedPermissions(profile.copy(apiToken = "")))
     }
 
     // endregion
