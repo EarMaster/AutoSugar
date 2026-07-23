@@ -52,6 +52,11 @@ class GlucoseScreen(
     private var errorMessage: String? = null
     private var pollingJob: Job? = null
 
+    // Monotonically increasing token identifying the most recent fetch. A fetch whose
+    // token no longer matches has been superseded (e.g. by a profile switch) and must
+    // not write its results, so profile A's data can never render under profile B.
+    private var fetchGeneration = 0
+
     private data class GraphCacheKey(
         val timestamps: List<Long>,
         val unit: GlucoseUnit,
@@ -95,13 +100,22 @@ class GlucoseScreen(
     }
 
     private suspend fun fetch() {
+        val gen = ++fetchGeneration
         isLoading = entry == null
         errorMessage = null
         coroutineScope {
             val entryResult = async { repository.getCurrentEntry(activeProfileId) }
             val historyResult = async { repository.getHistory(activeProfileId, count = 36) }
             val thresholdsResult = async { repository.getThresholds(activeProfileId) }
-            entryResult.await()
+            val entryRes = entryResult.await()
+            val historyRes = historyResult.await()
+            val thresholdsRes = thresholdsResult.await()
+
+            // Discard results if a newer fetch has started (e.g. after switchTo),
+            // otherwise the just-switched-away profile could overwrite the current one.
+            if (gen != fetchGeneration) return@coroutineScope
+
+            entryRes
                 .onSuccess { result ->
                     entry = result
                     lastFetchedMs = System.currentTimeMillis()
@@ -111,11 +125,12 @@ class GlucoseScreen(
                     isLoading = false
                     errorMessage = e.message ?: carContext.getString(R.string.error_fetch_failed)
                 }
-            historyResult.await()
+            historyRes
                 .onSuccess { h -> history = h.sortedBy { it.dateMs } }
-            thresholdsResult.await()
+            thresholdsRes
                 .onSuccess { t -> thresholds = t }
         }
+        if (gen != fetchGeneration) return
         checkAlerts()
         invalidate()
     }
