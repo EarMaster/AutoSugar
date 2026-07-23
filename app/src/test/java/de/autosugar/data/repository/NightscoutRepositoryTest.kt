@@ -99,7 +99,7 @@ class NightscoutRepositoryTest {
     }
 
     @Test
-    fun `getCurrentEntry uses date toString when dateString is null`() = runTest {
+    fun `getCurrentEntry formats epoch as ISO-8601 when dateString is null`() = runTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
@@ -107,7 +107,7 @@ class NightscoutRepositoryTest {
         )
 
         val entry = repository.getCurrentEntry("test-id").getOrThrow()
-        assertEquals("1000000", entry.dateIso)
+        assertEquals(java.time.Instant.ofEpochMilli(1_000_000L).toString(), entry.dateIso)
     }
 
     @Test

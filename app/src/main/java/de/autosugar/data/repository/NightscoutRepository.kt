@@ -60,11 +60,15 @@ class NightscoutRepository @Inject constructor(
         return GlucoseEntry(
             sgv = latest.sgv!!,
             direction = latest.direction ?: "NOT COMPUTABLE",
-            dateIso = latest.dateString ?: latest.date.toString(),
+            dateIso = isoDate(latest.dateString, latest.date),
             delta = latest.delta ?: delta,
             dateMs = latest.date,
         )
     }
+
+    /** dateIso is documented as ISO-8601; fall back to formatting the epoch ms, not its raw digits. */
+    private fun isoDate(dateString: String?, dateMs: Long): String =
+        dateString ?: java.time.Instant.ofEpochMilli(dateMs).toString()
 
     /** Returns all four Nightscout threshold values in mg/dL. */
     suspend fun getThresholds(profileId: String): Result<GlucoseThresholds> = runCatching {
@@ -93,7 +97,7 @@ class NightscoutRepository @Inject constructor(
                 GlucoseEntry(
                     sgv = dto.sgv!!,
                     direction = dto.direction ?: "NOT COMPUTABLE",
-                    dateIso = dto.dateString ?: dto.date.toString(),
+                    dateIso = isoDate(dto.dateString, dto.date),
                     delta = dto.delta,
                     dateMs = dto.date,
                 )
