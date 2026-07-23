@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- The history graph no longer renders blank/garbled when the target range collapses to a single value (division-by-zero guard), and swapped target bounds from the server are normalised instead of inverting the band
 - Denying the notification permission when enabling alerts now turns the alerts toggle back off, instead of leaving it on while alerts silently never fire
 - The "token has write permissions" warning now works: the Nightscout `authorized` object was modelled as an integer bitmask that never matched the real response, so over-privileged tokens were never flagged. It now parses the actual Shiro permission strings (`permissionGroups`)
 - The connection test success and failure messages now use the existing translated string resources instead of a hard-coded English "BG:"/raw error, so they appear in the app's language

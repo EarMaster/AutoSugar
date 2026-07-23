@@ -43,19 +43,24 @@ internal fun glucoseGraphIcon(
     val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bmp)
 
-    val offset = (bgTargetTop - bgTargetBottom) * 0.25f
-    val yMin = minOf(entries.minOf { it.sgv }.toFloat(), bgTargetBottom - offset).coerceAtLeast(0f)
-    val yMax = maxOf(entries.maxOf { it.sgv }.toFloat(), bgTargetTop + offset)
+    // Normalise target bounds in case the server returns them swapped or equal.
+    val bandBottom = minOf(bgTargetBottom, bgTargetTop)
+    val bandTop = maxOf(bgTargetBottom, bgTargetTop)
+    val offset = (bandTop - bandBottom) * 0.25f
+    val yMin = minOf(entries.minOf { it.sgv }.toFloat(), bandBottom - offset).coerceAtLeast(0f)
+    val yMax = maxOf(entries.maxOf { it.sgv }.toFloat(), bandTop + offset)
+    // Guard against a zero span (all values equal and band collapsed) → division by zero.
+    val yRange = (yMax - yMin).takeIf { it > 0f } ?: 1f
     val tMin = entries.first().dateMs
     val tMax = entries.last().dateMs
     val tRange = (tMax - tMin).coerceAtLeast(1L).toFloat()
 
     fun xOf(ms: Long) = pad + (ms - tMin).toFloat() / tRange * plotW
-    fun yOf(sgv: Float) = pad + plotH * (1f - (sgv.coerceIn(yMin, yMax) - yMin) / (yMax - yMin))
+    fun yOf(sgv: Float) = pad + plotH * (1f - (sgv.coerceIn(yMin, yMax) - yMin) / yRange)
 
     // Target range band
     canvas.drawRect(
-        pad, yOf(bgTargetTop), pad + plotW, yOf(bgTargetBottom),
+        pad, yOf(bandTop), pad + plotW, yOf(bandBottom),
         Paint().apply { color = Color.argb(55, 100, 220, 100); style = Paint.Style.FILL },
     )
 
