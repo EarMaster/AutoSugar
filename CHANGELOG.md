@@ -11,6 +11,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Non-sgv Nightscout records (calibration/meter-BG entries) in the feed no longer break history/current-reading loading; such records are now skipped instead of failing the whole response
 - CI, release, and CodeQL workflows now run on JDK 21 to match the project's Java 21 source/target level; previously they provisioned JDK 17, which cannot compile the app
 - Glucose readings that are stale (older than 12 minutes) are now labelled as stale in Android Auto even when the network fetch itself succeeded, and no longer trigger high/low/predicted alerts — acting on outdated CGM data is worse than not alerting
 - Switching between profiles can no longer momentarily display one profile's glucose data under another profile's name; an in-flight fetch that has been superseded now discards its results

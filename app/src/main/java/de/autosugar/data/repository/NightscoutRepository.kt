@@ -4,6 +4,7 @@ import de.autosugar.data.model.GlucoseEntry
 import de.autosugar.data.model.GlucoseThresholds
 import de.autosugar.data.model.NightscoutProfile
 import de.autosugar.data.network.NightscoutApiFactory
+import de.autosugar.data.network.dto.EntryDto
 import de.autosugar.data.storage.ProfileDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,16 +35,7 @@ class NightscoutRepository @Inject constructor(
             token = profile.apiToken.ifBlank { null },
             count = 2,
         )
-        val latest = entries.firstOrNull() ?: error("No entries returned")
-        val previous = entries.getOrNull(1)
-        val delta = previous?.let { latest.sgv - it.sgv }
-        GlucoseEntry(
-            sgv = latest.sgv,
-            direction = latest.direction ?: "NOT COMPUTABLE",
-            dateIso = latest.dateString ?: latest.date.toString(),
-            delta = latest.delta ?: delta,
-            dateMs = latest.date,
-        )
+        entries.toGlucoseEntry()
     }
 
     suspend fun getCurrentEntry(profileId: String): Result<GlucoseEntry> = runCatching {
@@ -56,13 +48,17 @@ class NightscoutRepository @Inject constructor(
             token = profile.apiToken.ifBlank { null },
             count = 2,
         )
-        val latest = entries.firstOrNull() ?: error("No entries returned")
-        val previous = entries.getOrNull(1)
+        entries.toGlucoseEntry()
+    }
 
-        val delta = previous?.let { latest.sgv - it.sgv }
-
-        GlucoseEntry(
-            sgv = latest.sgv,
+    /** Builds the latest [GlucoseEntry], ignoring non-sgv records (mbg/cal). */
+    private fun List<EntryDto>.toGlucoseEntry(): GlucoseEntry {
+        val sgvEntries = filter { it.sgv != null }
+        val latest = sgvEntries.firstOrNull() ?: error("No entries returned")
+        val previous = sgvEntries.getOrNull(1)
+        val delta = previous?.let { latest.sgv!! - it.sgv!! }
+        return GlucoseEntry(
+            sgv = latest.sgv!!,
             direction = latest.direction ?: "NOT COMPUTABLE",
             dateIso = latest.dateString ?: latest.date.toString(),
             delta = latest.delta ?: delta,
@@ -92,9 +88,10 @@ class NightscoutRepository @Inject constructor(
 
         val api = apiFactory.get(profile.baseUrl)
         api.getEntries(token = profile.apiToken.ifBlank { null }, count = count)
+            .filter { it.sgv != null }
             .map { dto ->
                 GlucoseEntry(
-                    sgv = dto.sgv,
+                    sgv = dto.sgv!!,
                     direction = dto.direction ?: "NOT COMPUTABLE",
                     dateIso = dto.dateString ?: dto.date.toString(),
                     delta = dto.delta,

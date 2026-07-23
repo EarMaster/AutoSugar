@@ -247,6 +247,35 @@ class NightscoutRepositoryTest {
     }
 
     @Test
+    fun `getHistory skips non-sgv records instead of failing`() = runTest {
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getEntries(any(), any()) } returns listOf(
+            EntryDto(sgv = 120.0, direction = "Flat", date = 1_000_000L, dateString = null, delta = null),
+            EntryDto(sgv = null, direction = null, date = 950_000L, dateString = null, delta = null), // e.g. cal/mbg record
+            EntryDto(sgv = 110.0, direction = "Flat", date = 900_000L, dateString = null, delta = null),
+        )
+
+        val history = repository.getHistory("test-id").getOrThrow()
+        assertEquals(2, history.size)
+        assertEquals(120.0, history[0].sgv, 0.0)
+        assertEquals(110.0, history[1].sgv, 0.0)
+    }
+
+    @Test
+    fun `getCurrentEntry skips leading non-sgv record`() = runTest {
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getCurrentEntry(any(), any()) } returns listOf(
+            EntryDto(sgv = null, direction = null, date = 1_000_000L, dateString = null, delta = null),
+            EntryDto(sgv = 118.0, direction = "Flat", date = 900_000L, dateString = null, delta = null),
+        )
+
+        val entry = repository.getCurrentEntry("test-id").getOrThrow()
+        assertEquals(118.0, entry.sgv, 0.0)
+    }
+
+    @Test
     fun `getHistory returns failure when profile not found`() = runTest {
         every { mockDataStore.profilesFlow } returns flowOf(emptyList())
 
