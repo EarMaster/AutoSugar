@@ -8,6 +8,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - Closed a narrow race where switching profiles right as an in-flight fetch for the previous profile resolved could show that profile's reading (and fire its alert) under the new profile's name; the fetch-generation guard is now bumped synchronously the moment a switch starts instead of only once the new fetch's coroutine runs
+- Glucose alerts now appear on the Android Auto car screen instead of only the phone's notification tray: notifications are posted through `CarNotificationManager` and the app now declares the `notification` capability it requires
 
 ## [1.2.4] - 2026-07-23
 
