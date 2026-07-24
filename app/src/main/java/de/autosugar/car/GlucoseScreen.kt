@@ -412,6 +412,12 @@ class GlucoseScreen(
 
     private fun switchTo(profileId: String) {
         if (profileId == activeProfileId) return
+        // Invalidate any in-flight fetch for the old profile immediately, synchronously —
+        // otherwise it could still be awaiting its network call when activeProfileId flips,
+        // and fetch()'s own generation bump (which only happens once its coroutine actually
+        // starts running) may not have happened yet, letting the old profile's data slip
+        // through the gen check and get evaluated/alerted under the new profile's name.
+        fetchGeneration++
         activeProfileId = profileId
         repository.setActiveProfile(profileId)
         entry = null
