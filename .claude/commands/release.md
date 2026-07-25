@@ -58,7 +58,9 @@ Create `docs/whatsnew/X.Y.Z-{LOCALE}` files for all supported locales. Each file
 
 Only include changes that are visible or relevant to the user of the app itself. Exclude anything related to CI/CD workflows, GitHub Actions, GitHub Pages, the website, internal tooling, or other infrastructure — users don't see these.
 
-**Translation note:** Keep English concise (max 300 chars) so translations don't exceed GitHub's release notes limits (500 chars per language). Asian languages are more compact; Romance/Germanic languages expand.
+**Translation note:** Keep English concise (max 300 chars) as a starting point, but the 300/500 numbers are guidance for the *English draft* only, not a guarantee for the rest. Translation length varies a lot by language (Romance/Germanic languages tend to expand, CJK languages tend to compress) — a translation that started from an in-limit English draft can still end up over the limit.
+
+**Mandatory per-locale check — do this for every locale, not just English:** after writing (or translating) each `docs/whatsnew/X.Y.Z-{LOCALE}` file, check that specific file's character count (e.g. `wc -m`, not `wc -c`, since `wc -c` undercounts multi-byte UTF-8 locales like `ar`/`hi-IN`/`ja-JP`/`zh-CN`). No locale file may exceed 500 characters — Google Play's hard "what's new" limit is per-locale, not per-release. If any file is over, re-trim that locale's text (summarize/combine bullets) and re-check — do not assume it's fine because the English source was short.
 
 **4b. Update `app/build.gradle.kts`**
 

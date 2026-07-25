@@ -1,0 +1,3 @@
+• Os alertas são agora por fonte, indicam a fonte e já não disparam por engano com dados antigos, não se bloqueiam entre si e (raramente) não mostram a fonte errada
+• Os alertas aparecem agora também no ecrã do Android Auto, e cada fonte ativa é verificada em segundo plano
+• Modo escuro, cores do gráfico segundo os seus limites, e URLs Nightscout locais/LAN

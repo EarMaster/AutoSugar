@@ -3,6 +3,7 @@ package de.autosugar.car
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import androidx.car.app.notification.CarNotificationManager
 import androidx.core.app.NotificationCompat
 import de.autosugar.R
 import de.autosugar.data.model.GlucoseUnit
@@ -29,6 +30,7 @@ class GlucoseAlertManager(private val context: Context) {
     }
 
     private val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val carNm = CarNotificationManager.from(context)
 
     init {
         nm.createNotificationChannel(
@@ -92,18 +94,19 @@ class GlucoseAlertManager(private val context: Context) {
         return "$value $label"
     }
 
-    internal open fun buildNotification(title: String, text: String) =
+    internal open fun buildNotification(title: String, text: String): NotificationCompat.Builder =
         NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_profile_medical)
             .setContentTitle(title)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .build()
 
+    // Posted via CarNotificationManager (not the plain NotificationManager) so the alert is
+    // mirrored onto the Android Auto screen, not just the phone's notification tray.
     internal open fun post(id: Int, title: String, text: String) {
         try {
-            nm.notify(id, buildNotification(title, text))
+            carNm.notify(id, buildNotification(title, text))
         } catch (_: SecurityException) {
             // POST_NOTIFICATIONS not granted on Android 13+ — alerts silently suppressed
         }

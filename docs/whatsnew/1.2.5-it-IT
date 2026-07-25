@@ -1,0 +1,3 @@
+• Gli avvisi sono ora per sorgente, ne indicano il nome e non scattano più per errore su dati obsoleti, non si bloccano più a vicenda e (raramente) non mostrano più la sorgente sbagliata
+• Gli avvisi ora appaiono anche sullo schermo di Android Auto, e ogni sorgente attiva viene controllata in background
+• Modalità scura, colori del grafico secondo le tue soglie e URL Nightscout locali/LAN

@@ -74,19 +74,9 @@ class GlucoseScreen(
     private val trendIconCache = mutableMapOf<String, CarIcon>()
     private val numberIconCache = mutableMapOf<Pair<Int, Boolean>, CarIcon>()
 
-    private val alertManager = GlucoseAlertManager(carContext)
-    private val alertCooldownMs = 15 * 60_000L
-
-    // A reading older than this is considered stale (≥2 missed 5-min CGM readings):
-    // it is labelled as such in the UI and never triggers alerts, since acting on
-    // outdated glucose data is worse than not alerting at all.
+    // A reading older than this is considered stale (≥2 missed 5-min CGM readings) and is
+    // labelled as such in the UI. Alerting itself is handled by BackgroundAlertMonitor.
     private val staleAfterMs = 12 * 60_000L
-    // Cooldown timers are keyed by profile id so switching profiles does not let one
-    // profile's recent alert suppress a genuine alert for another profile.
-    private val lastHighAlertMs = mutableMapOf<String, Long>()
-    private val lastLowAlertMs = mutableMapOf<String, Long>()
-    private val lastPredictedHighAlertMs = mutableMapOf<String, Long>()
-    private val lastPredictedLowAlertMs = mutableMapOf<String, Long>()
 
     init {
         lifecycleScope.launch {
@@ -152,61 +142,7 @@ class GlucoseScreen(
                 .onSuccess { t -> thresholds = t }
         }
         if (gen != fetchGeneration) return
-        checkAlerts()
         invalidate()
-    }
-
-    private fun checkAlerts() {
-        val currentEntry = entry ?: return
-        val profile = profiles.find { it.id == activeProfileId } ?: return
-        if (!profile.alertsEnabled) return
-
-        val sgv = currentEntry.sgv
-        val now = System.currentTimeMillis()
-
-        // Never alert on stale data — the true current value is unknown.
-        if (now - currentEntry.dateMs > staleAfterMs) return
-
-        val id = profile.id
-        if (sgv >= thresholds.bgHigh && now - (lastHighAlertMs[id] ?: 0L) > alertCooldownMs) {
-            alertManager.sendHighAlert(id, profile.displayName, sgv, profile.unit)
-            lastHighAlertMs[id] = now
-        }
-        if (sgv <= thresholds.bgLow && now - (lastLowAlertMs[id] ?: 0L) > alertCooldownMs) {
-            alertManager.sendLowAlert(id, profile.displayName, sgv, profile.unit)
-            lastLowAlertMs[id] = now
-        }
-
-        val delta = currentEntry.delta ?: return
-        // delta is the change over one reading interval; project 15 minutes ahead using
-        // the actual sampling cadence rather than assuming a fixed 5-minute interval.
-        val projected15 = sgv + delta * projectionSteps()
-
-        if (projected15 > thresholds.bgHigh && sgv < thresholds.bgHigh &&
-            now - (lastPredictedHighAlertMs[id] ?: 0L) > alertCooldownMs
-        ) {
-            alertManager.sendPredictedHighAlert(id, profile.displayName, projected15, profile.unit)
-            lastPredictedHighAlertMs[id] = now
-        }
-        if (projected15 < thresholds.bgLow && sgv > thresholds.bgLow &&
-            now - (lastPredictedLowAlertMs[id] ?: 0L) > alertCooldownMs
-        ) {
-            alertManager.sendPredictedLowAlert(id, profile.displayName, projected15, profile.unit)
-            lastPredictedLowAlertMs[id] = now
-        }
-    }
-
-    /**
-     * How many reading intervals fit into a 15-minute look-ahead, derived from the median
-     * gap between recent history points. Falls back to a 5-minute cadence when unknown, so
-     * sources posting at 1- or 15-minute intervals project correctly instead of over/under.
-     */
-    private fun projectionSteps(): Double {
-        val gaps = history.zipWithNext { a, b -> b.dateMs - a.dateMs }
-            .filter { it in 60_000L..15 * 60_000L }
-            .sorted()
-        val intervalMs = if (gaps.isEmpty()) 5 * 60_000L else gaps[gaps.size / 2]
-        return 15 * 60_000.0 / intervalMs
     }
 
     override fun onGetTemplate(): Template {
@@ -412,6 +348,12 @@ class GlucoseScreen(
 
     private fun switchTo(profileId: String) {
         if (profileId == activeProfileId) return
+        // Invalidate any in-flight fetch for the old profile immediately, synchronously —
+        // otherwise it could still be awaiting its network call when activeProfileId flips,
+        // and fetch()'s own generation bump (which only happens once its coroutine actually
+        // starts running) may not have happened yet, letting the old profile's data slip
+        // through the gen check and get evaluated/alerted under the new profile's name.
+        fetchGeneration++
         activeProfileId = profileId
         repository.setActiveProfile(profileId)
         entry = null
