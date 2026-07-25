@@ -5,6 +5,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Alert-enabled profiles are now monitored in the background for as long as Android Auto is connected, not only the profile currently shown on screen; a profile that has alerts enabled but isn't the active tab now still gets checked and can still alert
+
 ### Fixed
 
 - Closed a narrow race where switching profiles right as an in-flight fetch for the previous profile resolved could show that profile's reading (and fire its alert) under the new profile's name; the fetch-generation guard is now bumped synchronously the moment a switch starts instead of only once the new fetch's coroutine runs
