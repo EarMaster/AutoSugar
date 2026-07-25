@@ -1,0 +1,3 @@
+• Alerts are now per-source, name the source, and no longer misfire on stale data, block each other, or (rarely) show the wrong source
+• Alerts also appear on the Android Auto screen now, and every enabled source is checked in the background
+• Dark mode, graph colours matching your thresholds, and local/LAN Nightscout URLs

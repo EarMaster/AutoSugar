@@ -1,0 +1,3 @@
+• Alarme sind jetzt pro Quelle, nennen die Quelle und lösen nicht mehr fälschlich bei veralteten Daten aus, blockieren sich nicht mehr gegenseitig und zeigen (selten) nicht mehr die falsche Quelle
+• Alarme erscheinen jetzt auch auf dem Android-Auto-Bildschirm, und jede aktivierte Quelle wird im Hintergrund geprüft
+• Dunkelmodus, Graphenfarben nach deinen Grenzwerten und lokale/LAN-Nightscout-URLs

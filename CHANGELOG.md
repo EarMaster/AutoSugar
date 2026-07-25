@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.5] - 2026-07-25
+
 ### Added
 
 - Alert-enabled profiles are now monitored in the background for as long as Android Auto is connected, not only the profile currently shown on screen; a profile that has alerts enabled but isn't the active tab now still gets checked and can still alert

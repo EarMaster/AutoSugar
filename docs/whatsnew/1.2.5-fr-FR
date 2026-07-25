@@ -1,0 +1,3 @@
+• Les alertes sont désormais par source, nomment la source et ne se déclenchent plus à tort sur des données anciennes, ne se bloquent plus entre elles et n'affichent (rarement) plus la mauvaise source
+• Les alertes s'affichent aussi maintenant sur l'écran Android Auto, et chaque source activée est vérifiée en arrière-plan
+• Mode sombre, couleurs du graphique selon vos seuils, et URL Nightscout en local/LAN
