@@ -2,6 +2,7 @@ package de.autosugar.car
 
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
+import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
@@ -30,8 +31,12 @@ class SourceSelectScreen(
     }
 
     override fun onGetTemplate(): Template {
+        // The host caps how many rows a list template may contain and rejects the template
+        // outright if it is exceeded, so clamp rather than trusting the profile count.
+        val limit = carContext.getCarService(ConstraintManager::class.java)
+            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST)
         val itemList = ItemList.Builder().apply {
-            profiles.forEach { profile ->
+            profiles.take(limit).forEach { profile ->
                 addItem(Row.Builder()
                     .setTitle(profile.displayName)
                     .addText(profile.baseUrl)

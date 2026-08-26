@@ -1,5 +1,6 @@
 package de.autosugar.car
 
+import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
@@ -90,5 +91,27 @@ class SourceSelectScreenTest {
             ?.map { it.title.toString() }
         assertTrue(titles?.contains("Alice") == true)
         assertTrue(titles?.contains("Bob") == true)
+    }
+
+    /**
+     * The host rejects a list template outright once it exceeds its content limit, so the
+     * screen must clamp rather than render one row per profile.
+     */
+    @Test
+    fun onGetTemplate_clampsItemsToHostContentLimit() {
+        val limit = carContext.getCarService(ConstraintManager::class.java)
+            .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST)
+        val tooMany = (0..limit).map { index ->
+            profile1.copy(id = "id-$index", displayName = "Profile $index")
+        }
+        every { mockRepository.profilesFlow } returns flowOf(tooMany)
+
+        val controller = ScreenController(SourceSelectScreen(carContext, mockRepository) {})
+        controller.moveToState(Lifecycle.State.STARTED)
+
+        Thread.sleep(200)
+
+        val template = controller.getTemplatesReturned().last() as ListTemplate
+        assertEquals(limit, template.singleList?.items?.size)
     }
 }

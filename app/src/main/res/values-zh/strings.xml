@@ -9,7 +9,11 @@
     <string name="label_loading">加载中…</string>
     <string name="error_fetch_failed">数据获取失败</string>
     <string name="action_retry">重试</string>
-    <string name="label_no_profiles">未配置来源。\n请在手机上打开 AutoSugar，添加 Nightscout 来源。</string>
+    <string name="label_not_set_up">AutoSugar 尚未设置。\n驾驶时无法进行设置。</string>
+    <string name="title_setup_required">需要设置</string>
+    <string name="action_how_to_set_up">如何设置</string>
+    <string name="action_done">完成</string>
+    <string name="msg_setup_instructions">AutoSugar 需要一个 Nightscout 来源才能显示血糖数值。\n\n请在手机上打开 AutoSugar，点击 +，输入您的 Nightscout 网址和 API 令牌。保存来源后，数值会自动显示在这里。\n\n请仅在安全时查看手机屏幕。</string>
     <string name="label_just_now">刚刚</string>
     <string name="label_n_min_ago">%d 分钟前</string>
     <string name="label_stale_reading">⚠️ 读数：%s</string>
