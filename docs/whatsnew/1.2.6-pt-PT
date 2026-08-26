@@ -1,0 +1,3 @@
+A configuração passa a estar disponível apenas com o carro estacionado. Sem fonte configurada, o ecrã indica apenas que o AutoSugar não está configurado; as instruções abrem só quando estaciona.
+
+Também corrigido: a lista de fontes já não excede o ecrã e os ecrãs deixam de se acumular.

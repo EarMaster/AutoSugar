@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.6] - 2026-08-27
+
 ### Fixed
 
 - Initial setup is no longer reachable from the car screen while driving, which Google Play rejected 1.2.5 for: the unconfigured screen now states only that setup is unavailable while driving, and the phone-setup instructions sit behind a `ParkedOnlyOnClickListener` and a parked-only `LongMessageTemplate` that Android Auto refuses to render in motion

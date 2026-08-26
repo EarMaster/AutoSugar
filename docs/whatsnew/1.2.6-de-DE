@@ -1,0 +1,3 @@
+Die Einrichtung ist jetzt nur noch im geparkten Zustand möglich. Ist keine Quelle konfiguriert, zeigt der Autobildschirm nur noch an, dass AutoSugar noch nicht eingerichtet ist; die Anleitung öffnet sich nur im Stand.
+
+Außerdem behoben: Die Quellenliste sprengt nicht mehr die Anzeige, und Bildschirmwechsel stapeln sich nicht mehr.
