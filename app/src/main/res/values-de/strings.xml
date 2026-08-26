@@ -9,7 +9,11 @@
     <string name="label_loading">Lade…</string>
     <string name="error_fetch_failed">Datenabruf fehlgeschlagen</string>
     <string name="action_retry">Wiederholen</string>
-    <string name="label_no_profiles">Keine Quellen konfiguriert.\nÖffne AutoSugar auf deinem Smartphone, um eine Nightscout-Quelle hinzuzufügen.</string>
+    <string name="label_not_set_up">AutoSugar ist noch nicht eingerichtet.\nDie Einrichtung ist während der Fahrt nicht verfügbar.</string>
+    <string name="title_setup_required">Einrichtung erforderlich</string>
+    <string name="action_how_to_set_up">Anleitung</string>
+    <string name="action_done">Fertig</string>
+    <string name="msg_setup_instructions">AutoSugar benötigt eine Nightscout-Quelle, um Werte anzeigen zu können.\n\nÖffne AutoSugar auf deinem Smartphone, tippe auf + und gib deine Nightscout-URL und deinen API-Token ein. Sobald eine Quelle gespeichert ist, erscheinen die Werte hier automatisch.\n\nSieh nur auf dein Smartphone, wenn es sicher ist.</string>
     <string name="label_just_now">gerade eben</string>
     <string name="label_n_min_ago">vor %d Min.</string>
     <string name="label_stale_reading">⚠️ Messung: %s</string>

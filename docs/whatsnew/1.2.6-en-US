@@ -1,0 +1,3 @@
+Setup is now a parked-only task. When no source is configured, the car screen simply says AutoSugar isn't set up yet, and the instructions for adding your Nightscout URL open only while you're parked.
+
+Also fixed: the source list no longer exceeds what the car screen can show, and switching between screens no longer piles them up.

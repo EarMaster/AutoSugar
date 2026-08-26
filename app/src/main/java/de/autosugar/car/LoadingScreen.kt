@@ -31,7 +31,7 @@ class LoadingScreen(
                     GlucoseScreen(carContext, repository, appPrefs, activeId)
                 }
             }
-            screenManager.push(nextScreen)
+            replaceStackWith(nextScreen)
         }
     }
 

@@ -84,7 +84,7 @@ class GlucoseScreen(
                 if (updated.isEmpty()) {
                     // All profiles were removed — return to the no-profiles screen instead
                     // of rendering an orphaned reading.
-                    screenManager.push(NoProfilesScreen(carContext, repository, appPrefs))
+                    replaceStackWith(NoProfilesScreen(carContext, repository, appPrefs))
                     return@collect
                 }
                 profiles = updated

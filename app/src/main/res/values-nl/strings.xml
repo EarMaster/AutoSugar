@@ -9,7 +9,11 @@
     <string name="label_loading">Laden…</string>
     <string name="error_fetch_failed">Ophalen van gegevens mislukt</string>
     <string name="action_retry">Opnieuw proberen</string>
-    <string name="label_no_profiles">Geen bronnen geconfigureerd.\nOpen AutoSugar op je telefoon om een Nightscout-bron toe te voegen.</string>
+    <string name="label_not_set_up">AutoSugar is nog niet ingesteld.\nInstellen is niet beschikbaar tijdens het rijden.</string>
+    <string name="title_setup_required">Instellen vereist</string>
+    <string name="action_how_to_set_up">Instructies</string>
+    <string name="action_done">Klaar</string>
+    <string name="msg_setup_instructions">AutoSugar heeft een Nightscout-bron nodig om waarden te tonen.\n\nOpen AutoSugar op je telefoon, tik op + en voer je Nightscout-URL en API-token in. Zodra een bron is opgeslagen, verschijnen de waarden hier automatisch.\n\nKijk alleen naar het scherm van je telefoon wanneer dat veilig is.</string>
     <string name="label_just_now">zojuist</string>
     <string name="label_n_min_ago">%d min geleden</string>
     <string name="label_stale_reading">⚠️ Meting: %s</string>

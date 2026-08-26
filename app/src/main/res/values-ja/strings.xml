@@ -9,7 +9,11 @@
     <string name="label_loading">読み込み中…</string>
     <string name="error_fetch_failed">データの取得に失敗しました</string>
     <string name="action_retry">再試行</string>
-    <string name="label_no_profiles">ソースが設定されていません。\nスマートフォンでAutoSugarを開き、Nightscoutソースを追加してください。</string>
+    <string name="label_not_set_up">AutoSugar はまだ設定されていません。\n運転中は設定できません。</string>
+    <string name="title_setup_required">設定が必要です</string>
+    <string name="action_how_to_set_up">設定方法</string>
+    <string name="action_done">完了</string>
+    <string name="msg_setup_instructions">AutoSugar で数値を表示するには Nightscout ソースが必要です。\n\nスマートフォンで AutoSugar を開き、+ をタップして Nightscout の URL と API トークンを入力してください。ソースを保存すると、数値がここに自動的に表示されます。\n\nスマートフォンの画面は、安全なときにのみご覧ください。</string>
     <string name="label_just_now">たった今</string>
     <string name="label_n_min_ago">%d分前</string>
     <string name="label_stale_reading">⚠️ 測定値: %s</string>

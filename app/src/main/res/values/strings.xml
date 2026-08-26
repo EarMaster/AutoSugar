@@ -9,7 +9,11 @@
     <string name="label_loading">Loading…</string>
     <string name="error_fetch_failed">Failed to fetch data</string>
     <string name="action_retry">Retry</string>
-    <string name="label_no_profiles">No sources configured.\nOpen AutoSugar on your phone to add a Nightscout source.</string>
+    <string name="label_not_set_up">AutoSugar isn\'t set up yet.\nSetup isn\'t available while driving.</string>
+    <string name="title_setup_required">Setup required</string>
+    <string name="action_how_to_set_up">How to set up</string>
+    <string name="action_done">Done</string>
+    <string name="msg_setup_instructions">AutoSugar needs a Nightscout source before it can show readings.\n\nOn your phone, open AutoSugar, tap + and enter your Nightscout URL and API token. Readings appear here automatically once a source is saved.\n\nOnly look at your phone screen when it is safe to do so.</string>
 
     <!-- Settings UI -->
     <string name="label_settings">Settings</string>

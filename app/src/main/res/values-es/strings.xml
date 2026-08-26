@@ -9,7 +9,11 @@
     <string name="label_loading">Cargando…</string>
     <string name="error_fetch_failed">Error al obtener datos</string>
     <string name="action_retry">Reintentar</string>
-    <string name="label_no_profiles">Ninguna fuente configurada.\nAbre AutoSugar en tu teléfono para añadir una fuente de Nightscout.</string>
+    <string name="label_not_set_up">AutoSugar aún no está configurado.\nLa configuración no está disponible mientras conduces.</string>
+    <string name="title_setup_required">Configuración necesaria</string>
+    <string name="action_how_to_set_up">Cómo configurar</string>
+    <string name="action_done">Listo</string>
+    <string name="msg_setup_instructions">AutoSugar necesita una fuente de Nightscout para mostrar lecturas.\n\nEn tu teléfono, abre AutoSugar, pulsa + e introduce tu URL de Nightscout y tu token de API. Las lecturas aparecerán aquí automáticamente cuando guardes una fuente.\n\nMira la pantalla de tu teléfono solo cuando sea seguro hacerlo.</string>
     <string name="label_just_now">ahora mismo</string>
     <string name="label_n_min_ago">hace %d min</string>
     <string name="label_stale_reading">⚠️ Lectura: %s</string>

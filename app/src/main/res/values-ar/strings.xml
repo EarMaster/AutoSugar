@@ -9,7 +9,11 @@
     <string name="label_loading">جارٍ التحميل…</string>
     <string name="error_fetch_failed">فشل جلب البيانات</string>
     <string name="action_retry">إعادة المحاولة</string>
-    <string name="label_no_profiles">لم يتم تكوين أي مصادر.\nافتح AutoSugar على هاتفك لإضافة مصدر Nightscout.</string>
+    <string name="label_not_set_up">لم يتم إعداد AutoSugar بعد.\nالإعداد غير متاح أثناء القيادة.</string>
+    <string name="title_setup_required">الإعداد مطلوب</string>
+    <string name="action_how_to_set_up">طريقة الإعداد</string>
+    <string name="action_done">تم</string>
+    <string name="msg_setup_instructions">يحتاج AutoSugar إلى مصدر Nightscout لعرض القراءات.\n\nافتح AutoSugar على هاتفك، واضغط على +، وأدخل رابط Nightscout ورمز API الخاص بك. بمجرد حفظ المصدر، ستظهر القراءات هنا تلقائيًا.\n\nلا تنظر إلى شاشة هاتفك إلا عندما يكون ذلك آمنًا.</string>
     <string name="label_just_now">الآن</string>
     <string name="label_n_min_ago">منذ %d دقيقة</string>
     <string name="label_stale_reading">⚠️ القراءة: %s</string>

@@ -5,6 +5,14 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.6] - 2026-08-27
+
+### Fixed
+
+- Initial setup is no longer reachable from the car screen while driving, which Google Play rejected 1.2.5 for: the unconfigured screen now states only that setup is unavailable while driving, and the phone-setup instructions sit behind a `ParkedOnlyOnClickListener` and a parked-only `LongMessageTemplate` that Android Auto refuses to render in motion
+- The source list now clamps to the host's content limit instead of adding one row per profile, which the host would reject outright once exceeded
+- Moving between the loading, not-set-up, and glucose screens no longer grows the screen stack every time the last source is deleted and re-added
+
 ## [1.2.5] - 2026-07-25
 
 ### Added

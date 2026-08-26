@@ -1,0 +1,3 @@
+La configuración ahora solo está disponible con el coche aparcado. Si no hay ninguna fuente, la pantalla del coche solo indica que AutoSugar aún no está configurado; las instrucciones se abren únicamente al aparcar.
+
+También corregido: la lista de fuentes ya no supera lo que cabe en pantalla y las pantallas ya no se acumulan.

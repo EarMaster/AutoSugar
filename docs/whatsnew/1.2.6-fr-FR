@@ -1,0 +1,3 @@
+La configuration n'est désormais possible qu'à l'arrêt. Sans source configurée, l'écran indique simplement qu'AutoSugar n'est pas configuré ; les instructions ne s'ouvrent qu'une fois garé.
+
+Également corrigé : la liste des sources ne dépasse plus l'affichage et les écrans ne s'empilent plus.
