@@ -73,6 +73,14 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: de.autosugar
           releaseFiles: release-assets/*.aab
-          track: ${{ inputs.track }}
+          # `tracks`, not `track`: the action warns that the singular form is deprecated, and
+          # refuses outright if both are set. It takes a comma-separated list; this workflow
+          # deliberately passes exactly one, which is why its own input stays singular.
+          #
+          # It must never arrive empty — the action defaults to *production* when neither input
+          # is given, which is not a default anything here should fall into by accident. Hence
+          # the `|| 'internal'` as well as the input's own default.
+          tracks: ${{ inputs.track || 'internal' }}
           whatsNewDirectory: whatsnew/
           mappingFile: release-assets/mapping.txt
+          changesNotSentForReview: true
