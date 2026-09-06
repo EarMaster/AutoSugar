@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">血糖提醒</string>
+    <string name="label_alerts_on">提醒已开启</string>
     <string name="notif_channel_name">血糖提醒</string>
     <string name="notif_channel_desc">高低血糖提醒，15 分钟重复间隔</string>
     <string name="notif_title_high">血糖偏高</string>

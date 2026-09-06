@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
@@ -20,7 +21,16 @@ class NightscoutRepository @Inject constructor(
     private val dataStore: ProfileDataStore,
     private val apiFactory: NightscoutApiFactory,
 ) {
+    /** Every configured profile, enabled or not. The phone-side settings UI edits this list. */
     val profilesFlow: Flow<List<NightscoutProfile>> = dataStore.profilesFlow
+
+    /**
+     * The profiles the car is allowed to see. Every car screen and the alert monitor read this
+     * instead of [profilesFlow], so disabling a source on the phone removes it from the car
+     * outright rather than leaving it selectable but inert.
+     */
+    val enabledProfilesFlow: Flow<List<NightscoutProfile>> =
+        dataStore.profilesFlow.map { profiles -> profiles.filter { it.enabled } }
 
     private val _activeProfileId = MutableStateFlow<String?>(null)
     val activeProfileId: StateFlow<String?> = _activeProfileId.asStateFlow()
@@ -146,6 +156,15 @@ class NightscoutRepository @Inject constructor(
         dataStore.update { profiles ->
             profiles.map { if (it.id == id) it.copy(alertsEnabled = enabled) else it }
         }
+    }
+
+    /** Atomically shows or hides a single profile in the car, leaving its configuration intact. */
+    suspend fun setProfileEnabled(id: String, enabled: Boolean) {
+        dataStore.update { profiles ->
+            profiles.map { if (it.id == id) it.copy(enabled = enabled) else it }
+        }
+        // A source that just disappeared from the car must not stay the selected one.
+        if (!enabled && _activeProfileId.value == id) _activeProfileId.value = null
     }
 
     suspend fun saveAll(profiles: List<NightscoutProfile>) {

@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">ग्लूकोज़ अलर्ट</string>
+    <string name="label_alerts_on">अलर्ट चालू</string>
     <string name="notif_channel_name">ग्लूकोज़ अलर्ट</string>
     <string name="notif_channel_desc">15 मिनट की पुनरावृत्ति के साथ उच्च और निम्न रक्त शर्करा अलर्ट</string>
     <string name="notif_title_high">उच्च रक्त शर्करा</string>

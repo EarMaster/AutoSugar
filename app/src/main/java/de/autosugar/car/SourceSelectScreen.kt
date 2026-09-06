@@ -23,7 +23,7 @@ class SourceSelectScreen(
 
     init {
         lifecycleScope.launch {
-            repository.profilesFlow.collect { updated ->
+            repository.enabledProfilesFlow.collect { updated ->
                 profiles = updated
                 invalidate()
             }

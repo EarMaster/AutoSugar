@@ -40,6 +40,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glucose alerts</string>
+    <string name="label_alerts_on">Alerts on</string>
     <string name="notif_channel_name">Glucose Alerts</string>
     <string name="notif_channel_desc">High and low blood glucose alerts with 15-minute repeat cooldown</string>
     <string name="notif_title_high">High glucose</string>

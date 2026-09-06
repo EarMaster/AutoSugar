@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Alertes glycémie</string>
+    <string name="label_alerts_on">Alertes activées</string>
     <string name="notif_channel_name">Alertes glycémie</string>
     <string name="notif_channel_desc">Alertes d\'hyperglycémie et d\'hypoglycémie avec intervalle de répétition de 15 minutes</string>
     <string name="notif_title_high">Glycémie élevée</string>

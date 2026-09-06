@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">血糖アラート</string>
+    <string name="label_alerts_on">アラート有効</string>
     <string name="notif_channel_name">血糖アラート</string>
     <string name="notif_channel_desc">15分間隔の繰り返しで高血糖・低血糖アラート</string>
     <string name="notif_title_high">高血糖</string>

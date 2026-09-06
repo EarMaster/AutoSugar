@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Alertas de glucosa</string>
+    <string name="label_alerts_on">Alertas activadas</string>
     <string name="notif_channel_name">Alertas de glucosa</string>
     <string name="notif_channel_desc">Alertas de glucosa alta y baja con intervalo de repetición de 15 minutos</string>
     <string name="notif_title_high">Glucosa alta</string>

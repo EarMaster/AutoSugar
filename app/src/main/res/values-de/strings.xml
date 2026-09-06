@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glukose-Alarme</string>
+    <string name="label_alerts_on">Alarme aktiv</string>
     <string name="notif_channel_name">Glukose-Alarme</string>
     <string name="notif_channel_desc">Alarme bei hohem und niedrigem Blutzucker mit 15-Minuten-Wiederholungsintervall</string>
     <string name="notif_title_high">Hoher Blutzucker</string>

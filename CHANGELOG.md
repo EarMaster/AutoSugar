@@ -5,6 +5,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Sources can now be switched off individually. The switch on each card in the source list enables or disables the source itself: a disabled source keeps its configuration on the phone but disappears from the car entirely and is no longer polled
+- The source list marks every source whose alerts are on with a small bell, so the alert state stays visible now that it is set in the source's own screen
+
+### Changed
+
+- The switch in the source list no longer toggles glucose alerts. Alerts are set per source in that source's screen, which is also where the notification permission is requested
+
 ### Fixed
 
 - Turning alerts on from the source list now asks for notification permission, as the edit screen already did — a profile switched on there could previously never deliver anything, with nothing in the UI saying so

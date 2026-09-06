@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">تنبيهات الجلوكوز</string>
+    <string name="label_alerts_on">التنبيهات مفعّلة</string>
     <string name="notif_channel_name">تنبيهات الجلوكوز</string>
     <string name="notif_channel_desc">تنبيهات ارتفاع وانخفاض سكر الدم مع فترة راحة تكرار 15 دقيقة</string>
     <string name="notif_title_high">ارتفاع السكر</string>

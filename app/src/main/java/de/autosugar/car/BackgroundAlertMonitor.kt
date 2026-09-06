@@ -37,7 +37,7 @@ class BackgroundAlertMonitor(
     private val historyByProfile = mutableMapOf<String, List<GlucoseEntry>>()
 
     suspend fun checkAll() = coroutineScope {
-        val profiles = repository.profilesFlow.first().filter { it.alertsEnabled }
+        val profiles = repository.enabledProfilesFlow.first().filter { it.alertsEnabled }
         profiles.map { profile -> async { checkProfile(profile) } }.awaitAll()
     }
 

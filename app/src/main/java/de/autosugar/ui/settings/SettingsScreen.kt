@@ -1,9 +1,5 @@
 package de.autosugar.ui.settings
 
-import android.Manifest
-import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +10,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -99,24 +97,10 @@ fun SettingsScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    val notificationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { alertsDeliverable = GlucoseAlertManager.alertsDeliverable(context) }
-
-    // Enabling alerts here has to ask for the permission just like the edit screen's toggle does —
-    // otherwise a profile switched on from this list would never be able to deliver anything.
-    val enableAlerts = { profileId: String, enabled: Boolean ->
-        viewModel.setAlertsEnabled(profileId, enabled)
-        if (enabled) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                alertsDeliverable = GlucoseAlertManager.alertsDeliverable(context)
-            }
-        }
-    }
-
-    val showAlertsBlocked = !alertsDeliverable && localProfiles.any { it.alertsEnabled }
+    // Only a source that is actually shown in the car can raise an alert, so a disabled one
+    // being unable to notify is not worth warning about.
+    val showAlertsBlocked =
+        !alertsDeliverable && localProfiles.any { it.enabled && it.alertsEnabled }
     val headerCount = if (showAlertsBlocked) HEADER_COUNT + 1 else HEADER_COUNT
 
     // Keep local list in sync with repository, but not during an active drag
@@ -229,7 +213,9 @@ fun SettingsScreen(
                                     translationY = if (isDraggingThis) dragState.dragOffset else 0f
                                     shadowElevation = if (isDraggingThis) 16f else 0f
                                 },
-                            onAlertsToggled = { enabled -> enableAlerts(profile.id, enabled) },
+                            onEnabledToggled = { enabled ->
+                                viewModel.setProfileEnabled(profile.id, enabled)
+                            },
                             onClick = { onEditProfile(profile.id) },
                         )
                     }
@@ -325,7 +311,7 @@ private fun ProfileCard(
     profile: NightscoutProfile,
     isDragging: Boolean,
     modifier: Modifier = Modifier,
-    onAlertsToggled: (Boolean) -> Unit,
+    onEnabledToggled: (Boolean) -> Unit,
     onClick: () -> Unit,
 ) {
     val elevation by animateDpAsState(
@@ -342,26 +328,43 @@ private fun ProfileCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // A disabled source stays in the list, and editable, but is dimmed to match the
+            // fact that the car cannot see it.
+            val contentAlpha = if (profile.enabled) 1f else 0.38f
             Icon(
                 painter = painterResource(profile.icon.resId),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
             )
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = profile.displayName,
-                    style = MaterialTheme.typography.titleMedium,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(
+                        text = profile.displayName,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                    )
+                    if (profile.alertsEnabled) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = stringResource(R.string.label_alerts_on),
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = contentAlpha),
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                }
                 Text(
                     text = profile.baseUrl,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                     maxLines = 1,
                 )
             }
             Switch(
-                checked = profile.alertsEnabled,
-                onCheckedChange = onAlertsToggled,
+                checked = profile.enabled,
+                onCheckedChange = onEnabledToggled,
             )
         }
     }

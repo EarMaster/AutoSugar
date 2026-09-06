@@ -28,7 +28,7 @@ class LoadingScreenTest {
     @Before
     fun setUp() {
         carContext = TestCarContext.createCarContext(ApplicationProvider.getApplicationContext())
-        every { mockRepository.profilesFlow } returns emptyFlow()
+        every { mockRepository.enabledProfilesFlow } returns emptyFlow()
         every { mockRepository.activeProfileId } returns MutableStateFlow(null)
     }
 

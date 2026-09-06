@@ -34,5 +34,11 @@ data class NightscoutProfile(
     val apiToken: String,
     val unit: GlucoseUnit = GlucoseUnit.MG_DL,
     val icon: ProfileIcon = ProfileIcon.PERSON,
+    /**
+     * Whether the source is shown in the car at all. A disabled profile stays configured on the
+     * phone but is invisible to every car screen and is never polled — alerts included, since
+     * [alertsEnabled] only decides whether an *active* source may raise one.
+     */
+    val enabled: Boolean = true,
     val alertsEnabled: Boolean = false,
 )

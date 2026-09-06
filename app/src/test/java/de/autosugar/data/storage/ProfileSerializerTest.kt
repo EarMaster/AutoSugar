@@ -4,6 +4,7 @@ import de.autosugar.data.model.GlucoseUnit
 import de.autosugar.data.model.NightscoutProfile
 import de.autosugar.data.model.ProfileIcon
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -32,6 +33,24 @@ class ProfileSerializerTest {
     fun `round-trip preserves alertsEnabled true`() {
         val withAlerts = profile.copy(alertsEnabled = true)
         val result = serializer.fromJson(serializer.toJson(listOf(withAlerts)))
+        assertTrue(result[0].alertsEnabled)
+    }
+
+    @Test
+    fun `round-trip preserves a disabled profile`() {
+        val disabled = profile.copy(enabled = false)
+        val result = serializer.fromJson(serializer.toJson(listOf(disabled)))
+        assertFalse(result[0].enabled)
+    }
+
+    @Test
+    fun `profiles stored before the enabled field default to enabled`() {
+        // Anything written by 1.2.6 or earlier has no "enabled" key; those sources must stay
+        // visible in the car after the update rather than silently disappearing.
+        val json = """[{"id":"x","displayName":"X","baseUrl":"http://x.test","apiToken":"","unit":"MG_DL","icon":"PERSON","alertsEnabled":true}]"""
+        val result = serializer.fromJson(json)
+        assertEquals(1, result.size)
+        assertTrue(result[0].enabled)
         assertTrue(result[0].alertsEnabled)
     }
 

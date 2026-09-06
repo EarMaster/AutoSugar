@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glucosemeldingen</string>
+    <string name="label_alerts_on">Meldingen aan</string>
     <string name="notif_channel_name">Glucosemeldingen</string>
     <string name="notif_channel_desc">Meldingen voor hoge en lage bloedglucose met herhalings-cooldown van 15 minuten</string>
     <string name="notif_title_high">Hoge glucose</string>

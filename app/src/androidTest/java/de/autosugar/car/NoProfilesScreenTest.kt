@@ -28,7 +28,7 @@ class NoProfilesScreenTest {
     @Before
     fun setUp() {
         carContext = TestCarContext.createCarContext(ApplicationProvider.getApplicationContext())
-        every { mockRepository.profilesFlow } returns emptyFlow()
+        every { mockRepository.enabledProfilesFlow } returns emptyFlow()
     }
 
     @Test
