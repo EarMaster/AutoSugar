@@ -45,9 +45,6 @@
     <string name="notif_channel_desc">High and low blood glucose alerts with 15-minute repeat cooldown</string>
     <string name="notif_title_high">High glucose</string>
     <string name="notif_title_low">Low glucose</string>
-    <string name="notif_title_predicted_high">Glucose trending high</string>
-    <string name="notif_title_predicted_low">Glucose trending low</string>
-    <string name="notif_text_predicted">Predicted in 15 min: %s</string>
 
     <!-- Background monitoring service -->
     <string name="notif_channel_monitor_name">Monitoring</string>

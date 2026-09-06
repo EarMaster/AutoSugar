@@ -44,9 +44,6 @@
     <string name="notif_channel_desc">Alertas de glucosa alta y baja con intervalo de repetición de 15 minutos</string>
     <string name="notif_title_high">Glucosa alta</string>
     <string name="notif_title_low">Glucosa baja</string>
-    <string name="notif_title_predicted_high">Glucosa en tendencia alta</string>
-    <string name="notif_title_predicted_low">Glucosa en tendencia baja</string>
-    <string name="notif_text_predicted">Predicción en 15 min: %s</string>
 
     <!-- Monitorización en segundo plano -->
     <string name="notif_channel_monitor_name">Monitorización</string>

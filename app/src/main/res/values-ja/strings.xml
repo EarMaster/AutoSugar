@@ -44,9 +44,6 @@
     <string name="notif_channel_desc">15分間隔の繰り返しで高血糖・低血糖アラート</string>
     <string name="notif_title_high">高血糖</string>
     <string name="notif_title_low">低血糖</string>
-    <string name="notif_title_predicted_high">血糖値上昇傾向</string>
-    <string name="notif_title_predicted_low">血糖値下降傾向</string>
-    <string name="notif_text_predicted">15分後の予測: %s</string>
 
     <!-- バックグラウンド監視 -->
     <string name="notif_channel_monitor_name">監視</string>

@@ -44,9 +44,6 @@
     <string name="notif_channel_desc">Meldingen voor hoge en lage bloedglucose met herhalings-cooldown van 15 minuten</string>
     <string name="notif_title_high">Hoge glucose</string>
     <string name="notif_title_low">Lage glucose</string>
-    <string name="notif_title_predicted_high">Glucose stijgt</string>
-    <string name="notif_title_predicted_low">Glucose daalt</string>
-    <string name="notif_text_predicted">Voorspelling over 15 min: %s</string>
 
     <!-- Bewaking op de achtergrond -->
     <string name="notif_channel_monitor_name">Bewaking</string>

@@ -44,9 +44,6 @@
     <string name="notif_channel_desc">Alertes d\'hyperglycémie et d\'hypoglycémie avec intervalle de répétition de 15 minutes</string>
     <string name="notif_title_high">Glycémie élevée</string>
     <string name="notif_title_low">Glycémie basse</string>
-    <string name="notif_title_predicted_high">Glycémie en hausse</string>
-    <string name="notif_title_predicted_low">Glycémie en baisse</string>
-    <string name="notif_text_predicted">Prévision dans 15 min : %s</string>
 
     <!-- Surveillance en arrière-plan -->
     <string name="notif_channel_monitor_name">Surveillance</string>

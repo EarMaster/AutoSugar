@@ -44,9 +44,6 @@
     <string name="notif_channel_desc">تنبيهات ارتفاع وانخفاض سكر الدم مع فترة راحة تكرار 15 دقيقة</string>
     <string name="notif_title_high">ارتفاع السكر</string>
     <string name="notif_title_low">انخفاض السكر</string>
-    <string name="notif_title_predicted_high">السكر في ارتفاع</string>
-    <string name="notif_title_predicted_low">السكر في انخفاض</string>
-    <string name="notif_text_predicted">متوقع خلال 15 دقيقة: %s</string>
 
     <!-- المراقبة في الخلفية -->
     <string name="notif_channel_monitor_name">المراقبة</string>

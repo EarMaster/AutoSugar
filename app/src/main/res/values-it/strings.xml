@@ -44,9 +44,6 @@
     <string name="notif_channel_desc">Avvisi per glicemia alta e bassa con intervallo di ripetizione di 15 minuti</string>
     <string name="notif_title_high">Glicemia alta</string>
     <string name="notif_title_low">Glicemia bassa</string>
-    <string name="notif_title_predicted_high">Glicemia in aumento</string>
-    <string name="notif_title_predicted_low">Glicemia in calo</string>
-    <string name="notif_text_predicted">Previsto tra 15 min: %s</string>
 
     <!-- Monitoraggio in background -->
     <string name="notif_channel_monitor_name">Monitoraggio</string>
