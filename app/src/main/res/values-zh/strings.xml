@@ -55,6 +55,13 @@
     <string name="notif_title_monitoring_stopped">血糖监测已停止</string>
     <string name="notif_text_monitoring_stopped">请在车机屏幕上打开 AutoSugar 以恢复提醒</string>
 
+    <!-- 通知设置阻止了提醒 -->
+    <string name="label_alerts_blocked_title">无法发送提醒</string>
+    <string name="label_alerts_blocked_text">AutoSugar 的通知已关闭，血糖提醒将不会在车机或手机上显示。</string>
+    <string name="btn_open_notification_settings">打开通知设置</string>
+    <string name="msg_notifications_denied">提醒需要发送通知的权限</string>
+    <string name="btn_settings">设置</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">刷新间隔</string>
     <string name="label_refresh_30s">30 秒</string>

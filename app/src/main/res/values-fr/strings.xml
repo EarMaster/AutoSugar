@@ -55,6 +55,13 @@
     <string name="notif_title_monitoring_stopped">Surveillance du glucose arrêtée</string>
     <string name="notif_text_monitoring_stopped">Ouvrez AutoSugar sur l’écran de la voiture pour reprendre les alertes</string>
 
+    <!-- Alertes bloquées par les paramètres de notification -->
+    <string name="label_alerts_blocked_title">Les alertes ne peuvent pas être remises</string>
+    <string name="label_alerts_blocked_text">Les notifications sont désactivées pour AutoSugar : les alertes de glucose n’apparaîtront ni dans la voiture ni sur le téléphone.</string>
+    <string name="btn_open_notification_settings">Ouvrir les paramètres de notification</string>
+    <string name="msg_notifications_denied">Les alertes nécessitent l’autorisation d’envoyer des notifications</string>
+    <string name="btn_settings">Paramètres</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervalle d\'actualisation</string>
     <string name="label_refresh_30s">30 sec</string>

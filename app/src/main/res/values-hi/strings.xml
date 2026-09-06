@@ -55,6 +55,13 @@
     <string name="notif_title_monitoring_stopped">ग्लूकोज़ निगरानी बंद हुई</string>
     <string name="notif_text_monitoring_stopped">अलर्ट फिर से शुरू करने के लिए कार स्क्रीन पर AutoSugar खोलें</string>
 
+    <!-- सूचना सेटिंग्स द्वारा अलर्ट ब्लॉक -->
+    <string name="label_alerts_blocked_title">अलर्ट नहीं भेजे जा सकते</string>
+    <string name="label_alerts_blocked_text">AutoSugar के लिए सूचनाएँ बंद हैं, इसलिए ग्लूकोज़ अलर्ट न कार में दिखेंगे और न फ़ोन पर।</string>
+    <string name="btn_open_notification_settings">सूचना सेटिंग्स खोलें</string>
+    <string name="msg_notifications_denied">अलर्ट के लिए सूचना अनुमति ज़रूरी है</string>
+    <string name="btn_settings">सेटिंग्स</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">रीफ्रेश अंतराल</string>
     <string name="label_refresh_30s">30 सेकंड</string>

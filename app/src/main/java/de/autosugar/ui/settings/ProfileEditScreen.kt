@@ -37,8 +37,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -46,7 +48,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -83,13 +87,31 @@ fun ProfileEditScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
+    var notificationsDenied by remember { mutableStateOf(false) }
+
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         // Without notification permission, alerts can never be delivered. Turn the
         // toggle back off so it reflects reality instead of staying on while alerts
         // silently never fire.
-        if (!granted) viewModel.alertsEnabled.value = false
+        if (!granted) {
+            viewModel.alertsEnabled.value = false
+            notificationsDenied = true
+        }
+    }
+
+    // A permission denied twice can no longer be prompted for — launch() returns "denied" without
+    // showing anything — so the toggle would otherwise just flick back off for no visible reason.
+    LaunchedEffect(notificationsDenied) {
+        if (!notificationsDenied) return@LaunchedEffect
+        notificationsDenied = false
+        val result = snackbarHostState.showSnackbar(
+            message = context.getString(R.string.msg_notifications_denied),
+            actionLabel = context.getString(R.string.btn_settings),
+            duration = SnackbarDuration.Long,
+        )
+        if (result == SnackbarResult.ActionPerformed) openNotificationSettings(context)
     }
 
     LaunchedEffect(uiState) {

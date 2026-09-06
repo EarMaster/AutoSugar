@@ -55,6 +55,13 @@
     <string name="notif_title_monitoring_stopped">Glukoseüberwachung beendet</string>
     <string name="notif_text_monitoring_stopped">AutoSugar auf dem Autobildschirm öffnen, um Alarme fortzusetzen</string>
 
+    <!-- Alarme durch Benachrichtigungseinstellungen blockiert -->
+    <string name="label_alerts_blocked_title">Alarme können nicht zugestellt werden</string>
+    <string name="label_alerts_blocked_text">Benachrichtigungen für AutoSugar sind deaktiviert. Glukose-Alarme erscheinen weder im Auto noch auf dem Telefon.</string>
+    <string name="btn_open_notification_settings">Benachrichtigungseinstellungen öffnen</string>
+    <string name="msg_notifications_denied">Alarme benötigen die Berechtigung für Benachrichtigungen</string>
+    <string name="btn_settings">Einstellungen</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Aktualisierungsintervall</string>
     <string name="label_refresh_30s">30 Sek.</string>

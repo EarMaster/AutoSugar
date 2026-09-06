@@ -55,6 +55,13 @@
     <string name="notif_title_monitoring_stopped">Monitoraggio della glicemia interrotto</string>
     <string name="notif_text_monitoring_stopped">Apri AutoSugar sullo schermo dell’auto per riprendere gli avvisi</string>
 
+    <!-- Avvisi bloccati dalle impostazioni di notifica -->
+    <string name="label_alerts_blocked_title">Gli avvisi non possono essere recapitati</string>
+    <string name="label_alerts_blocked_text">Le notifiche di AutoSugar sono disattivate, quindi gli avvisi glicemici non compariranno né in auto né sul telefono.</string>
+    <string name="btn_open_notification_settings">Apri le impostazioni di notifica</string>
+    <string name="msg_notifications_denied">Gli avvisi richiedono l’autorizzazione a inviare notifiche</string>
+    <string name="btn_settings">Impostazioni</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervallo aggiornamento</string>
     <string name="label_refresh_30s">30 sec</string>

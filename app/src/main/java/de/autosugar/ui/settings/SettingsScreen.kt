@@ -1,5 +1,9 @@
 package de.autosugar.ui.settings
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +20,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +36,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,17 +48,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import de.autosugar.BuildConfig
 import de.autosugar.R
+import de.autosugar.car.GlucoseAlertManager
 import de.autosugar.data.model.NightscoutProfile
 import kotlin.math.roundToInt
 
-// Items before the profile list in the LazyColumn (RefreshSection + Divider)
+// Items before the profile list in the LazyColumn (RefreshSection + Divider), plus the
+// alerts-blocked banner when it is showing. Drag-and-drop maps list indices to profile
+// indices through this, so it has to follow the banner.
 private const val HEADER_COUNT = 2
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +82,43 @@ fun SettingsScreen(
     val localProfiles = remember { mutableStateListOf<NightscoutProfile>() }
     var isDragging by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    var alertsDeliverable by remember { mutableStateOf(true) }
+
+    // Notifications can be switched off long after alerts were enabled — by hand, or by Android
+    // revoking permissions for an app that has not been opened in months. Re-check on every resume
+    // so the banner also clears the moment the user comes back from the system settings screen.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                alertsDeliverable = GlucoseAlertManager.alertsDeliverable(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { alertsDeliverable = GlucoseAlertManager.alertsDeliverable(context) }
+
+    // Enabling alerts here has to ask for the permission just like the edit screen's toggle does —
+    // otherwise a profile switched on from this list would never be able to deliver anything.
+    val enableAlerts = { profileId: String, enabled: Boolean ->
+        viewModel.setAlertsEnabled(profileId, enabled)
+        if (enabled) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                alertsDeliverable = GlucoseAlertManager.alertsDeliverable(context)
+            }
+        }
+    }
+
+    val showAlertsBlocked = !alertsDeliverable && localProfiles.any { it.alertsEnabled }
+    val headerCount = if (showAlertsBlocked) HEADER_COUNT + 1 else HEADER_COUNT
+
     // Keep local list in sync with repository, but not during an active drag
     LaunchedEffect(profiles) {
         if (!isDragging) {
@@ -75,8 +127,8 @@ fun SettingsScreen(
         }
     }
 
-    val dragState = remember(lazyListState) {
-        DragDropState(lazyListState, HEADER_COUNT) { from, to ->
+    val dragState = remember(lazyListState, headerCount) {
+        DragDropState(lazyListState, headerCount) { from, to ->
             val item = localProfiles.removeAt(from)
             localProfiles.add(to, item)
         }
@@ -139,6 +191,11 @@ fun SettingsScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                if (showAlertsBlocked) {
+                    item {
+                        AlertsBlockedBanner(onOpenSettings = { openNotificationSettings(context) })
+                    }
+                }
                 item {
                     RefreshIntervalSection(
                         currentSeconds = refreshInterval,
@@ -172,9 +229,7 @@ fun SettingsScreen(
                                     translationY = if (isDraggingThis) dragState.dragOffset else 0f
                                     shadowElevation = if (isDraggingThis) 16f else 0f
                                 },
-                            onAlertsToggled = { enabled ->
-                                viewModel.setAlertsEnabled(profile.id, enabled)
-                            },
+                            onAlertsToggled = { enabled -> enableAlerts(profile.id, enabled) },
                             onClick = { onEditProfile(profile.id) },
                         )
                     }
@@ -193,6 +248,46 @@ fun SettingsScreen(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AlertsBlockedBanner(onOpenSettings: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(Icons.Default.Warning, contentDescription = null)
+                Text(
+                    text = stringResource(R.string.label_alerts_blocked_title),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
+            Text(
+                text = stringResource(R.string.label_alerts_blocked_text),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Button(
+                onClick = onOpenSettings,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                ),
+            ) {
+                Text(stringResource(R.string.btn_open_notification_settings))
             }
         }
     }

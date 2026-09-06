@@ -7,6 +7,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Turning alerts on from the source list now asks for notification permission, as the edit screen already did — a profile switched on there could previously never deliver anything, with nothing in the UI saying so
+- Settings now shows a warning when a profile has alerts enabled but notifications are switched off for AutoSugar or its alert channel is blocked, with a button straight to the system settings. This covers permission that is denied for good (which can no longer be prompted for) and permission Android revokes on its own after months of not opening the app
 - Glucose alerts now fire while AutoSugar is in the background and Android Auto is connected — the case they exist for. Alert polling used to run on the car session's lifecycle, which the host tears down as soon as another car app takes the screen, so alerts only ever appeared while the driver could already see the reading. It now runs in a foreground service tied to the car connection instead, and stops when Android Auto disconnects
 
 ### Changed

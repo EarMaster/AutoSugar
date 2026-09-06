@@ -1,17 +1,23 @@
 package de.autosugar.car
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import androidx.core.app.NotificationManagerCompat
 import de.autosugar.R
 import de.autosugar.data.model.GlucoseUnit
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -174,6 +180,59 @@ class GlucoseAlertManagerTest {
         manager.sendMonitoringStoppedAlert()
 
         verify { manager.post(any(), match { !it.contains("·") }, any()) }
+    }
+
+    // endregion
+
+    // region alertsDeliverable
+
+    private fun mockNotificationsEnabled(enabled: Boolean) {
+        val compat = mockk<NotificationManagerCompat>(relaxed = true)
+        every { compat.areNotificationsEnabled() } returns enabled
+        mockkStatic(NotificationManagerCompat::class)
+        every { NotificationManagerCompat.from(mockContext) } returns compat
+    }
+
+    @After
+    fun tearDown() {
+        unmockkStatic(NotificationManagerCompat::class)
+    }
+
+    @Test
+    fun `alertsDeliverable is false when notifications are switched off for the app`() {
+        mockNotificationsEnabled(false)
+
+        assertFalse(GlucoseAlertManager.alertsDeliverable(mockContext))
+    }
+
+    @Test
+    fun `alertsDeliverable is false when the alert channel itself is blocked`() {
+        mockNotificationsEnabled(true)
+        val channel = mockk<NotificationChannel>()
+        every { channel.importance } returns NotificationManager.IMPORTANCE_NONE
+        every { mockNm.getNotificationChannel(any()) } returns channel
+
+        assertFalse(GlucoseAlertManager.alertsDeliverable(mockContext))
+    }
+
+    @Test
+    fun `alertsDeliverable is true when the channel has not been created yet`() {
+        // The car app has never run on this install, so there is no channel to be blocked —
+        // that must not be reported as the user having turned alerts off.
+        mockNotificationsEnabled(true)
+        every { mockNm.getNotificationChannel(any()) } returns null
+
+        assertTrue(GlucoseAlertManager.alertsDeliverable(mockContext))
+    }
+
+    @Test
+    fun `alertsDeliverable is true when the app and the channel are both enabled`() {
+        mockNotificationsEnabled(true)
+        val channel = mockk<NotificationChannel>()
+        every { channel.importance } returns NotificationManager.IMPORTANCE_HIGH
+        every { mockNm.getNotificationChannel(any()) } returns channel
+
+        assertTrue(GlucoseAlertManager.alertsDeliverable(mockContext))
     }
 
     // endregion

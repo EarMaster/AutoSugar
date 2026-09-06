@@ -55,6 +55,13 @@
     <string name="notif_title_monitoring_stopped">Monitorización de glucosa detenida</string>
     <string name="notif_text_monitoring_stopped">Abre AutoSugar en la pantalla del coche para reanudar las alertas</string>
 
+    <!-- Alertas bloqueadas por los ajustes de notificaciones -->
+    <string name="label_alerts_blocked_title">Las alertas no se pueden entregar</string>
+    <string name="label_alerts_blocked_text">Las notificaciones de AutoSugar están desactivadas, así que las alertas de glucosa no aparecerán ni en el coche ni en el teléfono.</string>
+    <string name="btn_open_notification_settings">Abrir ajustes de notificaciones</string>
+    <string name="msg_notifications_denied">Las alertas necesitan permiso para enviar notificaciones</string>
+    <string name="btn_settings">Ajustes</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervalo de actualización</string>
     <string name="label_refresh_30s">30 seg</string>

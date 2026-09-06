@@ -56,6 +56,13 @@
     <string name="notif_title_monitoring_stopped">Glucose monitoring stopped</string>
     <string name="notif_text_monitoring_stopped">Open AutoSugar on the car screen to resume alerts</string>
 
+    <!-- Alerts blocked by notification settings -->
+    <string name="label_alerts_blocked_title">Alerts can’t be delivered</string>
+    <string name="label_alerts_blocked_text">Notifications are turned off for AutoSugar, so glucose alerts will not appear — neither in the car nor on your phone.</string>
+    <string name="btn_open_notification_settings">Open notification settings</string>
+    <string name="msg_notifications_denied">Alerts need permission to post notifications</string>
+    <string name="btn_settings">Settings</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Refresh Interval</string>
     <string name="label_refresh_30s">30 sec</string>
