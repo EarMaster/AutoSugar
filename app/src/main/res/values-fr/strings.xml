@@ -40,6 +40,12 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Alertes glycémie</string>
     <string name="label_alerts_on">Alertes activées</string>
+
+    <!-- Fonctionnement des notifications -->
+    <string name="dialog_notifications_title">Fonctionnement des notifications</string>
+    <string name="dialog_notifications_body">AutoSugar vous avertit lorsqu’une mesure franchit un seuil que vous avez configuré sur votre propre instance Nightscout. AutoSugar ne définit jamais ces seuils — si votre Nightscout n’en définit aucun, rien n’est envoyé.\n\nLe graphique relie vos mesures réelles par des lignes droites. Rien n’est lissé ni prédit, et AutoSugar ne prévoit pas l’évolution de votre glycémie.\n\nLes mesures de plus de 12 minutes sont ignorées, et chaque notification se répète au plus toutes les 15 minutes.\n\nAutoSugar affiche vos données Nightscout et n’est pas un dispositif médical. Ne l’utilisez pas pour des décisions de traitement.</string>
+    <string name="btn_got_it">J’ai compris</string>
+    <string name="warning_no_thresholds">Cette instance Nightscout ne définit aucun seuil de glycémie ; aucune notification ne peut donc être envoyée pour cette source. Définissez les seuils dans votre configuration Nightscout — AutoSugar n’utilise que ceux qu’il y lit.</string>
     <string name="notif_channel_name">Alertes glycémie</string>
     <string name="notif_channel_desc">Alertes d\'hyperglycémie et d\'hypoglycémie avec intervalle de répétition de 15 minutes</string>
     <string name="notif_title_high">Glycémie élevée</string>

@@ -40,6 +40,12 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">血糖アラート</string>
     <string name="label_alerts_on">アラート有効</string>
+
+    <!-- 通知の仕組み -->
+    <string name="dialog_notifications_title">通知の仕組み</string>
+    <string name="dialog_notifications_body">AutoSugar は、ご自身の Nightscout で設定したしきい値を測定値が超えたときに通知します。しきい値を AutoSugar が決めることは一切ありません — Nightscout 側に設定がなければ、何も送信されません。\n\nグラフは実際の測定値を直線で結んだだけのものです。平滑化も予測も行わず、AutoSugar が今後の推移を予測することはありません。\n\n12 分より古い測定値は無視され、各通知の繰り返しは最短 15 分間隔です。\n\nAutoSugar は Nightscout のデータを表示するものであり、医療機器ではありません。治療の判断には使用しないでください。</string>
+    <string name="btn_got_it">了解</string>
+    <string name="warning_no_thresholds">この Nightscout には血糖値のしきい値が設定されていないため、このソースでは通知を送信できません。Nightscout の設定でしきい値を指定してください — AutoSugar はそこから読み取った値しか使いません。</string>
     <string name="notif_channel_name">血糖アラート</string>
     <string name="notif_channel_desc">15分間隔の繰り返しで高血糖・低血糖アラート</string>
     <string name="notif_title_high">高血糖</string>

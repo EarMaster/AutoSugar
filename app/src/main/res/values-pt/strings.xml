@@ -40,6 +40,12 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Alertas de glicose</string>
     <string name="label_alerts_on">Alertas ativados</string>
+
+    <!-- Como funcionam as notificações -->
+    <string name="dialog_notifications_title">Como funcionam as notificações</string>
+    <string name="dialog_notifications_body">O AutoSugar avisa-te quando uma leitura cruza um limite que configuraste na tua própria instância Nightscout. O AutoSugar nunca define esses limites — se o teu Nightscout não definir nenhum, nada é enviado.\n\nO gráfico liga as tuas leituras reais com linhas retas. Nada é suavizado nem previsto, e o AutoSugar não projêta para onde vai a tua glicose.\n\nLeituras com mais de 12 minutos são ignoradas e cada notificação repete-se no máximo a cada 15 minutos.\n\nO AutoSugar mostra os teus dados do Nightscout e não é um dispositivo médico. Não o uses para decisões de tratamento.</string>
+    <string name="btn_got_it">Entendi</string>
+    <string name="warning_no_thresholds">Esta instância Nightscout não define limites de glicose, por isso não podem ser enviadas notificações para esta fonte. Define os limites na configuração do teu Nightscout — o AutoSugar usa apenas os que lê de lá.</string>
     <string name="notif_channel_name">Alertas de glicose</string>
     <string name="notif_channel_desc">Alertas de glicose alta e baixa com intervalo de repetição de 15 minutos</string>
     <string name="notif_title_high">Glicose alta</string>

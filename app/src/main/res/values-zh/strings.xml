@@ -40,6 +40,12 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">血糖提醒</string>
     <string name="label_alerts_on">提醒已开启</string>
+
+    <!-- 提醒如何工作 -->
+    <string name="dialog_notifications_title">提醒如何工作</string>
+    <string name="dialog_notifications_body">当读数越过你在自己的 Nightscout 上配置的阀值时，AutoSugar 会提醒你。AutoSugar 从不自行设定这些阀值 — 如果你的 Nightscout 未设定任何阀值，则不会发送任何提醒。\n\n图表仅用直线连接你的实际读数，不做平滑也不做预测，AutoSugar 不会推测你的血糖走势。\n\n超过 12 分钟的读数会被忽略，每条提醒最快每 15 分钟重复一次。\n\nAutoSugar 只是展示你的 Nightscout 数据，并非医疗器器械。请勿用于治疗决策。</string>
+    <string name="btn_got_it">知道了</string>
+    <string name="warning_no_thresholds">此 Nightscout 未设定血糖阀值，因此无法为该数据源发送提醒。请在 Nightscout 配置中设定阀值 — AutoSugar 仅使用从那里读取的值。</string>
     <string name="notif_channel_name">血糖提醒</string>
     <string name="notif_channel_desc">高低血糖提醒，15 分钟重复间隔</string>
     <string name="notif_title_high">血糖偏高</string>

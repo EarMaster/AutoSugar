@@ -40,6 +40,12 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Avvisi glicemia</string>
     <string name="label_alerts_on">Avvisi attivi</string>
+
+    <!-- Come funzionano le notifiche -->
+    <string name="dialog_notifications_title">Come funzionano le notifiche</string>
+    <string name="dialog_notifications_body">AutoSugar ti avvisa quando una lettura supera una soglia che hai configurato sulla tua istanza Nightscout. AutoSugar non imposta mai quelle soglie — se il tuo Nightscout non ne definisce nessuna, non viene inviato nulla.\n\nIl grafico unisce le tue letture reali con linee rette. Nulla viene smussato o previsto, e AutoSugar non stima dove sta andando la tua glicemia.\n\nLe letture più vecchie di 12 minuti vengono ignorate e ogni notifica si ripete al massimo ogni 15 minuti.\n\nAutoSugar mostra i tuoi dati Nightscout e non è un dispositivo medico. Non usarlo per decisioni terapeutiche.</string>
+    <string name="btn_got_it">Ho capito</string>
+    <string name="warning_no_thresholds">Questa istanza Nightscout non definisce soglie glicemiche, quindi per questa fonte non può essere inviata alcuna notifica. Imposta le soglie nella configurazione di Nightscout — AutoSugar usa soltanto quelle che legge da lì.</string>
     <string name="notif_channel_name">Avvisi glicemia</string>
     <string name="notif_channel_desc">Avvisi per glicemia alta e bassa con intervallo di ripetizione di 15 minuti</string>
     <string name="notif_title_high">Glicemia alta</string>

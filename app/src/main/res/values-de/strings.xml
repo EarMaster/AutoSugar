@@ -40,6 +40,12 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glukose-Alarme</string>
     <string name="label_alerts_on">Alarme aktiv</string>
+
+    <!-- Funktionsweise der Benachrichtigungen -->
+    <string name="dialog_notifications_title">So funktionieren Benachrichtigungen</string>
+    <string name="dialog_notifications_body">AutoSugar benachrichtigt dich, wenn ein Messwert einen Grenzwert überschreitet, den du in deiner eigenen Nightscout-Instanz konfiguriert hast. AutoSugar legt diese Grenzwerte nie selbst fest — definiert dein Nightscout keine, wird nichts gesendet.\n\nDer Graph verbindet deine tatsächlichen Messwerte mit geraden Linien. Es wird nichts geglättet oder vorhergesagt, und AutoSugar prognostiziert keine künftigen Werte.\n\nMesswerte, die älter als 12 Minuten sind, werden ignoriert; jede Benachrichtigung wiederholt sich höchstens alle 15 Minuten.\n\nAutoSugar zeigt deine Nightscout-Daten an und ist kein Medizinprodukt. Nutze es nicht für Therapieentscheidungen.</string>
+    <string name="btn_got_it">Verstanden</string>
+    <string name="warning_no_thresholds">Diese Nightscout-Instanz definiert keine Glukose-Grenzwerte, daher können für diese Quelle keine Benachrichtigungen gesendet werden. Lege die Grenzwerte in deiner Nightscout-Konfiguration fest — AutoSugar verwendet ausschließlich die von dort gelesenen Werte.</string>
     <string name="notif_channel_name">Glukose-Alarme</string>
     <string name="notif_channel_desc">Alarme bei hohem und niedrigem Blutzucker mit 15-Minuten-Wiederholungsintervall</string>
     <string name="notif_title_high">Hoher Blutzucker</string>

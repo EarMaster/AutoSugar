@@ -5,6 +5,12 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- AutoSugar no longer forecasts glucose. The "trending high/low" notifications projected a reading 15 minutes ahead from a number the app derived itself; nothing in the Nightscout payload carries a prediction. The trend arrow and delta on the car screen come from Nightscout and are unchanged
+- Notifications now fire only on thresholds the source's own Nightscout reports. Where it reports none, AutoSugar used to substitute 70/180 — values it chose — and notify on those; it now stays quiet and says so on the phone. The graph still falls back to a display range so it always has a scale to draw
+- Switching a source's notifications on now explains how they work first: thresholds come from your own Nightscout, the graph joins real readings with straight lines and predicts nothing, stale readings are skipped, repeats are limited — and AutoSugar is a display for Nightscout data, not a medical device. The notification permission is requested after that explanation, which is also the order Android recommends
+
 ## [1.2.7] - 2026-09-06
 
 ### Added

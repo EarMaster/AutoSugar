@@ -50,12 +50,18 @@ class BackgroundAlertMonitor(
         val now = System.currentTimeMillis()
         if (now - entry.dateMs > staleAfterMs) return@coroutineScope
 
+        // Only the bounds this user's own Nightscout reported. A source whose Nightscout defines
+        // no thresholds is never notified on, rather than being measured against a default
+        // AutoSugar picked; the phone's edit screen tells the user when that is the case.
         val id = profile.id
-        if (sgv >= thresholds.bgHigh && now - (lastHighAlertMs[id] ?: 0L) > alertCooldownMs) {
+        val high = thresholds.alertHigh
+        val low = thresholds.alertLow
+
+        if (high != null && sgv >= high && now - (lastHighAlertMs[id] ?: 0L) > alertCooldownMs) {
             alertManager.sendHighAlert(id, profile.displayName, sgv, profile.unit)
             lastHighAlertMs[id] = now
         }
-        if (sgv <= thresholds.bgLow && now - (lastLowAlertMs[id] ?: 0L) > alertCooldownMs) {
+        if (low != null && sgv <= low && now - (lastLowAlertMs[id] ?: 0L) > alertCooldownMs) {
             alertManager.sendLowAlert(id, profile.displayName, sgv, profile.unit)
             lastLowAlertMs[id] = now
         }

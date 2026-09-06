@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -34,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -84,10 +86,12 @@ fun ProfileEditScreen(
     val icon by viewModel.icon.collectAsState()
     val alertsEnabled by viewModel.alertsEnabled.collectAsState()
     val tokenOverpowered by viewModel.tokenOverpowered.collectAsState()
+    val thresholdsMissing by viewModel.thresholdsMissing.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
     var notificationsDenied by remember { mutableStateOf(false) }
+    var showNotificationInfo by remember { mutableStateOf(false) }
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -138,6 +142,27 @@ fun ProfileEditScreen(
             }
             else -> Unit
         }
+    }
+
+    if (showNotificationInfo) {
+        // Dismissing counts as acknowledged: the toggle is already on, so the permission request
+        // has to follow either way rather than leaving alerts enabled and never requested.
+        val acknowledge = {
+            showNotificationInfo = false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+        AlertDialog(
+            onDismissRequest = acknowledge,
+            title = { Text(stringResource(R.string.dialog_notifications_title)) },
+            text = { Text(stringResource(R.string.dialog_notifications_body)) },
+            confirmButton = {
+                TextButton(onClick = acknowledge) {
+                    Text(stringResource(R.string.btn_got_it))
+                }
+            },
+        )
     }
 
     val isLoading = uiState is ProfileEditUiState.Loading
@@ -273,12 +298,28 @@ fun ProfileEditScreen(
                     checked = alertsEnabled,
                     onCheckedChange = { enabled ->
                         viewModel.alertsEnabled.value = enabled
-                        if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        }
+                        // Explain what the notifications are before asking for the permission:
+                        // Android recommends showing the rationale first, and it is the one moment
+                        // the user is definitely thinking about this feature.
+                        if (enabled) showNotificationInfo = true
                     },
                     enabled = !isLoading,
                 )
+            }
+            if (thresholdsMissing) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(R.string.warning_no_thresholds),
+                        modifier = Modifier.padding(12.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
 
             // ── Tab icon ─────────────────────────────────────────────────

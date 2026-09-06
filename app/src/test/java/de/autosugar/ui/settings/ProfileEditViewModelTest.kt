@@ -1,5 +1,6 @@
 package de.autosugar.ui.settings
 
+import de.autosugar.data.model.GlucoseThresholds
 import de.autosugar.data.model.GlucoseUnit
 import de.autosugar.data.model.NightscoutProfile
 import de.autosugar.data.model.ProfileIcon
@@ -43,9 +44,17 @@ class ProfileEditViewModelTest {
 
     private lateinit var viewModel: ProfileEditViewModel
 
+    private val configuredThresholds = GlucoseThresholds(
+        bgLow = 70, bgTargetBottom = 80, bgTargetTop = 160, bgHigh = 180,
+        alertLow = 70, alertHigh = 180,
+    )
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        // testConnection also reports whether the instance defines any thresholds; default to
+        // one that does, so tests about other behaviour are unaffected.
+        coEvery { mockRepository.getThresholdsFor(any()) } returns Result.success(configuredThresholds)
         viewModel = ProfileEditViewModel(mockRepository)
     }
 
@@ -104,6 +113,58 @@ class ProfileEditViewModelTest {
 
         assertTrue(viewModel.uiState.value is ProfileEditUiState.TestSuccess)
         assertFalse(viewModel.tokenOverpowered.value)
+    }
+
+    @Test
+    fun `testConnection flags thresholdsMissing when Nightscout defines none`() = runTest {
+        val fakeEntry = de.autosugar.data.model.GlucoseEntry(
+            sgv = 110.0, direction = "Flat", dateIso = "2024-01-01T00:00:00Z",
+            delta = 2.0, dateMs = 0L,
+        )
+        coEvery { mockRepository.testConnection(any()) } returns Result.success(fakeEntry)
+        coEvery { mockRepository.hasElevatedPermissions(any()) } returns false
+        coEvery { mockRepository.getThresholdsFor(any()) } returns Result.success(
+            configuredThresholds.copy(alertLow = null, alertHigh = null)
+        )
+
+        viewModel.testConnection()
+        advanceUntilIdle()
+
+        assertTrue(viewModel.thresholdsMissing.value)
+    }
+
+    @Test
+    fun `testConnection leaves thresholdsMissing false when Nightscout defines them`() = runTest {
+        val fakeEntry = de.autosugar.data.model.GlucoseEntry(
+            sgv = 110.0, direction = "Flat", dateIso = "2024-01-01T00:00:00Z",
+            delta = 2.0, dateMs = 0L,
+        )
+        coEvery { mockRepository.testConnection(any()) } returns Result.success(fakeEntry)
+        coEvery { mockRepository.hasElevatedPermissions(any()) } returns false
+
+        viewModel.testConnection()
+        advanceUntilIdle()
+
+        assertFalse(viewModel.thresholdsMissing.value)
+    }
+
+    @Test
+    fun `testConnection leaves thresholdsMissing false when the status call itself fails`() = runTest {
+        // A failed status read says nothing about whether thresholds are configured, so it must
+        // not be reported to the user as "none configured".
+        val fakeEntry = de.autosugar.data.model.GlucoseEntry(
+            sgv = 110.0, direction = "Flat", dateIso = "2024-01-01T00:00:00Z",
+            delta = 2.0, dateMs = 0L,
+        )
+        coEvery { mockRepository.testConnection(any()) } returns Result.success(fakeEntry)
+        coEvery { mockRepository.hasElevatedPermissions(any()) } returns false
+        coEvery { mockRepository.getThresholdsFor(any()) } returns
+            Result.failure(Exception("status unreachable"))
+
+        viewModel.testConnection()
+        advanceUntilIdle()
+
+        assertFalse(viewModel.thresholdsMissing.value)
     }
 
     @Test
