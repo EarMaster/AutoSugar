@@ -16,6 +16,18 @@ Interpret `$ARGUMENTS` as follows:
 - Empty / blank → analyse the changelog and suggest a bump type (see below)
 - Anything else → it is unusual; flag it and ask for confirmation or correction
 
+## Step 0 — Target API level check
+
+AutoSugar must always target the **newest stable Android API level** — Play reviews for this
+app are slow, so waiting for Google's compliance deadline risks missing it (see
+*Maintenance Policy: Target API Level* in `AGENTS.md`).
+
+Check <https://developer.android.com/about/versions> for the newest stable API level and
+compare it with `compileSdk` / `targetSdk` in `app/build.gradle.kts`. If a newer stable
+level exists, tell the user before continuing and let them decide whether to bump it first
+or release as-is. Do not bump it silently as part of the release — it needs its own review
+of the platform's behaviour changes.
+
 ## Step 1 — Read current version
 
 Read `app/build.gradle.kts` and extract:

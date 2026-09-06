@@ -26,3 +26,27 @@ This document defines specific roles for AI agents or developers to ensure a mod
 * **Tasks:** * Create a "Settings" UI (Jetpack Compose) to add, edit, or delete Nightscout sources.
     * Manage local data storage (e.g., Room or DataStore) for persistent source configuration.
     * Handle system-level language switching logic.
+
+## Maintenance Policy: Target API Level
+
+Google Play reviews for AutoSugar take a long time. Waiting for Google's compliance
+deadline therefore risks a bottleneck where a mandatory `targetSdk` bump collides with a
+slow review. The app must stay ahead of that deadline, not meet it.
+
+* **Adopt every new stable Android API level as soon as it is released.** Bump both
+  `compileSdk` and `targetSdk` in `app/build.gradle.kts` — raising only `compileSdk`
+  does not satisfy Play's requirement.
+* **Check regularly** — at minimum at the start of every release, and whenever a Google I/O
+  or Android release announcement lands. Sources:
+  * <https://developer.android.com/about/versions> — latest platform + API level
+  * <https://support.google.com/googleplay/android-developer/answer/11926878> — Play's
+    current target API level requirement and deadline
+* **Before bumping**, read the *"Behavior changes: Apps targeting Android N or higher"*
+  page for the new level and verify the affected areas: foreground services, notifications,
+  background execution, orientation/adaptive layouts, and network security config.
+* **After bumping**, run `./gradlew assembleDebug testDebugUnitTest lintDebug` and smoke-test
+  the car app in the DHU before releasing.
+
+| Android | API level | Status |
+|---------|-----------|--------|
+| 17      | 37        | Current target (adopted 2026-09) |

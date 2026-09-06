@@ -1,6 +1,6 @@
 package de.autosugar.car
 
-import androidx.car.app.CarContext
+import android.content.Context
 import de.autosugar.data.model.GlucoseEntry
 import de.autosugar.data.model.NightscoutProfile
 import de.autosugar.data.repository.NightscoutRepository
@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.first
  * data or cooldowns.
  */
 class BackgroundAlertMonitor(
-    carContext: CarContext,
+    context: Context,
     private val repository: NightscoutRepository,
 ) {
-    private val alertManager = GlucoseAlertManager(carContext)
+    private val alertManager = GlucoseAlertManager(context)
     private val alertCooldownMs = 15 * 60_000L
 
     // A reading older than this is considered stale (≥2 missed 5-min CGM readings) and never
@@ -37,7 +37,7 @@ class BackgroundAlertMonitor(
     private val historyByProfile = mutableMapOf<String, List<GlucoseEntry>>()
 
     suspend fun checkAll() = coroutineScope {
-        val profiles = repository.profilesFlow.first().filter { it.alertsEnabled }
+        val profiles = repository.enabledProfilesFlow.first().filter { it.alertsEnabled }
         profiles.map { profile -> async { checkProfile(profile) } }.awaitAll()
     }
 

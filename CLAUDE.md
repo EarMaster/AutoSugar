@@ -22,3 +22,11 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
 Testing on Android Auto requires enabling **Unknown sources** in the Android Auto app (tap "Version" footer 10 times → Developer Settings).
+
+## Target API Level
+
+The app must always target the **newest stable Android API level** (currently API 37 /
+Android 17) rather than waiting for Google Play's compliance deadline — Play reviews for
+this app are slow, and a late bump risks missing the deadline. Check for a newer API level
+at the start of every release; see the *Maintenance Policy: Target API Level* section in
+`AGENTS.md` for the full checklist.

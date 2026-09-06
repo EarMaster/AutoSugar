@@ -36,6 +36,8 @@ internal data class NightscoutProfileJson(
     val apiToken: String,
     val unit: String,
     val icon: String = de.autosugar.data.model.ProfileIcon.PERSON.name,
+    // Defaults to true so profiles written before the field existed stay visible in the car.
+    val enabled: Boolean = true,
     val alertsEnabled: Boolean = false,
 )
 
@@ -46,6 +48,7 @@ private fun NightscoutProfile.toJson() = NightscoutProfileJson(
     apiToken = apiToken,
     unit = unit.name,
     icon = icon.name,
+    enabled = enabled,
     alertsEnabled = alertsEnabled,
 )
 
@@ -58,5 +61,6 @@ private fun NightscoutProfileJson.toModel() = NightscoutProfile(
         .getOrDefault(de.autosugar.data.model.GlucoseUnit.MG_DL),
     icon = runCatching { de.autosugar.data.model.ProfileIcon.valueOf(icon) }
         .getOrDefault(de.autosugar.data.model.ProfileIcon.PERSON),
+    enabled = enabled,
     alertsEnabled = alertsEnabled,
 )

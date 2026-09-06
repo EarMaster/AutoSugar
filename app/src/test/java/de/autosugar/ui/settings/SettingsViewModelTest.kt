@@ -70,17 +70,31 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setAlertsEnabled delegates to repository atomic toggle`() = runTest {
+    fun `setProfileEnabled delegates to repository atomic toggle`() = runTest {
         val idSlot = slot<String>()
         val enabledSlot = slot<Boolean>()
-        coJustRun { mockRepository.setAlertsEnabled(capture(idSlot), capture(enabledSlot)) }
+        coJustRun { mockRepository.setProfileEnabled(capture(idSlot), capture(enabledSlot)) }
 
-        viewModel.setAlertsEnabled("id-1", enabled = true)
+        viewModel.setProfileEnabled("id-1", enabled = false)
         advanceUntilIdle()
 
         assertEquals("id-1", idSlot.captured)
-        assertEquals(true, enabledSlot.captured)
-        coVerify(exactly = 1) { mockRepository.setAlertsEnabled("id-1", true) }
+        assertEquals(false, enabledSlot.captured)
+        coVerify(exactly = 1) { mockRepository.setProfileEnabled("id-1", false) }
+    }
+
+    @Test
+    fun `profiles StateFlow keeps disabled profiles so they stay editable`() = runTest {
+        // The car reads enabledProfilesFlow; the settings list must still show a source the
+        // user switched off, or there would be no way to switch it back on.
+        every { mockRepository.profilesFlow } returns
+            flowOf(listOf(profile1.copy(enabled = false), profile2))
+        val vm = SettingsViewModel(mockRepository, mockAppPrefs)
+        backgroundScope.launch { vm.profiles.collect {} }
+        advanceUntilIdle()
+
+        assertEquals(2, vm.profiles.value.size)
+        assertEquals(false, vm.profiles.value[0].enabled)
     }
 
     @Test

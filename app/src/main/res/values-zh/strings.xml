@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">血糖提醒</string>
+    <string name="label_alerts_on">提醒已开启</string>
     <string name="notif_channel_name">血糖提醒</string>
     <string name="notif_channel_desc">高低血糖提醒，15 分钟重复间隔</string>
     <string name="notif_title_high">血糖偏高</string>
@@ -46,6 +47,21 @@
     <string name="notif_title_predicted_high">血糖呈上升趋势</string>
     <string name="notif_title_predicted_low">血糖呈下降趋势</string>
     <string name="notif_text_predicted">预计 15 分钟后：%s</string>
+
+    <!-- 后台监测 -->
+    <string name="notif_channel_monitor_name">监测</string>
+    <string name="notif_channel_monitor_desc">在车内监测血糖期间显示的无声状态通知</string>
+    <string name="notif_monitor_title">正在监测血糖</string>
+    <string name="notif_monitor_text">Android Auto 连接期间提醒保持启用</string>
+    <string name="notif_title_monitoring_stopped">血糖监测已停止</string>
+    <string name="notif_text_monitoring_stopped">请在车机屏幕上打开 AutoSugar 以恢复提醒</string>
+
+    <!-- 通知设置阻止了提醒 -->
+    <string name="label_alerts_blocked_title">无法发送提醒</string>
+    <string name="label_alerts_blocked_text">AutoSugar 的通知已关闭，血糖提醒将不会在车机或手机上显示。</string>
+    <string name="btn_open_notification_settings">打开通知设置</string>
+    <string name="msg_notifications_denied">提醒需要发送通知的权限</string>
+    <string name="btn_settings">设置</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">刷新间隔</string>

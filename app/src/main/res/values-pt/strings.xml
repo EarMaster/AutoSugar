@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Alertas de glicose</string>
+    <string name="label_alerts_on">Alertas ativados</string>
     <string name="notif_channel_name">Alertas de glicose</string>
     <string name="notif_channel_desc">Alertas de glicose alta e baixa com intervalo de repetição de 15 minutos</string>
     <string name="notif_title_high">Glicose alta</string>
@@ -46,6 +47,21 @@
     <string name="notif_title_predicted_high">Glicose tendendo a subir</string>
     <string name="notif_title_predicted_low">Glicose tendendo a cair</string>
     <string name="notif_text_predicted">Previsto em 15 min: %s</string>
+
+    <!-- Monitorização em segundo plano -->
+    <string name="notif_channel_monitor_name">Monitorização</string>
+    <string name="notif_channel_monitor_desc">Notificação de estado silenciosa apresentada enquanto a glicose é monitorizada no carro</string>
+    <string name="notif_monitor_title">A monitorizar a glicose</string>
+    <string name="notif_monitor_text">Os alertas continuam ativos enquanto o Android Auto estiver ligado</string>
+    <string name="notif_title_monitoring_stopped">Monitorização da glicose parada</string>
+    <string name="notif_text_monitoring_stopped">Abre o AutoSugar no ecrã do carro para retomar os alertas</string>
+
+    <!-- Alertas bloqueados pelas definições de notificações -->
+    <string name="label_alerts_blocked_title">Os alertas não podem ser entregues</string>
+    <string name="label_alerts_blocked_text">As notificações do AutoSugar estão desativadas, por isso os alertas de glicose não vão aparecer — nem no carro nem no telemóvel.</string>
+    <string name="btn_open_notification_settings">Abrir definições de notificações</string>
+    <string name="msg_notifications_denied">Os alertas precisam de permissão para enviar notificações</string>
+    <string name="btn_settings">Definições</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervalo de atualização</string>

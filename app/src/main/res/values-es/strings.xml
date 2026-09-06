@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Alertas de glucosa</string>
+    <string name="label_alerts_on">Alertas activadas</string>
     <string name="notif_channel_name">Alertas de glucosa</string>
     <string name="notif_channel_desc">Alertas de glucosa alta y baja con intervalo de repetición de 15 minutos</string>
     <string name="notif_title_high">Glucosa alta</string>
@@ -46,6 +47,21 @@
     <string name="notif_title_predicted_high">Glucosa en tendencia alta</string>
     <string name="notif_title_predicted_low">Glucosa en tendencia baja</string>
     <string name="notif_text_predicted">Predicción en 15 min: %s</string>
+
+    <!-- Monitorización en segundo plano -->
+    <string name="notif_channel_monitor_name">Monitorización</string>
+    <string name="notif_channel_monitor_desc">Notificación de estado silenciosa mientras se monitoriza la glucosa en el coche</string>
+    <string name="notif_monitor_title">Monitorizando la glucosa</string>
+    <string name="notif_monitor_text">Las alertas siguen activas mientras Android Auto esté conectado</string>
+    <string name="notif_title_monitoring_stopped">Monitorización de glucosa detenida</string>
+    <string name="notif_text_monitoring_stopped">Abre AutoSugar en la pantalla del coche para reanudar las alertas</string>
+
+    <!-- Alertas bloqueadas por los ajustes de notificaciones -->
+    <string name="label_alerts_blocked_title">Las alertas no se pueden entregar</string>
+    <string name="label_alerts_blocked_text">Las notificaciones de AutoSugar están desactivadas, así que las alertas de glucosa no aparecerán ni en el coche ni en el teléfono.</string>
+    <string name="btn_open_notification_settings">Abrir ajustes de notificaciones</string>
+    <string name="msg_notifications_denied">Las alertas necesitan permiso para enviar notificaciones</string>
+    <string name="btn_settings">Ajustes</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervalo de actualización</string>

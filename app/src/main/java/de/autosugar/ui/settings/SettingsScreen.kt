@@ -10,12 +10,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +34,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,17 +46,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import de.autosugar.BuildConfig
 import de.autosugar.R
+import de.autosugar.car.GlucoseAlertManager
 import de.autosugar.data.model.NightscoutProfile
 import kotlin.math.roundToInt
 
-// Items before the profile list in the LazyColumn (RefreshSection + Divider)
+// Items before the profile list in the LazyColumn (RefreshSection + Divider), plus the
+// alerts-blocked banner when it is showing. Drag-and-drop maps list indices to profile
+// indices through this, so it has to follow the banner.
 private const val HEADER_COUNT = 2
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +80,29 @@ fun SettingsScreen(
     val localProfiles = remember { mutableStateListOf<NightscoutProfile>() }
     var isDragging by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    var alertsDeliverable by remember { mutableStateOf(true) }
+
+    // Notifications can be switched off long after alerts were enabled — by hand, or by Android
+    // revoking permissions for an app that has not been opened in months. Re-check on every resume
+    // so the banner also clears the moment the user comes back from the system settings screen.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                alertsDeliverable = GlucoseAlertManager.alertsDeliverable(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // Only a source that is actually shown in the car can raise an alert, so a disabled one
+    // being unable to notify is not worth warning about.
+    val showAlertsBlocked =
+        !alertsDeliverable && localProfiles.any { it.enabled && it.alertsEnabled }
+    val headerCount = if (showAlertsBlocked) HEADER_COUNT + 1 else HEADER_COUNT
+
     // Keep local list in sync with repository, but not during an active drag
     LaunchedEffect(profiles) {
         if (!isDragging) {
@@ -75,8 +111,8 @@ fun SettingsScreen(
         }
     }
 
-    val dragState = remember(lazyListState) {
-        DragDropState(lazyListState, HEADER_COUNT) { from, to ->
+    val dragState = remember(lazyListState, headerCount) {
+        DragDropState(lazyListState, headerCount) { from, to ->
             val item = localProfiles.removeAt(from)
             localProfiles.add(to, item)
         }
@@ -139,6 +175,11 @@ fun SettingsScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                if (showAlertsBlocked) {
+                    item {
+                        AlertsBlockedBanner(onOpenSettings = { openNotificationSettings(context) })
+                    }
+                }
                 item {
                     RefreshIntervalSection(
                         currentSeconds = refreshInterval,
@@ -172,8 +213,8 @@ fun SettingsScreen(
                                     translationY = if (isDraggingThis) dragState.dragOffset else 0f
                                     shadowElevation = if (isDraggingThis) 16f else 0f
                                 },
-                            onAlertsToggled = { enabled ->
-                                viewModel.setAlertsEnabled(profile.id, enabled)
+                            onEnabledToggled = { enabled ->
+                                viewModel.setProfileEnabled(profile.id, enabled)
                             },
                             onClick = { onEditProfile(profile.id) },
                         )
@@ -193,6 +234,46 @@ fun SettingsScreen(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AlertsBlockedBanner(onOpenSettings: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(Icons.Default.Warning, contentDescription = null)
+                Text(
+                    text = stringResource(R.string.label_alerts_blocked_title),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+            }
+            Text(
+                text = stringResource(R.string.label_alerts_blocked_text),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Button(
+                onClick = onOpenSettings,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                ),
+            ) {
+                Text(stringResource(R.string.btn_open_notification_settings))
             }
         }
     }
@@ -230,7 +311,7 @@ private fun ProfileCard(
     profile: NightscoutProfile,
     isDragging: Boolean,
     modifier: Modifier = Modifier,
-    onAlertsToggled: (Boolean) -> Unit,
+    onEnabledToggled: (Boolean) -> Unit,
     onClick: () -> Unit,
 ) {
     val elevation by animateDpAsState(
@@ -247,26 +328,43 @@ private fun ProfileCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // A disabled source stays in the list, and editable, but is dimmed to match the
+            // fact that the car cannot see it.
+            val contentAlpha = if (profile.enabled) 1f else 0.38f
             Icon(
                 painter = painterResource(profile.icon.resId),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
             )
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = profile.displayName,
-                    style = MaterialTheme.typography.titleMedium,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(
+                        text = profile.displayName,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = contentAlpha),
+                    )
+                    if (profile.alertsEnabled) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = stringResource(R.string.label_alerts_on),
+                            tint = MaterialTheme.colorScheme.primary.copy(alpha = contentAlpha),
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                }
                 Text(
                     text = profile.baseUrl,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                     maxLines = 1,
                 )
             }
             Switch(
-                checked = profile.alertsEnabled,
-                onCheckedChange = onAlertsToggled,
+                checked = profile.enabled,
+                onCheckedChange = onEnabledToggled,
             )
         }
     }

@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glukose-Alarme</string>
+    <string name="label_alerts_on">Alarme aktiv</string>
     <string name="notif_channel_name">Glukose-Alarme</string>
     <string name="notif_channel_desc">Alarme bei hohem und niedrigem Blutzucker mit 15-Minuten-Wiederholungsintervall</string>
     <string name="notif_title_high">Hoher Blutzucker</string>
@@ -46,6 +47,21 @@
     <string name="notif_title_predicted_high">Blutzucker steigt</string>
     <string name="notif_title_predicted_low">Blutzucker fällt</string>
     <string name="notif_text_predicted">Voraussichtlich in 15 Min.: %s</string>
+
+    <!-- Hintergrundüberwachung -->
+    <string name="notif_channel_monitor_name">Überwachung</string>
+    <string name="notif_channel_monitor_desc">Stille Statusmeldung, solange die Glukose im Auto überwacht wird</string>
+    <string name="notif_monitor_title">Glukose wird überwacht</string>
+    <string name="notif_monitor_text">Alarme bleiben aktiv, solange Android Auto verbunden ist</string>
+    <string name="notif_title_monitoring_stopped">Glukoseüberwachung beendet</string>
+    <string name="notif_text_monitoring_stopped">AutoSugar auf dem Autobildschirm öffnen, um Alarme fortzusetzen</string>
+
+    <!-- Alarme durch Benachrichtigungseinstellungen blockiert -->
+    <string name="label_alerts_blocked_title">Alarme können nicht zugestellt werden</string>
+    <string name="label_alerts_blocked_text">Benachrichtigungen für AutoSugar sind deaktiviert. Glukose-Alarme erscheinen weder im Auto noch auf dem Telefon.</string>
+    <string name="btn_open_notification_settings">Benachrichtigungseinstellungen öffnen</string>
+    <string name="msg_notifications_denied">Alarme benötigen die Berechtigung für Benachrichtigungen</string>
+    <string name="btn_settings">Einstellungen</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Aktualisierungsintervall</string>

@@ -21,16 +21,25 @@ class AutoSugarSession(
     override fun onCreateScreen(intent: Intent): Screen {
         if (!monitorStarted) {
             monitorStarted = true
-            startBackgroundAlertMonitor()
+            startAlertMonitoring()
         }
         return LoadingScreen(carContext, repository, appPrefs)
     }
 
-    // Started once carContext is available and runs only while Android Auto is connected:
-    // lifecycleScope is cancelled automatically when the session's lifecycle is destroyed
-    // (car disconnected), so alert-enabled profiles are checked even when they aren't the
-    // one currently shown on screen, without any polling happening while the app isn't in use.
-    private fun startBackgroundAlertMonitor() {
+    /**
+     * Hands alert polling to [GlucoseMonitorService], which outlives this session.
+     *
+     * The session's own lifecycle only covers the car app being *on screen* — the host stops and
+     * eventually destroys it once the user switches to Maps — so running the loop here meant alerts
+     * fired only while the driver could already see the readings. The service is tied to the car
+     * connection instead, and stops itself when Android Auto disconnects.
+     */
+    private fun startAlertMonitoring() {
+        if (GlucoseMonitorService.start(carContext)) return
+
+        // The platform refused the foreground-service start (Android 12+ background-start rules).
+        // Fall back to polling on the session scope: alerts are then limited to the time the app is
+        // on screen, as before, which is degraded but still better than no alerting at all.
         val monitor = BackgroundAlertMonitor(carContext, repository)
         lifecycleScope.launch {
             appPrefs.refreshIntervalSeconds.collectLatest { intervalSeconds ->

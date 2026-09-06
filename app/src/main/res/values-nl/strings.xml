@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glucosemeldingen</string>
+    <string name="label_alerts_on">Meldingen aan</string>
     <string name="notif_channel_name">Glucosemeldingen</string>
     <string name="notif_channel_desc">Meldingen voor hoge en lage bloedglucose met herhalings-cooldown van 15 minuten</string>
     <string name="notif_title_high">Hoge glucose</string>
@@ -46,6 +47,21 @@
     <string name="notif_title_predicted_high">Glucose stijgt</string>
     <string name="notif_title_predicted_low">Glucose daalt</string>
     <string name="notif_text_predicted">Voorspelling over 15 min: %s</string>
+
+    <!-- Bewaking op de achtergrond -->
+    <string name="notif_channel_monitor_name">Bewaking</string>
+    <string name="notif_channel_monitor_desc">Stille statusmelding zolang de glucose in de auto wordt bewaakt</string>
+    <string name="notif_monitor_title">Glucose wordt bewaakt</string>
+    <string name="notif_monitor_text">Meldingen blijven actief zolang Android Auto verbonden is</string>
+    <string name="notif_title_monitoring_stopped">Glucosebewaking gestopt</string>
+    <string name="notif_text_monitoring_stopped">Open AutoSugar op het autoscherm om meldingen te hervatten</string>
+
+    <!-- Meldingen geblokkeerd door notificatie-instellingen -->
+    <string name="label_alerts_blocked_title">Meldingen kunnen niet worden bezorgd</string>
+    <string name="label_alerts_blocked_text">Notificaties staan uit voor AutoSugar, dus glucosemeldingen verschijnen niet — niet in de auto en niet op je telefoon.</string>
+    <string name="btn_open_notification_settings">Notificatie-instellingen openen</string>
+    <string name="msg_notifications_denied">Meldingen hebben toestemming voor notificaties nodig</string>
+    <string name="btn_settings">Instellingen</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Verversingsinterval</string>

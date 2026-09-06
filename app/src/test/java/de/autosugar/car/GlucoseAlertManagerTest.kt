@@ -1,17 +1,23 @@
 package de.autosugar.car
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import androidx.core.app.NotificationManagerCompat
 import de.autosugar.R
 import de.autosugar.data.model.GlucoseUnit
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -36,6 +42,8 @@ class GlucoseAlertManagerTest {
         every { mockContext.getString(R.string.notif_title_low) } returns "Low glucose"
         every { mockContext.getString(R.string.notif_title_predicted_high) } returns "Glucose trending high"
         every { mockContext.getString(R.string.notif_title_predicted_low) } returns "Glucose trending low"
+        every { mockContext.getString(R.string.notif_title_monitoring_stopped) } returns "Glucose monitoring stopped"
+        every { mockContext.getString(R.string.notif_text_monitoring_stopped) } returns "Open AutoSugar on the car screen to resume alerts"
         every { mockContext.getString(R.string.notif_text_predicted, any()) } answers {
             @Suppress("UNCHECKED_CAST")
             val formatArgs = it.invocation.args[1] as Array<Any>
@@ -145,6 +153,86 @@ class GlucoseAlertManagerTest {
         manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, projectedSgv = 60.0, unit = GlucoseUnit.MG_DL)
 
         verify { manager.post(any(), any(), match { it.contains("60 mg/dL") }) }
+    }
+
+    // endregion
+
+    // region monitoring stopped
+
+    @Test
+    fun `sendMonitoringStoppedAlert does not collide with any per-profile alert id`() {
+        val manager = buildManager()
+        val idSlots = mutableListOf<Int>()
+        justRun { manager.post(capture(idSlots), any(), any()) }
+
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, 200.0, GlucoseUnit.MG_DL)
+        manager.sendLowAlert(PROFILE_ID, PROFILE_NAME, 55.0, GlucoseUnit.MG_DL)
+        manager.sendPredictedHighAlert(PROFILE_ID, PROFILE_NAME, 195.0, GlucoseUnit.MG_DL)
+        manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, 65.0, GlucoseUnit.MG_DL)
+        manager.sendMonitoringStoppedAlert()
+
+        assertEquals(5, idSlots.distinct().size)
+    }
+
+    @Test
+    fun `sendMonitoringStoppedAlert carries no profile name`() {
+        val manager = buildManager()
+        manager.sendMonitoringStoppedAlert()
+
+        verify { manager.post(any(), match { !it.contains("·") }, any()) }
+    }
+
+    // endregion
+
+    // region alertsDeliverable
+
+    private fun mockNotificationsEnabled(enabled: Boolean) {
+        val compat = mockk<NotificationManagerCompat>(relaxed = true)
+        every { compat.areNotificationsEnabled() } returns enabled
+        mockkStatic(NotificationManagerCompat::class)
+        every { NotificationManagerCompat.from(mockContext) } returns compat
+    }
+
+    @After
+    fun tearDown() {
+        unmockkStatic(NotificationManagerCompat::class)
+    }
+
+    @Test
+    fun `alertsDeliverable is false when notifications are switched off for the app`() {
+        mockNotificationsEnabled(false)
+
+        assertFalse(GlucoseAlertManager.alertsDeliverable(mockContext))
+    }
+
+    @Test
+    fun `alertsDeliverable is false when the alert channel itself is blocked`() {
+        mockNotificationsEnabled(true)
+        val channel = mockk<NotificationChannel>()
+        every { channel.importance } returns NotificationManager.IMPORTANCE_NONE
+        every { mockNm.getNotificationChannel(any()) } returns channel
+
+        assertFalse(GlucoseAlertManager.alertsDeliverable(mockContext))
+    }
+
+    @Test
+    fun `alertsDeliverable is true when the channel has not been created yet`() {
+        // The car app has never run on this install, so there is no channel to be blocked —
+        // that must not be reported as the user having turned alerts off.
+        mockNotificationsEnabled(true)
+        every { mockNm.getNotificationChannel(any()) } returns null
+
+        assertTrue(GlucoseAlertManager.alertsDeliverable(mockContext))
+    }
+
+    @Test
+    fun `alertsDeliverable is true when the app and the channel are both enabled`() {
+        mockNotificationsEnabled(true)
+        val channel = mockk<NotificationChannel>()
+        every { channel.importance } returns NotificationManager.IMPORTANCE_HIGH
+        every { mockNm.getNotificationChannel(any()) } returns channel
+
+        assertTrue(GlucoseAlertManager.alertsDeliverable(mockContext))
     }
 
     // endregion

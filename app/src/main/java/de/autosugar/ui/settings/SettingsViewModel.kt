@@ -24,8 +24,9 @@ class SettingsViewModel @Inject constructor(
     val refreshIntervalSeconds: StateFlow<Int> = appPrefs.refreshIntervalSeconds
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 60)
 
-    fun setAlertsEnabled(id: String, enabled: Boolean) {
-        viewModelScope.launch { repository.setAlertsEnabled(id, enabled) }
+    /** Shows or hides a source in the car. Alerts are a separate switch, on the edit screen. */
+    fun setProfileEnabled(id: String, enabled: Boolean) {
+        viewModelScope.launch { repository.setProfileEnabled(id, enabled) }
     }
 
     fun saveOrder(ordered: List<NightscoutProfile>) {

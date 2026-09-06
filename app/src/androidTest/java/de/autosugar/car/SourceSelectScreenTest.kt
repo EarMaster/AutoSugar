@@ -44,7 +44,7 @@ class SourceSelectScreenTest {
 
     @Test
     fun onGetTemplate_returnsListTemplate() {
-        every { mockRepository.profilesFlow } returns emptyFlow()
+        every { mockRepository.enabledProfilesFlow } returns emptyFlow()
 
         val controller = ScreenController(SourceSelectScreen(carContext, mockRepository) {})
         controller.moveToState(Lifecycle.State.STARTED)
@@ -54,7 +54,7 @@ class SourceSelectScreenTest {
 
     @Test
     fun onGetTemplate_hasBackHeaderAction() {
-        every { mockRepository.profilesFlow } returns emptyFlow()
+        every { mockRepository.enabledProfilesFlow } returns emptyFlow()
 
         val controller = ScreenController(SourceSelectScreen(carContext, mockRepository) {})
         controller.moveToState(Lifecycle.State.STARTED)
@@ -65,7 +65,7 @@ class SourceSelectScreenTest {
 
     @Test
     fun onGetTemplate_withProfiles_showsCorrectItemCount() {
-        every { mockRepository.profilesFlow } returns flowOf(listOf(profile1, profile2))
+        every { mockRepository.enabledProfilesFlow } returns flowOf(listOf(profile1, profile2))
 
         val controller = ScreenController(SourceSelectScreen(carContext, mockRepository) {})
         controller.moveToState(Lifecycle.State.STARTED)
@@ -78,7 +78,7 @@ class SourceSelectScreenTest {
 
     @Test
     fun onGetTemplate_profileRowsShowDisplayName() {
-        every { mockRepository.profilesFlow } returns flowOf(listOf(profile1, profile2))
+        every { mockRepository.enabledProfilesFlow } returns flowOf(listOf(profile1, profile2))
 
         val controller = ScreenController(SourceSelectScreen(carContext, mockRepository) {})
         controller.moveToState(Lifecycle.State.STARTED)
@@ -94,6 +94,29 @@ class SourceSelectScreenTest {
     }
 
     /**
+     * A source switched off on the phone must not be selectable in the car. The filtering lives
+     * in the repository, so what this pins down is that the screen reads the filtered flow and
+     * never falls back to the full profile list.
+     */
+    @Test
+    fun onGetTemplate_omitsDisabledProfiles() {
+        every { mockRepository.enabledProfilesFlow } returns flowOf(listOf(profile1))
+
+        val controller = ScreenController(SourceSelectScreen(carContext, mockRepository) {})
+        controller.moveToState(Lifecycle.State.STARTED)
+
+        Thread.sleep(200)
+
+        val template = controller.getTemplatesReturned().last() as ListTemplate
+        val titles = template.singleList?.items
+            ?.filterIsInstance<Row>()
+            ?.map { it.title.toString() }
+        assertEquals(1, template.singleList?.items?.size)
+        assertTrue(titles?.contains("Alice") == true)
+        assertTrue(titles?.contains("Bob") == false)
+    }
+
+    /**
      * The host rejects a list template outright once it exceeds its content limit, so the
      * screen must clamp rather than render one row per profile.
      */
@@ -104,7 +127,7 @@ class SourceSelectScreenTest {
         val tooMany = (0..limit).map { index ->
             profile1.copy(id = "id-$index", displayName = "Profile $index")
         }
-        every { mockRepository.profilesFlow } returns flowOf(tooMany)
+        every { mockRepository.enabledProfilesFlow } returns flowOf(tooMany)
 
         val controller = ScreenController(SourceSelectScreen(carContext, mockRepository) {})
         controller.moveToState(Lifecycle.State.STARTED)

@@ -38,6 +38,10 @@ class ProfileEditViewModel @Inject constructor(
 
     private var editingId: String? = null
 
+    // Not editable here — the source on/off switch lives in the profile list — but it has to be
+    // carried through a save, or editing a disabled profile would silently switch it back on.
+    private var editingEnabled: Boolean = true
+
     private val _uiState = MutableStateFlow<ProfileEditUiState>(ProfileEditUiState.Idle)
     val uiState: StateFlow<ProfileEditUiState> = _uiState.asStateFlow()
 
@@ -53,6 +57,7 @@ class ProfileEditViewModel @Inject constructor(
             apiToken.value = profile.apiToken
             unit.value = profile.unit
             icon.value = profile.icon
+            editingEnabled = profile.enabled
             alertsEnabled.value = profile.alertsEnabled
         }
     }
@@ -105,6 +110,7 @@ class ProfileEditViewModel @Inject constructor(
         apiToken = apiToken.value.trim(),
         unit = unit.value,
         icon = icon.value,
+        enabled = editingEnabled,
         alertsEnabled = alertsEnabled.value,
     )
 }

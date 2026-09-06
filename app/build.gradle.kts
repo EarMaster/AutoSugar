@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "de.autosugar"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "de.autosugar"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 11
-        versionName = "1.2.6"
+        targetSdk = 37
+        versionCode = 12
+        versionName = "1.2.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.runtime.compose)
 
     // Networking
     implementation(libs.retrofit.core)

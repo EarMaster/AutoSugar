@@ -19,7 +19,7 @@ class LoadingScreen(
 
     init {
         lifecycleScope.launch {
-            val profiles = repository.profilesFlow.first()
+            val profiles = repository.enabledProfilesFlow.first()
             val nextScreen = when {
                 profiles.isEmpty() -> NoProfilesScreen(carContext, repository, appPrefs)
                 else -> {

@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">血糖アラート</string>
+    <string name="label_alerts_on">アラート有効</string>
     <string name="notif_channel_name">血糖アラート</string>
     <string name="notif_channel_desc">15分間隔の繰り返しで高血糖・低血糖アラート</string>
     <string name="notif_title_high">高血糖</string>
@@ -46,6 +47,21 @@
     <string name="notif_title_predicted_high">血糖値上昇傾向</string>
     <string name="notif_title_predicted_low">血糖値下降傾向</string>
     <string name="notif_text_predicted">15分後の予測: %s</string>
+
+    <!-- バックグラウンド監視 -->
+    <string name="notif_channel_monitor_name">監視</string>
+    <string name="notif_channel_monitor_desc">車内で血糖値を監視中に表示されるサイレントなステータス通知</string>
+    <string name="notif_monitor_title">血糖値を監視中</string>
+    <string name="notif_monitor_text">Android Auto の接続中はアラートが有効です</string>
+    <string name="notif_title_monitoring_stopped">血糖値の監視を停止しました</string>
+    <string name="notif_text_monitoring_stopped">アラートを再開するには車の画面で AutoSugar を開いてください</string>
+
+    <!-- 通知設定によるアラートのブロック -->
+    <string name="label_alerts_blocked_title">アラートを配信できません</string>
+    <string name="label_alerts_blocked_text">AutoSugar の通知がオフのため、血糖値アラートは車内でもスマートフォンでも表示されません。</string>
+    <string name="btn_open_notification_settings">通知設定を開く</string>
+    <string name="msg_notifications_denied">アラートには通知の権限が必要です</string>
+    <string name="btn_settings">設定</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">更新間隔</string>

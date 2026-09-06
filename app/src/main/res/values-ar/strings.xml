@@ -39,6 +39,7 @@
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">تنبيهات الجلوكوز</string>
+    <string name="label_alerts_on">التنبيهات مفعّلة</string>
     <string name="notif_channel_name">تنبيهات الجلوكوز</string>
     <string name="notif_channel_desc">تنبيهات ارتفاع وانخفاض سكر الدم مع فترة راحة تكرار 15 دقيقة</string>
     <string name="notif_title_high">ارتفاع السكر</string>
@@ -46,6 +47,21 @@
     <string name="notif_title_predicted_high">السكر في ارتفاع</string>
     <string name="notif_title_predicted_low">السكر في انخفاض</string>
     <string name="notif_text_predicted">متوقع خلال 15 دقيقة: %s</string>
+
+    <!-- المراقبة في الخلفية -->
+    <string name="notif_channel_monitor_name">المراقبة</string>
+    <string name="notif_channel_monitor_desc">إشعار حالة صامت يظهر أثناء مراقبة الجلوكوز في السيارة</string>
+    <string name="notif_monitor_title">جارٍ مراقبة الجلوكوز</string>
+    <string name="notif_monitor_text">تبقى التنبيهات نشطة طالما كان Android Auto متصلاً</string>
+    <string name="notif_title_monitoring_stopped">توقفت مراقبة الجلوكوز</string>
+    <string name="notif_text_monitoring_stopped">افتح AutoSugar على شاشة السيارة لاستئناف التنبيهات</string>
+
+    <!-- التنبيهات محظورة بسبب إعدادات الإشعارات -->
+    <string name="label_alerts_blocked_title">تعذر تسليم التنبيهات</string>
+    <string name="label_alerts_blocked_text">الإشعارات معطّلة لتطبيق AutoSugar، لذلك لن تظهر تنبيهات الجلوكوز لا في السيارة ولا على الهاتف.</string>
+    <string name="btn_open_notification_settings">فتح إعدادات الإشعارات</string>
+    <string name="msg_notifications_denied">تحتاج التنبيهات إلى إذن إرسال الإشعارات</string>
+    <string name="btn_settings">الإعدادات</string>
 
     <!-- Refresh interval -->
     <string name="label_refresh_interval">فترة التحديث</string>

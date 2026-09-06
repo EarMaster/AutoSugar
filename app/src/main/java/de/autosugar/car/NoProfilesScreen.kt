@@ -14,7 +14,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /**
- * Shown while no Nightscout source is configured.
+ * Shown while the car has no source to display — none configured, or all of them disabled on
+ * the phone.
  *
  * The body is a plain status statement: it must not tell the driver to pick up their
  * phone, because setup is a phone-side task and the car app quality guidelines forbid
@@ -30,7 +31,7 @@ class NoProfilesScreen(
 
     init {
         lifecycleScope.launch {
-            val profiles = repository.profilesFlow.first { it.isNotEmpty() }
+            val profiles = repository.enabledProfilesFlow.first { it.isNotEmpty() }
             val id = profiles.first().id
             repository.setActiveProfile(id)
             replaceStackWith(GlucoseScreen(carContext, repository, appPrefs, id))

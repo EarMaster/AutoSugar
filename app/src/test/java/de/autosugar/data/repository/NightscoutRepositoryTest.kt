@@ -20,6 +20,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -384,6 +385,51 @@ class NightscoutRepositoryTest {
         val result = transformSlot.captured(listOf(profile, other))
         assertTrue(result.first { it.id == "test-id" }.alertsEnabled)
         assertFalse(result.first { it.id == "other-id" }.alertsEnabled)
+    }
+
+    @Test
+    fun `setProfileEnabled toggles only the matching profile`() = runTest {
+        val other = profile.copy(id = "other-id")
+        val transformSlot = slot<(List<NightscoutProfile>) -> List<NightscoutProfile>>()
+        coEvery { mockDataStore.update(capture(transformSlot)) } just Runs
+
+        repository.setProfileEnabled("test-id", false)
+
+        val result = transformSlot.captured(listOf(profile, other))
+        assertFalse(result.first { it.id == "test-id" }.enabled)
+        assertTrue(result.first { it.id == "other-id" }.enabled)
+    }
+
+    @Test
+    fun `setProfileEnabled clears activeProfileId when the active profile is disabled`() = runTest {
+        // The car can no longer show it, so leaving it selected would strand the next session
+        // on a source that is not in its list.
+        coJustRun { mockDataStore.update(any()) }
+        repository.setActiveProfile("test-id")
+
+        repository.setProfileEnabled("test-id", false)
+
+        assertNull(repository.activeProfileId.value)
+    }
+
+    @Test
+    fun `setProfileEnabled keeps activeProfileId when re-enabling`() = runTest {
+        coJustRun { mockDataStore.update(any()) }
+        repository.setActiveProfile("test-id")
+
+        repository.setProfileEnabled("test-id", true)
+
+        assertEquals("test-id", repository.activeProfileId.value)
+    }
+
+    @Test
+    fun `enabledProfilesFlow hides disabled profiles from the car`() = runTest {
+        val disabled = profile.copy(id = "off-id", enabled = false)
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile, disabled))
+        val repo = NightscoutRepository(mockDataStore, mockFactory)
+
+        assertEquals(listOf(profile), repo.enabledProfilesFlow.first())
+        assertEquals(2, repo.profilesFlow.first().size)
     }
 
     // endregion
