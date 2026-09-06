@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -38,6 +39,17 @@
                 <category android:name="androidx.car.app.category.IOT" />
             </intent-filter>
         </service>
+
+        <!--
+             Runs the glucose alert polling for as long as Android Auto is connected, independently
+             of the car app's own (screen-bound) session. "dataSync" is the type that matches what
+             it actually does — periodically fetching readings from Nightscout — and is the only one
+             whose prerequisites the app meets without declaring permissions it has no use for.
+        -->
+        <service
+            android:name=".car.GlucoseMonitorService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
 
         <!-- Required meta-data for Car App Library -->
         <meta-data

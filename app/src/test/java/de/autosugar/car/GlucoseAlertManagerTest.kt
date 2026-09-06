@@ -36,6 +36,8 @@ class GlucoseAlertManagerTest {
         every { mockContext.getString(R.string.notif_title_low) } returns "Low glucose"
         every { mockContext.getString(R.string.notif_title_predicted_high) } returns "Glucose trending high"
         every { mockContext.getString(R.string.notif_title_predicted_low) } returns "Glucose trending low"
+        every { mockContext.getString(R.string.notif_title_monitoring_stopped) } returns "Glucose monitoring stopped"
+        every { mockContext.getString(R.string.notif_text_monitoring_stopped) } returns "Open AutoSugar on the car screen to resume alerts"
         every { mockContext.getString(R.string.notif_text_predicted, any()) } answers {
             @Suppress("UNCHECKED_CAST")
             val formatArgs = it.invocation.args[1] as Array<Any>
@@ -145,6 +147,33 @@ class GlucoseAlertManagerTest {
         manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, projectedSgv = 60.0, unit = GlucoseUnit.MG_DL)
 
         verify { manager.post(any(), any(), match { it.contains("60 mg/dL") }) }
+    }
+
+    // endregion
+
+    // region monitoring stopped
+
+    @Test
+    fun `sendMonitoringStoppedAlert does not collide with any per-profile alert id`() {
+        val manager = buildManager()
+        val idSlots = mutableListOf<Int>()
+        justRun { manager.post(capture(idSlots), any(), any()) }
+
+        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, 200.0, GlucoseUnit.MG_DL)
+        manager.sendLowAlert(PROFILE_ID, PROFILE_NAME, 55.0, GlucoseUnit.MG_DL)
+        manager.sendPredictedHighAlert(PROFILE_ID, PROFILE_NAME, 195.0, GlucoseUnit.MG_DL)
+        manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, 65.0, GlucoseUnit.MG_DL)
+        manager.sendMonitoringStoppedAlert()
+
+        assertEquals(5, idSlots.distinct().size)
+    }
+
+    @Test
+    fun `sendMonitoringStoppedAlert carries no profile name`() {
+        val manager = buildManager()
+        manager.sendMonitoringStoppedAlert()
+
+        verify { manager.post(any(), match { !it.contains("·") }, any()) }
     }
 
     // endregion

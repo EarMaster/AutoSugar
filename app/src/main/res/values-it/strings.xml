@@ -47,6 +47,14 @@
     <string name="notif_title_predicted_low">Glicemia in calo</string>
     <string name="notif_text_predicted">Previsto tra 15 min: %s</string>
 
+    <!-- Monitoraggio in background -->
+    <string name="notif_channel_monitor_name">Monitoraggio</string>
+    <string name="notif_channel_monitor_desc">Notifica di stato silenziosa mostrata mentre la glicemia viene monitorata in auto</string>
+    <string name="notif_monitor_title">Monitoraggio della glicemia</string>
+    <string name="notif_monitor_text">Gli avvisi restano attivi finché Android Auto è connesso</string>
+    <string name="notif_title_monitoring_stopped">Monitoraggio della glicemia interrotto</string>
+    <string name="notif_text_monitoring_stopped">Apri AutoSugar sullo schermo dell’auto per riprendere gli avvisi</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervallo aggiornamento</string>
     <string name="label_refresh_30s">30 sec</string>

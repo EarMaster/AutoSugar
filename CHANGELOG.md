@@ -5,6 +5,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Glucose alerts now fire while AutoSugar is in the background and Android Auto is connected — the case they exist for. Alert polling used to run on the car session's lifecycle, which the host tears down as soon as another car app takes the screen, so alerts only ever appeared while the driver could already see the reading. It now runs in a foreground service tied to the car connection instead, and stops when Android Auto disconnects
+
 ### Changed
 
 - The app now compiles against and targets Android 17 (API level 37), ahead of Google Play's compliance deadline rather than at it

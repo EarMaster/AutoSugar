@@ -47,6 +47,14 @@
     <string name="notif_title_predicted_low">Glucose daalt</string>
     <string name="notif_text_predicted">Voorspelling over 15 min: %s</string>
 
+    <!-- Bewaking op de achtergrond -->
+    <string name="notif_channel_monitor_name">Bewaking</string>
+    <string name="notif_channel_monitor_desc">Stille statusmelding zolang de glucose in de auto wordt bewaakt</string>
+    <string name="notif_monitor_title">Glucose wordt bewaakt</string>
+    <string name="notif_monitor_text">Meldingen blijven actief zolang Android Auto verbonden is</string>
+    <string name="notif_title_monitoring_stopped">Glucosebewaking gestopt</string>
+    <string name="notif_text_monitoring_stopped">Open AutoSugar op het autoscherm om meldingen te hervatten</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Verversingsinterval</string>
     <string name="label_refresh_30s">30 sec</string>

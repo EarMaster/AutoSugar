@@ -19,6 +19,7 @@ class GlucoseAlertManager(private val context: Context) {
         private const val NOTIF_LOW = 1002
         private const val NOTIF_PREDICTED_HIGH = 1003
         private const val NOTIF_PREDICTED_LOW = 1004
+        private const val NOTIF_MONITORING_STOPPED = 1005
 
         /**
          * Derives a stable notification id unique per (alert type, profile) so that two
@@ -73,6 +74,19 @@ class GlucoseAlertManager(private val context: Context) {
             id = notifId(NOTIF_PREDICTED_LOW, profileId),
             title = titled(profileName, R.string.notif_title_predicted_low),
             text = context.getString(R.string.notif_text_predicted, formatValue(projectedSgv, unit)),
+        )
+    }
+
+    /**
+     * Tells the driver that alerting itself has stopped — currently only when Android caps the
+     * monitor's foreground-service budget. Not tied to a profile: monitoring stops for all of them
+     * at once, so it carries no profile name and a single notification id.
+     */
+    fun sendMonitoringStoppedAlert() {
+        post(
+            id = notifId(NOTIF_MONITORING_STOPPED, ""),
+            title = context.getString(R.string.notif_title_monitoring_stopped),
+            text = context.getString(R.string.notif_text_monitoring_stopped),
         )
     }
 

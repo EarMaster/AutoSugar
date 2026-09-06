@@ -47,6 +47,14 @@
     <string name="notif_title_predicted_low">血糖呈下降趋势</string>
     <string name="notif_text_predicted">预计 15 分钟后：%s</string>
 
+    <!-- 后台监测 -->
+    <string name="notif_channel_monitor_name">监测</string>
+    <string name="notif_channel_monitor_desc">在车内监测血糖期间显示的无声状态通知</string>
+    <string name="notif_monitor_title">正在监测血糖</string>
+    <string name="notif_monitor_text">Android Auto 连接期间提醒保持启用</string>
+    <string name="notif_title_monitoring_stopped">血糖监测已停止</string>
+    <string name="notif_text_monitoring_stopped">请在车机屏幕上打开 AutoSugar 以恢复提醒</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">刷新间隔</string>
     <string name="label_refresh_30s">30 秒</string>

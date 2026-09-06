@@ -47,6 +47,14 @@
     <string name="notif_title_predicted_low">Glycémie en baisse</string>
     <string name="notif_text_predicted">Prévision dans 15 min : %s</string>
 
+    <!-- Surveillance en arrière-plan -->
+    <string name="notif_channel_monitor_name">Surveillance</string>
+    <string name="notif_channel_monitor_desc">Notification d’état silencieuse affichée pendant la surveillance du glucose en voiture</string>
+    <string name="notif_monitor_title">Surveillance du glucose</string>
+    <string name="notif_monitor_text">Les alertes restent actives tant qu’Android Auto est connecté</string>
+    <string name="notif_title_monitoring_stopped">Surveillance du glucose arrêtée</string>
+    <string name="notif_text_monitoring_stopped">Ouvrez AutoSugar sur l’écran de la voiture pour reprendre les alertes</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervalle d\'actualisation</string>
     <string name="label_refresh_30s">30 sec</string>

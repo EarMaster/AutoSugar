@@ -47,6 +47,14 @@
     <string name="notif_title_predicted_low">ग्लूकोज़ घट रहा है</string>
     <string name="notif_text_predicted">15 मिनट में अनुमानित: %s</string>
 
+    <!-- बैकग्राउंड निगरानी -->
+    <string name="notif_channel_monitor_name">निगरानी</string>
+    <string name="notif_channel_monitor_desc">कार में ग्लूकोज़ की निगरानी के दौरान दिखने वाली मूक स्थिति सूचना</string>
+    <string name="notif_monitor_title">ग्लूकोज़ की निगरानी जारी</string>
+    <string name="notif_monitor_text">Android Auto कनेक्ट रहने तक अलर्ट सक्रिय रहते हैं</string>
+    <string name="notif_title_monitoring_stopped">ग्लूकोज़ निगरानी बंद हुई</string>
+    <string name="notif_text_monitoring_stopped">अलर्ट फिर से शुरू करने के लिए कार स्क्रीन पर AutoSugar खोलें</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">रीफ्रेश अंतराल</string>
     <string name="label_refresh_30s">30 सेकंड</string>

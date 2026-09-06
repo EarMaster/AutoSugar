@@ -47,6 +47,14 @@
     <string name="notif_title_predicted_low">Glicose tendendo a cair</string>
     <string name="notif_text_predicted">Previsto em 15 min: %s</string>
 
+    <!-- Monitorização em segundo plano -->
+    <string name="notif_channel_monitor_name">Monitorização</string>
+    <string name="notif_channel_monitor_desc">Notificação de estado silenciosa apresentada enquanto a glicose é monitorizada no carro</string>
+    <string name="notif_monitor_title">A monitorizar a glicose</string>
+    <string name="notif_monitor_text">Os alertas continuam ativos enquanto o Android Auto estiver ligado</string>
+    <string name="notif_title_monitoring_stopped">Monitorização da glicose parada</string>
+    <string name="notif_text_monitoring_stopped">Abre o AutoSugar no ecrã do carro para retomar os alertas</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">Intervalo de atualização</string>
     <string name="label_refresh_30s">30 seg</string>

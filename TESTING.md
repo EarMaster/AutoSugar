@@ -57,3 +57,32 @@ adb -s <device-id> forward tcp:5277 tcp:5277
 ```bash
 $ANDROID_HOME/extras/google/auto/desktop-head-unit
 ```
+
+## Verifying background alerts
+
+Alerts must fire while AutoSugar is *not* the visible car app — that is the whole point of them, and
+it is the one thing the DHU makes easy to get wrong, because the app is on screen the entire time
+you are looking at it.
+
+1. Open AutoSugar on the DHU once, with at least one alert-enabled profile. This is what starts
+   `GlucoseMonitorService`; confirm it is running:
+
+   ```bash
+   adb shell dumpsys activity services de.autosugar | grep -i "GlucoseMonitorService\|isForeground"
+   ```
+
+   A silent "Monitoring glucose" notification also appears on the phone.
+
+2. Switch the DHU to another app (Maps, or the launcher) so AutoSugar leaves the screen. The service
+   must stay in the list above — it is no longer tied to the session.
+
+3. Drive the reading past a threshold (point the profile at a test Nightscout instance, or lower
+   `bgHigh` in Nightscout) and confirm the alert still appears as a heads-up notification on the car
+   screen while another app is in the foreground.
+
+4. Disconnect the head unit (quit the DHU, unplug the phone). The service must stop within a few
+   seconds — re-run the `dumpsys` command and confirm it is gone, along with the phone notification.
+
+Note that Android 15+ caps a `dataSync` foreground service at six hours per 24-hour window. On
+timeout the app posts a "glucose monitoring stopped" alert and stops the service; reopening
+AutoSugar on the car screen starts it again.

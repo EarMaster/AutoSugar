@@ -47,6 +47,14 @@
     <string name="notif_title_predicted_low">السكر في انخفاض</string>
     <string name="notif_text_predicted">متوقع خلال 15 دقيقة: %s</string>
 
+    <!-- المراقبة في الخلفية -->
+    <string name="notif_channel_monitor_name">المراقبة</string>
+    <string name="notif_channel_monitor_desc">إشعار حالة صامت يظهر أثناء مراقبة الجلوكوز في السيارة</string>
+    <string name="notif_monitor_title">جارٍ مراقبة الجلوكوز</string>
+    <string name="notif_monitor_text">تبقى التنبيهات نشطة طالما كان Android Auto متصلاً</string>
+    <string name="notif_title_monitoring_stopped">توقفت مراقبة الجلوكوز</string>
+    <string name="notif_text_monitoring_stopped">افتح AutoSugar على شاشة السيارة لاستئناف التنبيهات</string>
+
     <!-- Refresh interval -->
     <string name="label_refresh_interval">فترة التحديث</string>
     <string name="label_refresh_30s">30 ثانية</string>
