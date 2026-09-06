@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "de.autosugar"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "de.autosugar"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 11
         versionName = "1.2.6"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

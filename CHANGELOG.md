@@ -5,6 +5,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- The app now compiles against and targets Android 17 (API level 37), ahead of Google Play's compliance deadline rather than at it
+
 ## [1.2.6] - 2026-08-27
 
 ### Fixed
