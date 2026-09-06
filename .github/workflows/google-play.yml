@@ -83,4 +83,13 @@ jobs:
           tracks: ${{ inputs.track || 'internal' }}
           whatsNewDirectory: whatsnew/
           mappingFile: release-assets/mapping.txt
-          changesNotSentForReview: true
+          # `changesNotSentForReview` is deliberately not set. Play rejects the parameter
+          # outright ("Changes are sent for review automatically. The query parameter
+          # changesNotSentForReview must not be set.") for any edit it has decided must be
+          # reviewed — which includes every release that adds a permission needing a Play
+          # Console declaration, such as a new foreground service type. It broke the 1.2.7
+          # upload after working for 1.2.6, since nothing in the workflow had changed.
+          #
+          # Holding changes back from review is also the wrong default here: reviews for this
+          # app are slow, so a release that sits in the console waiting for someone to press
+          # "send for review" only adds latency (see AGENTS.md, Maintenance Policy).
