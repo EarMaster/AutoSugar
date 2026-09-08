@@ -1,0 +1,3 @@
+Les notifications reposent désormais uniquement sur les seuils définis dans votre propre Nightscout. S’il n’en définit aucun, AutoSugar reste silencieux et vous le signale, au lieu d’utiliser des valeurs qu’il a choisies.
+
+Les notifications de tendance ont été supprimées : AutoSugar ne prédit plus l’évolution de votre glycémie. Leur activation explique maintenant leur fonctionnement.

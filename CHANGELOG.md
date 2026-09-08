@@ -5,11 +5,20 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.8] - 2026-09-08
+
+### Removed
+
+- The "trending high/low" notifications are gone. They projected a reading 15 minutes ahead from a number AutoSugar derived itself, and nothing in the Nightscout payload carries a prediction — forecasting glucose is not something a display for Nightscout data should be doing. The trend arrow and delta on the car screen come from Nightscout and are unchanged
+
+### Added
+
+- Switching a source's notifications on now opens a short explainer first: where the thresholds come from, that the graph only joins real readings with straight lines and forecasts nothing, that stale readings are skipped and repeats are limited, and that AutoSugar is a display for Nightscout data rather than a medical device. The notification permission is requested after it, which is also the order Android recommends
+- Testing a connection now warns when that Nightscout instance defines no glucose thresholds, so it is clear up front that no notifications can be sent for the source
+
 ### Changed
 
-- AutoSugar no longer forecasts glucose. The "trending high/low" notifications projected a reading 15 minutes ahead from a number the app derived itself; nothing in the Nightscout payload carries a prediction. The trend arrow and delta on the car screen come from Nightscout and are unchanged
-- Notifications now fire only on thresholds the source's own Nightscout reports. Where it reports none, AutoSugar used to substitute 70/180 — values it chose — and notify on those; it now stays quiet and says so on the phone. The graph still falls back to a display range so it always has a scale to draw
-- Switching a source's notifications on now explains how they work first: thresholds come from your own Nightscout, the graph joins real readings with straight lines and predicts nothing, stale readings are skipped, repeats are limited — and AutoSugar is a display for Nightscout data, not a medical device. The notification permission is requested after that explanation, which is also the order Android recommends
+- Notifications now fire only on thresholds the source's own Nightscout reports. Where it reports none, AutoSugar used to substitute 70/180 — values it picked itself — and notify on those; it now stays quiet instead. The graph still falls back to a display range so it always has a scale to draw
 
 ## [1.2.7] - 2026-09-06
 
