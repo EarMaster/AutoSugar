@@ -46,15 +46,33 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Download AAB and mapping from GitHub Release
+      - name: Download AAB from GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download "${{ steps.resolve.outputs.tag }}" \
             --repo ${{ github.repository }} \
             --pattern "*.aab" \
-            --pattern "mapping.txt" \
             --dir release-assets
+
+      - name: Download ProGuard mapping if the release has one
+        id: mapping
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # release.yml attaches mapping.txt only when the build actually produced one, so a
+          # release without it is legitimate and must not fail the deploy — it just means Play
+          # gets no deobfuscation file. Downloading it in the same call as the AAB made it a
+          # hard requirement that the release workflow never guaranteed.
+          if gh release download "${{ steps.resolve.outputs.tag }}" \
+               --repo ${{ github.repository }} \
+               --pattern "mapping.txt" \
+               --dir release-assets; then
+            echo "path=release-assets/mapping.txt" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No mapping.txt attached to ${{ steps.resolve.outputs.tag }} — uploading without a deobfuscation file."
+            echo "path=" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Prepare what's new
         run: |
@@ -66,6 +84,18 @@ jobs:
               cp "$FILE" "whatsnew/whatsnew-${LOCALE}"
             fi
           done
+
+          # This job checks out the ref it was triggered on, but takes the artifacts from the
+          # tag. Deploy a tag whose what's-new files are not on that ref — an older tag, or a
+          # release whose notes never reached this branch — and the glob above matches nothing,
+          # the [ -f ] guard skips every iteration without complaint, and the upload silently
+          # ships with no release notes at all. Refuse instead of guessing.
+          COUNT=$(find whatsnew -type f | wc -l)
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::error::No what's-new files matched docs/whatsnew/${VERSION}-* in the ${{ github.ref_name }} checkout. Play would receive an empty release-notes directory."
+            exit 1
+          fi
+          echo "Prepared $COUNT locale file(s) for $VERSION."
 
       - name: Upload to Google Play
         uses: r0adkll/upload-google-play@v1
@@ -82,7 +112,8 @@ jobs:
           # the `|| 'internal'` as well as the input's own default.
           tracks: ${{ inputs.track || 'internal' }}
           whatsNewDirectory: whatsnew/
-          mappingFile: release-assets/mapping.txt
+          # Empty when the release carried no mapping.txt; the action skips the input then.
+          mappingFile: ${{ steps.mapping.outputs.path }}
           # `changesNotSentForReview` is deliberately not set. Play rejects the parameter
           # outright ("Changes are sent for review automatically. The query parameter
           # changesNotSentForReview must not be set.") for any edit it has decided must be
