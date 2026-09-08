@@ -40,15 +40,8 @@ class GlucoseAlertManagerTest {
         every { mockContext.getString(R.string.label_unit_mmoll) } returns "mmol/L"
         every { mockContext.getString(R.string.notif_title_high) } returns "High glucose"
         every { mockContext.getString(R.string.notif_title_low) } returns "Low glucose"
-        every { mockContext.getString(R.string.notif_title_predicted_high) } returns "Glucose trending high"
-        every { mockContext.getString(R.string.notif_title_predicted_low) } returns "Glucose trending low"
         every { mockContext.getString(R.string.notif_title_monitoring_stopped) } returns "Glucose monitoring stopped"
         every { mockContext.getString(R.string.notif_text_monitoring_stopped) } returns "Open AutoSugar on the car screen to resume alerts"
-        every { mockContext.getString(R.string.notif_text_predicted, any()) } answers {
-            @Suppress("UNCHECKED_CAST")
-            val formatArgs = it.invocation.args[1] as Array<Any>
-            "Predicted in 15 min: ${formatArgs[0]}"
-        }
         every { mockContext.packageName } returns "de.autosugar"
         every { mockContext.applicationInfo } returns mockk(relaxed = true)
         justRun { mockNm.createNotificationChannel(any()) }
@@ -109,19 +102,6 @@ class GlucoseAlertManagerTest {
         assertTrue("Expected distinct notification IDs", idSlots[0] != idSlots[1])
     }
 
-    @Test
-    fun `all four alert types use distinct notification IDs`() {
-        val manager = buildManager()
-        val idSlots = mutableListOf<Int>()
-        justRun { manager.post(capture(idSlots), any(), any()) }
-
-        manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, 200.0, GlucoseUnit.MG_DL)
-        manager.sendLowAlert(PROFILE_ID, PROFILE_NAME, 55.0, GlucoseUnit.MG_DL)
-        manager.sendPredictedHighAlert(PROFILE_ID, PROFILE_NAME, 195.0, GlucoseUnit.MG_DL)
-        manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, 65.0, GlucoseUnit.MG_DL)
-
-        assertEquals(4, idSlots.distinct().size)
-    }
 
     @Test
     fun `same alert type for different profiles uses distinct notification IDs`() {
@@ -137,26 +117,6 @@ class GlucoseAlertManagerTest {
 
     // endregion
 
-    // region predicted alerts
-
-    @Test
-    fun `sendPredictedHighAlert includes predicted value in notification text`() {
-        val manager = buildManager()
-        manager.sendPredictedHighAlert(PROFILE_ID, PROFILE_NAME, projectedSgv = 200.0, unit = GlucoseUnit.MG_DL)
-
-        verify { manager.post(any(), any(), match { it.contains("200 mg/dL") }) }
-    }
-
-    @Test
-    fun `sendPredictedLowAlert includes predicted value in notification text`() {
-        val manager = buildManager()
-        manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, projectedSgv = 60.0, unit = GlucoseUnit.MG_DL)
-
-        verify { manager.post(any(), any(), match { it.contains("60 mg/dL") }) }
-    }
-
-    // endregion
-
     // region monitoring stopped
 
     @Test
@@ -167,11 +127,9 @@ class GlucoseAlertManagerTest {
 
         manager.sendHighAlert(PROFILE_ID, PROFILE_NAME, 200.0, GlucoseUnit.MG_DL)
         manager.sendLowAlert(PROFILE_ID, PROFILE_NAME, 55.0, GlucoseUnit.MG_DL)
-        manager.sendPredictedHighAlert(PROFILE_ID, PROFILE_NAME, 195.0, GlucoseUnit.MG_DL)
-        manager.sendPredictedLowAlert(PROFILE_ID, PROFILE_NAME, 65.0, GlucoseUnit.MG_DL)
         manager.sendMonitoringStoppedAlert()
 
-        assertEquals(5, idSlots.distinct().size)
+        assertEquals(3, idSlots.distinct().size)
     }
 
     @Test

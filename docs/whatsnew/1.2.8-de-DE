@@ -1,0 +1,3 @@
+Benachrichtigungen richten sich jetzt ausschließlich nach den Grenzwerten in deinem eigenen Nightscout. Definiert es keine, bleibt AutoSugar still und sagt es dir, statt selbst gewählte Werte zu verwenden.
+
+Die Benachrichtigungen „Blutzucker steigt/fällt“ wurden entfernt: AutoSugar sagt keine Werte mehr voraus. Beim Aktivieren wird nun erklärt, wie Benachrichtigungen funktionieren.

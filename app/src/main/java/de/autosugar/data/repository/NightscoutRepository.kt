@@ -80,18 +80,36 @@ class NightscoutRepository @Inject constructor(
     private fun isoDate(dateString: String?, dateMs: Long): String =
         dateString ?: java.time.Instant.ofEpochMilli(dateMs).toString()
 
-    /** Returns all four Nightscout threshold values in mg/dL. */
+    /** Reads the thresholds configured on a saved profile's Nightscout instance. */
     suspend fun getThresholds(profileId: String): Result<GlucoseThresholds> = runCatching {
         val profiles = dataStore.profilesFlow.first()
         val profile = profiles.find { it.id == profileId }
             ?: error("Profile $profileId not found")
+        fetchThresholds(profile)
+    }
+
+    /**
+     * Same as [getThresholds] for a profile that may not be saved yet, so the edit screen can
+     * tell the user whether their Nightscout defines any thresholds before they rely on them.
+     */
+    suspend fun getThresholdsFor(profile: NightscoutProfile): Result<GlucoseThresholds> =
+        runCatching { fetchThresholds(profile) }
+
+    private suspend fun fetchThresholds(profile: NightscoutProfile): GlucoseThresholds {
         val api = apiFactory.get(profile.baseUrl)
         val t = api.getStatus(token = profile.apiToken.ifBlank { null }).settings?.thresholds
-        GlucoseThresholds(
-            bgLow          = t?.bgLow?.roundToInt()          ?: 70,
-            bgTargetBottom = t?.bgTargetBottom?.roundToInt() ?: 70,
-            bgTargetTop    = t?.bgTargetTop?.roundToInt()    ?: 180,
-            bgHigh         = t?.bgHigh?.roundToInt()         ?: 180,
+        val low = t?.bgLow?.roundToInt()
+        val high = t?.bgHigh?.roundToInt()
+        return GlucoseThresholds(
+            // Display-only fallbacks: the graph still needs a scale and a band when Nightscout
+            // defines none. They are deliberately not passed to alertLow/alertHigh below, so a
+            // number AutoSugar picked can never be the reason someone gets notified.
+            bgLow          = low                             ?: DISPLAY_LOW,
+            bgTargetBottom = t?.bgTargetBottom?.roundToInt()  ?: DISPLAY_TARGET_BOTTOM,
+            bgTargetTop    = t?.bgTargetTop?.roundToInt()     ?: DISPLAY_TARGET_TOP,
+            bgHigh         = high                            ?: DISPLAY_HIGH,
+            alertLow       = low,
+            alertHigh      = high,
         )
     }
 
@@ -169,5 +187,13 @@ class NightscoutRepository @Inject constructor(
 
     suspend fun saveAll(profiles: List<NightscoutProfile>) {
         dataStore.save(profiles)
+    }
+
+    private companion object {
+        // Used purely to render a graph when Nightscout defines no thresholds. Never notified on.
+        const val DISPLAY_LOW = 70
+        const val DISPLAY_TARGET_BOTTOM = 70
+        const val DISPLAY_TARGET_TOP = 180
+        const val DISPLAY_HIGH = 180
     }
 }

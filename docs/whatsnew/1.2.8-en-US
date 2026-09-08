@@ -1,0 +1,3 @@
+Notifications now come only from the thresholds set on your own Nightscout. If it defines none, AutoSugar stays quiet and tells you, instead of using values it picked itself.
+
+The "trending high/low" notifications are gone: AutoSugar no longer predicts where your glucose is heading. Turning notifications on now explains how they work.

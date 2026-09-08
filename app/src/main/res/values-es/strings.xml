@@ -40,13 +40,16 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Alertas de glucosa</string>
     <string name="label_alerts_on">Alertas activadas</string>
+
+    <!-- Cómo funcionan las notificaciones -->
+    <string name="dialog_notifications_title">Cómo funcionan las notificaciones</string>
+    <string name="dialog_notifications_body">AutoSugar te avisa cuando una lectura cruza un umbral que has configurado en tu propia instancia de Nightscout. AutoSugar nunca define esos umbrales — si tu Nightscout no define ninguno, no se envía nada.\n\nLa gráfica une tus lecturas reales con líneas rectas. Nada se suaviza ni se predice, y AutoSugar no pronostica hacia dónde va tu glucosa.\n\nLas lecturas de más de 12 minutos se ignoran, y cada notificación se repite como máximo cada 15 minutos.\n\nAutoSugar muestra tus datos de Nightscout y no es un producto sanitario. No lo uses para decisiones de tratamiento.</string>
+    <string name="btn_got_it">Entendido</string>
+    <string name="warning_no_thresholds">Esta instancia de Nightscout no define umbrales de glucosa, por lo que no se pueden enviar notificaciones para esta fuente. Configúra los umbrales en tu Nightscout — AutoSugar solo usa los que lee de allí.</string>
     <string name="notif_channel_name">Alertas de glucosa</string>
     <string name="notif_channel_desc">Alertas de glucosa alta y baja con intervalo de repetición de 15 minutos</string>
     <string name="notif_title_high">Glucosa alta</string>
     <string name="notif_title_low">Glucosa baja</string>
-    <string name="notif_title_predicted_high">Glucosa en tendencia alta</string>
-    <string name="notif_title_predicted_low">Glucosa en tendencia baja</string>
-    <string name="notif_text_predicted">Predicción en 15 min: %s</string>
 
     <!-- Monitorización en segundo plano -->
     <string name="notif_channel_monitor_name">Monitorización</string>

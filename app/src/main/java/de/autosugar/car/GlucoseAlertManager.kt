@@ -18,8 +18,9 @@ class GlucoseAlertManager(private val context: Context) {
         private const val CHANNEL_ID = "glucose_alerts"
         private const val NOTIF_HIGH = 1001
         private const val NOTIF_LOW = 1002
-        private const val NOTIF_PREDICTED_HIGH = 1003
-        private const val NOTIF_PREDICTED_LOW = 1004
+        // 1003/1004 belonged to the removed "trending high/low" forecasts. Left unused rather
+        // than reassigned, so a notification still showing on an older install is never replaced
+        // by an unrelated one.
         private const val NOTIF_MONITORING_STOPPED = 1005
 
         /**
@@ -78,22 +79,6 @@ class GlucoseAlertManager(private val context: Context) {
             id = notifId(NOTIF_LOW, profileId),
             title = titled(profileName, R.string.notif_title_low),
             text = formatValue(sgv, unit),
-        )
-    }
-
-    fun sendPredictedHighAlert(profileId: String, profileName: String, projectedSgv: Double, unit: GlucoseUnit) {
-        post(
-            id = notifId(NOTIF_PREDICTED_HIGH, profileId),
-            title = titled(profileName, R.string.notif_title_predicted_high),
-            text = context.getString(R.string.notif_text_predicted, formatValue(projectedSgv, unit)),
-        )
-    }
-
-    fun sendPredictedLowAlert(profileId: String, profileName: String, projectedSgv: Double, unit: GlucoseUnit) {
-        post(
-            id = notifId(NOTIF_PREDICTED_LOW, profileId),
-            title = titled(profileName, R.string.notif_title_predicted_low),
-            text = context.getString(R.string.notif_text_predicted, formatValue(projectedSgv, unit)),
         )
     }
 

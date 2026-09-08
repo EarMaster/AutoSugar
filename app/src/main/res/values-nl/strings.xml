@@ -40,13 +40,16 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glucosemeldingen</string>
     <string name="label_alerts_on">Meldingen aan</string>
+
+    <!-- Hoe meldingen werken -->
+    <string name="dialog_notifications_title">Hoe meldingen werken</string>
+    <string name="dialog_notifications_body">AutoSugar waarschuwt je wanneer een meting een grenswaarde overschrijdt die je in je eigen Nightscout hebt ingesteld. AutoSugar stelt die grenswaarden nooit zelf in — definieert je Nightscout er geen, dan wordt er niets verzonden.\n\nDe grafiek verbindt je echte metingen met rechte lijnen. Er wordt niets afgevlakt of voorspeld, en AutoSugar voorspelt niet waar je glucose heen gaat.\n\nMetingen ouder dan 12 minuten worden genegeerd en elke melding herhaalt zich maximaal elke 15 minuten.\n\nAutoSugar toont je Nightscout-gegevens en is geen medisch hulpmiddel. Gebruik het niet voor behandelbeslissingen.</string>
+    <string name="btn_got_it">Duidelijk</string>
+    <string name="warning_no_thresholds">Deze Nightscout-instantie definieert geen glucosegrenswaarden, dus voor deze bron kunnen geen meldingen worden verzonden. Stel de grenswaarden in je Nightscout-configuratie in — AutoSugar gebruikt alleen wat het daar leest.</string>
     <string name="notif_channel_name">Glucosemeldingen</string>
     <string name="notif_channel_desc">Meldingen voor hoge en lage bloedglucose met herhalings-cooldown van 15 minuten</string>
     <string name="notif_title_high">Hoge glucose</string>
     <string name="notif_title_low">Lage glucose</string>
-    <string name="notif_title_predicted_high">Glucose stijgt</string>
-    <string name="notif_title_predicted_low">Glucose daalt</string>
-    <string name="notif_text_predicted">Voorspelling over 15 min: %s</string>
 
     <!-- Bewaking op de achtergrond -->
     <string name="notif_channel_monitor_name">Bewaking</string>

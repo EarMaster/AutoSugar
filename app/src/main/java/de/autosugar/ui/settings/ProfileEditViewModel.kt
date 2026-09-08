@@ -48,6 +48,14 @@ class ProfileEditViewModel @Inject constructor(
     private val _tokenOverpowered = MutableStateFlow(false)
     val tokenOverpowered: StateFlow<Boolean> = _tokenOverpowered.asStateFlow()
 
+    /**
+     * True when the tested Nightscout instance reports no glucose thresholds. AutoSugar notifies
+     * only on bounds that instance defines, so in that case enabling alerts here can never produce
+     * anything — which the user has to be told rather than left to discover by silence.
+     */
+    private val _thresholdsMissing = MutableStateFlow(false)
+    val thresholdsMissing: StateFlow<Boolean> = _thresholdsMissing.asStateFlow()
+
     fun loadProfile(profileId: String) {
         viewModelScope.launch {
             val profile = repository.profilesFlow.first().find { it.id == profileId } ?: return@launch
@@ -65,6 +73,7 @@ class ProfileEditViewModel @Inject constructor(
     fun testConnection() {
         _uiState.value = ProfileEditUiState.Loading
         _tokenOverpowered.value = false
+        _thresholdsMissing.value = false
         val tempProfile = buildProfile()
         viewModelScope.launch {
             repository.testConnection(tempProfile)
@@ -72,6 +81,11 @@ class ProfileEditViewModel @Inject constructor(
                     _tokenOverpowered.value = runCatching {
                         repository.hasElevatedPermissions(tempProfile)
                     }.getOrDefault(false)
+                    // Only treat it as missing on a successful read; a failed status call says
+                    // nothing about whether thresholds are configured.
+                    _thresholdsMissing.value = repository.getThresholdsFor(tempProfile)
+                        .map { !it.canNotify }
+                        .getOrDefault(false)
                     _uiState.value = ProfileEditUiState.TestSuccess(
                         value = entry.displayValue(tempProfile.unit),
                         unit = tempProfile.unit,

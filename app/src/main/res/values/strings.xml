@@ -41,13 +41,16 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glucose alerts</string>
     <string name="label_alerts_on">Alerts on</string>
+
+    <!-- How notifications work -->
+    <string name="dialog_notifications_title">How notifications work</string>
+    <string name="dialog_notifications_body">AutoSugar notifies you when a reading crosses a threshold you configured on your own Nightscout instance. AutoSugar never sets those thresholds itself — if your Nightscout defines none, nothing is sent.\n\nThe graph joins your actual readings with straight lines. Nothing is smoothed or predicted, and AutoSugar does not forecast where your glucose is heading.\n\nReadings older than 12 minutes are ignored, and each notification repeats at most every 15 minutes.\n\nAutoSugar displays your Nightscout data and is not a medical device. Do not use it for treatment decisions.</string>
+    <string name="btn_got_it">Got it</string>
+    <string name="warning_no_thresholds">This Nightscout instance defines no glucose thresholds, so no notifications can be sent for this source. Set the thresholds in your Nightscout configuration — AutoSugar only ever uses the ones it reads from there.</string>
     <string name="notif_channel_name">Glucose Alerts</string>
     <string name="notif_channel_desc">High and low blood glucose alerts with 15-minute repeat cooldown</string>
     <string name="notif_title_high">High glucose</string>
     <string name="notif_title_low">Low glucose</string>
-    <string name="notif_title_predicted_high">Glucose trending high</string>
-    <string name="notif_title_predicted_low">Glucose trending low</string>
-    <string name="notif_text_predicted">Predicted in 15 min: %s</string>
 
     <!-- Background monitoring service -->
     <string name="notif_channel_monitor_name">Monitoring</string>

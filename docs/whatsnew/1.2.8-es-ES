@@ -1,0 +1,3 @@
+Las notificaciones ahora se basan solo en los umbrales configurados en tu propio Nightscout. Si no define ninguno, AutoSugar se queda en silencio y te lo dice, en lugar de usar valores elegidos por sí mismo.
+
+Se han eliminado las notificaciones de tendencia: AutoSugar ya no predice hacia dónde va tu glucosa. Al activarlas se explica cómo funcionan.

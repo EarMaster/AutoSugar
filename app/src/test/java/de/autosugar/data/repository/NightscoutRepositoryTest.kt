@@ -174,7 +174,7 @@ class NightscoutRepositoryTest {
     }
 
     @Test
-    fun `getThresholds uses default bgLow and bgHigh when null in response`() = runTest {
+    fun `getThresholds uses default bgLow and bgHigh for display when null in response`() = runTest {
         every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
         every { mockFactory.get(any()) } returns mockApi
         coEvery { mockApi.getStatus(any()) } returns StatusDto(
@@ -186,6 +186,82 @@ class NightscoutRepositoryTest {
         val thresholds = repository.getThresholds("test-id").getOrThrow()
         assertEquals(70, thresholds.bgLow)
         assertEquals(180, thresholds.bgHigh)
+    }
+
+    @Test
+    fun `getThresholds exposes no notifiable bounds when Nightscout defines none`() = runTest {
+        // The display fallbacks above must never become notification bounds: AutoSugar deciding
+        // what counts as high or low for someone is exactly what it must not do.
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = SettingsDto(
+                thresholds = ThresholdsDto(bgHigh = null, bgTargetTop = 160.0, bgTargetBottom = 80.0, bgLow = null),
+            ),
+        )
+
+        val thresholds = repository.getThresholds("test-id").getOrThrow()
+        assertNull(thresholds.alertLow)
+        assertNull(thresholds.alertHigh)
+        assertFalse(thresholds.canNotify)
+    }
+
+    @Test
+    fun `getThresholds exposes no notifiable bounds when the status carries no settings`() = runTest {
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(settings = null)
+
+        val thresholds = repository.getThresholds("test-id").getOrThrow()
+        assertFalse(thresholds.canNotify)
+    }
+
+    @Test
+    fun `getThresholds passes through the bounds Nightscout reported`() = runTest {
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = SettingsDto(
+                thresholds = ThresholdsDto(bgHigh = 200.0, bgTargetTop = 160.0, bgTargetBottom = 80.0, bgLow = 65.0),
+            ),
+        )
+
+        val thresholds = repository.getThresholds("test-id").getOrThrow()
+        assertEquals(65, thresholds.alertLow)
+        assertEquals(200, thresholds.alertHigh)
+        assertTrue(thresholds.canNotify)
+    }
+
+    @Test
+    fun `getThresholds keeps a bound notifiable when only the other one is missing`() = runTest {
+        every { mockDataStore.profilesFlow } returns flowOf(listOf(profile))
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = SettingsDto(
+                thresholds = ThresholdsDto(bgHigh = 190.0, bgTargetTop = null, bgTargetBottom = null, bgLow = null),
+            ),
+        )
+
+        val thresholds = repository.getThresholds("test-id").getOrThrow()
+        assertEquals(190, thresholds.alertHigh)
+        assertNull(thresholds.alertLow)
+        assertTrue(thresholds.canNotify)
+    }
+
+    @Test
+    fun `getThresholdsFor works for a profile that is not saved yet`() = runTest {
+        // The edit screen tests a source before it exists in the data store.
+        every { mockDataStore.profilesFlow } returns flowOf(emptyList())
+        every { mockFactory.get(any()) } returns mockApi
+        coEvery { mockApi.getStatus(any()) } returns StatusDto(
+            settings = SettingsDto(
+                thresholds = ThresholdsDto(bgHigh = 180.0, bgTargetTop = null, bgTargetBottom = null, bgLow = 70.0),
+            ),
+        )
+
+        val thresholds = repository.getThresholdsFor(profile).getOrThrow()
+        assertEquals(70, thresholds.alertLow)
+        assertEquals(180, thresholds.alertHigh)
     }
 
     @Test

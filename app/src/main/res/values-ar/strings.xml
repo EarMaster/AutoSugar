@@ -40,13 +40,16 @@
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">تنبيهات الجلوكوز</string>
     <string name="label_alerts_on">التنبيهات مفعّلة</string>
+
+    <!-- كيف تعمل الإشعارات -->
+    <string name="dialog_notifications_title">كيف تعمل الإشعارات</string>
+    <string name="dialog_notifications_body">ينبّهك AutoSugar عندما يتجاوز القياس حدّاً ضبطته في خادم Nightscout الخاص بك. ولا يقوم AutoSugar بتعيين هذه الحدود مطلقاً — فإن لم يحددها خادمك، لن يُرسل شيء.\n\nيربط الرسم البياني قياساتك الفعلية بخطوط مستقيمة، دون أي تمهيد أو توقّع، ولا يتنبأ AutoSugar بمسار الجلوكوز لديك.\n\nتُهمل القياسات الأقدم من 12 دقيقة، ويتكرر كل إشعار كل 15 دقيقة على الأكثر.\n\nيعرض AutoSugar بيانات Nightscout الخاصة بك وليس جهازاً طبياً. لا تستخدمه لقرارات العلاج.</string>
+    <string name="btn_got_it">فهمت</string>
+    <string name="warning_no_thresholds">لا يحدد خادم Nightscout هذا أي حدود للجلوكوز، لذلك لا يمكن إرسال إشعارات لهذا المصدر. اضبط الحدود في إعدادات Nightscout — فلا يستخدم AutoSugar سواها.</string>
     <string name="notif_channel_name">تنبيهات الجلوكوز</string>
     <string name="notif_channel_desc">تنبيهات ارتفاع وانخفاض سكر الدم مع فترة راحة تكرار 15 دقيقة</string>
     <string name="notif_title_high">ارتفاع السكر</string>
     <string name="notif_title_low">انخفاض السكر</string>
-    <string name="notif_title_predicted_high">السكر في ارتفاع</string>
-    <string name="notif_title_predicted_low">السكر في انخفاض</string>
-    <string name="notif_text_predicted">متوقع خلال 15 دقيقة: %s</string>
 
     <!-- المراقبة في الخلفية -->
     <string name="notif_channel_monitor_name">المراقبة</string>

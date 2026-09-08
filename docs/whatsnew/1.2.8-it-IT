@@ -1,0 +1,3 @@
+Le notifiche ora si basano solo sulle soglie impostate sul tuo Nightscout. Se non ne definisce nessuna, AutoSugar resta in silenzio e te lo dice, invece di usare valori scelti da sé.
+
+Le notifiche di tendenza sono state rimosse: AutoSugar non prevede più dove sta andando la glicemia. Attivandole viene spiegato come funzionano.
