@@ -34,6 +34,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+/**
+ * Whether the trend arrow is drawn next to the reading.
+ *
+ * Off since Google Play rejected version code 11 under the Android for Cars "images on
+ * screen" guideline, which permits only a single static image for content context. The
+ * graph occupies that one slot, so the arrow was a second image on the same screen. The
+ * arrow itself and [trendArrowIcon] are deliberately kept so it can be switched back on if
+ * the guideline or its reading changes — flip this to `true`.
+ */
+private const val TREND_ARROW_ENABLED = false
+
+/**
+ * Shortest interval at which the graph image may be redrawn.
+ *
+ * The graph is the one image the Android for Cars guidelines allow on the car screen, and
+ * they allow it as a *static* image for content context. Holding the bitmap for five
+ * minutes keeps that true no matter how fast the source reports: readings normally arrive
+ * at sensor cadence, but some uploaders push every minute, which would otherwise redraw the
+ * image on every poll and turn it into a live view. The reading, delta and timestamps
+ * beside it are text and keep updating as soon as data arrives.
+ */
+private const val MIN_GRAPH_REDRAW_MS = 5 * 60_000L
+
 class GlucoseScreen(
     carContext: CarContext,
     private val repository: NightscoutRepository,
@@ -68,6 +91,7 @@ class GlucoseScreen(
     )
     private var cachedGraphKey: GraphCacheKey? = null
     private var cachedGraphIcon: CarIcon? = null
+    private var lastGraphRenderMs = 0L
 
     // onGetTemplate can fire frequently; cache the small generated bitmaps so they are
     // not re-rendered on the main thread on every rebuild.
@@ -292,17 +316,17 @@ class GlucoseScreen(
             } else if (lastFetchedMs > 0) {
                 statsRow.addText(carContext.getString(R.string.label_received, ageString(now - lastFetchedMs)))
             }
-            val pane = Pane.Builder()
-                .addRow(
-                    Row.Builder()
-                        .setTitle("${e.displayValue(unit)} ${unitLabel(unit)}")
-                        .setImage(
-                            trendIconCache.getOrPut(e.direction) { trendArrowIcon(e.direction) },
-                            Row.IMAGE_TYPE_LARGE,
-                        )
-                        .addText("${e.displayDelta(unit) ?: "-"} ${unitLabel(unit)}")
-                        .build()
+            val valueRow = Row.Builder()
+                .setTitle("${e.displayValue(unit)} ${unitLabel(unit)}")
+                .addText("${e.displayDelta(unit) ?: "-"} ${unitLabel(unit)}")
+            if (TREND_ARROW_ENABLED) {
+                valueRow.setImage(
+                    trendIconCache.getOrPut(e.direction) { trendArrowIcon(e.direction) },
+                    Row.IMAGE_TYPE_LARGE,
                 )
+            }
+            val pane = Pane.Builder()
+                .addRow(valueRow.build())
                 .addRow(statsRow.build())
             if (errorMessage != null) {
                 pane.addAction(
@@ -322,11 +346,18 @@ class GlucoseScreen(
                     bgLow = thresholds.bgLow,
                     bgHigh = thresholds.bgHigh,
                 )
-                if (cachedGraphKey != key) {
+                // Draw immediately when there is nothing on screen yet (first reading, or a
+                // profile switch); otherwise hold the current image for MIN_GRAPH_REDRAW_MS even
+                // if newer readings have arrived. The stale key is kept, not overwritten, so the
+                // next rebuild after the hold expires picks the newer data up.
+                if (cachedGraphIcon == null ||
+                    (cachedGraphKey != key && now - lastGraphRenderMs >= MIN_GRAPH_REDRAW_MS)
+                ) {
                     cachedGraphIcon = glucoseGraphIcon(
                         history, unit, key.bgTargetBottom, key.bgTargetTop, key.bgLow, key.bgHigh,
                     )
                     cachedGraphKey = key
+                    lastGraphRenderMs = now
                 }
                 pane.setImage(cachedGraphIcon!!)
             }
@@ -363,6 +394,7 @@ class GlucoseScreen(
         isLoading = true
         cachedGraphKey = null
         cachedGraphIcon = null
+        lastGraphRenderMs = 0L
         invalidate()
         lifecycleScope.launch { fetch() }
     }

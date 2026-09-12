@@ -17,6 +17,18 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 /**
+ * Whether the value bubbles along the trace are drawn.
+ *
+ * Off since Google Play rejected version code 11 under the Android for Cars "images on
+ * screen" guideline, which permits only a single static image for content context. The
+ * numeric bubbles are the part of the graph that reads as a data display rather than
+ * content context, and they are also the most to parse at a glance while driving. The
+ * drawing code below is deliberately kept so they can be switched back on if the guideline
+ * or its reading changes — flip this to `true`.
+ */
+private const val DROP_PINS_ENABLED = false
+
+/**
  * Renders the 3-hour glucose history graph as a [CarIcon] bitmap.
  *
  * @param entries      Glucose readings sorted by time (oldest first).
@@ -212,10 +224,12 @@ private fun drawDropPinsAndHourLines(
             )
         }
 
-        val closest = entries.minByOrNull { kotlin.math.abs(it.dateMs - t) }
-        if (closest != null) {
-            drawDropPin(canvas, closest, unit, x, dropFill, dropText, dropBodyW, dropBodyH,
-                dropCorner, dropTailW, dropTailH, minTipY, yOf, colorOf)
+        if (DROP_PINS_ENABLED) {
+            val closest = entries.minByOrNull { kotlin.math.abs(it.dateMs - t) }
+            if (closest != null) {
+                drawDropPin(canvas, closest, unit, x, dropFill, dropText, dropBodyW, dropBodyH,
+                    dropCorner, dropTailW, dropTailH, minTipY, yOf, colorOf)
+            }
         }
 
         t += ms20

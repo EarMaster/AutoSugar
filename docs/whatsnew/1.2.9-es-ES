@@ -1,0 +1,1 @@
+La pantalla del coche ahora muestra una sola imagen estática, como exigen las normas de Android Auto. Desaparece la flecha de tendencia junto al valor y el gráfico ya no etiqueta cada lectura. El gráfico se mantiene fijo cinco minutos; el valor, la variación y las horas se siguen actualizando al instante.
