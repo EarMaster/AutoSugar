@@ -46,16 +46,21 @@ import kotlinx.coroutines.launch
 private const val TREND_ARROW_ENABLED = false
 
 /**
- * Shortest interval at which the graph image may be redrawn.
+ * How much newer the latest reading must be than the one the graph currently shows before
+ * the image is redrawn.
  *
  * The graph is the one image the Android for Cars guidelines allow on the car screen, and
- * they allow it as a *static* image for content context. Holding the bitmap for five
- * minutes keeps that true no matter how fast the source reports: readings normally arrive
- * at sensor cadence, but some uploaders push every minute, which would otherwise redraw the
- * image on every poll and turn it into a live view. The reading, delta and timestamps
- * beside it are text and keep updating as soon as data arrives.
+ * they allow it as a *static* image for content context. Throttling redraws keeps that true
+ * no matter how fast the source reports: readings normally arrive at sensor cadence, but
+ * some uploaders push every minute, which would otherwise redraw the image on every poll and
+ * turn it into a live view. The reading, delta and timestamps beside it are text and keep
+ * updating as soon as data arrives.
+ *
+ * Measured against the readings' own timestamps rather than the wall clock, and set just
+ * under the five minutes a sensor reports at so ordinary jitter — a reading landing 4:52
+ * after the last one rather than 5:00 — doesn't push it over the line and cost a redraw.
  */
-private const val MIN_GRAPH_REDRAW_MS = 5 * 60_000L
+private const val MIN_GRAPH_ADVANCE_MS = 4 * 60_000L + 30_000L
 
 class GlucoseScreen(
     carContext: CarContext,
@@ -88,10 +93,22 @@ class GlucoseScreen(
         val bgTargetTop: Float,
         val bgLow: Int,
         val bgHigh: Int,
-    )
+    ) {
+        /**
+         * True when the two keys draw on the same scale, i.e. they differ only in the readings
+         * themselves. A unit or threshold change is a user or server action rather than data
+         * churn, so it is not what the redraw interval exists to throttle and redraws at once.
+         */
+        fun sameScaleAs(other: GraphCacheKey): Boolean =
+            unit == other.unit &&
+                bgTargetBottom == other.bgTargetBottom &&
+                bgTargetTop == other.bgTargetTop &&
+                bgLow == other.bgLow &&
+                bgHigh == other.bgHigh
+    }
     private var cachedGraphKey: GraphCacheKey? = null
     private var cachedGraphIcon: CarIcon? = null
-    private var lastGraphRenderMs = 0L
+    private var renderedNewestReadingMs = 0L
 
     // onGetTemplate can fire frequently; cache the small generated bitmaps so they are
     // not re-rendered on the main thread on every rebuild.
@@ -346,18 +363,27 @@ class GlucoseScreen(
                     bgLow = thresholds.bgLow,
                     bgHigh = thresholds.bgHigh,
                 )
-                // Draw immediately when there is nothing on screen yet (first reading, or a
-                // profile switch); otherwise hold the current image for MIN_GRAPH_REDRAW_MS even
-                // if newer readings have arrived. The stale key is kept, not overwritten, so the
-                // next rebuild after the hold expires picks the newer data up.
-                if (cachedGraphIcon == null ||
-                    (cachedGraphKey != key && now - lastGraphRenderMs >= MIN_GRAPH_REDRAW_MS)
+                // The throttle measures reading time, not wall-clock time between renders. A
+                // poll can notice a reading up to a full interval after it arrived, so stamping
+                // the clock at render time left the next redraw permanently under the floor:
+                // every reading was held for an extra poll and some were skipped outright, for
+                // no gain — the image still only ever changed once per reading.
+                //
+                // Draw at once when there is nothing on screen yet (first reading, or a profile
+                // switch) or when the scale itself changed; otherwise wait for a reading at
+                // least MIN_GRAPH_ADVANCE_MS newer than the one drawn. The stale key is kept
+                // rather than overwritten, so the next rebuild picks the newer data up.
+                val newestReadingMs = history.last().dateMs
+                val previous = cachedGraphKey
+                if (previous == null || cachedGraphIcon == null ||
+                    !previous.sameScaleAs(key) ||
+                    newestReadingMs - renderedNewestReadingMs >= MIN_GRAPH_ADVANCE_MS
                 ) {
                     cachedGraphIcon = glucoseGraphIcon(
                         history, unit, key.bgTargetBottom, key.bgTargetTop, key.bgLow, key.bgHigh,
                     )
                     cachedGraphKey = key
-                    lastGraphRenderMs = now
+                    renderedNewestReadingMs = newestReadingMs
                 }
                 pane.setImage(cachedGraphIcon!!)
             }
@@ -394,7 +420,7 @@ class GlucoseScreen(
         isLoading = true
         cachedGraphKey = null
         cachedGraphIcon = null
-        lastGraphRenderMs = 0L
+        renderedNewestReadingMs = 0L
         invalidate()
         lifecycleScope.launch { fetch() }
     }

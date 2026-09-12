@@ -5,6 +5,11 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- The graph has its time axis back. The labels sat flush against the bottom edge of the image, and the car screen crops the top and bottom of that image to fit its own slot, so on most screens they were cut away entirely and the graph showed no times at all. They now sit far enough inside the image to survive the crop
+- The graph no longer falls behind the reading beside it. How often it may be redrawn was measured from when the last image happened to be drawn rather than from the readings themselves, and since a refresh can notice a reading up to a minute after it arrived, every redraw pushed the next one further past the interval — holding readings back for an extra refresh and sometimes skipping one outright. It now follows the readings' own timestamps, so each reading a sensor sends reaches the graph
+
 ## [1.2.9] - 2026-09-12
 
 ### Removed
