@@ -12,6 +12,13 @@ on:
         required: false
         default: internal
         type: string
+      changesNotSentForReview:
+        description: >-
+          Commit the edit without sending it for review. Required whenever Play has decided
+          the release must be submitted by hand from the Console.
+        required: false
+        default: true
+        type: boolean
   workflow_dispatch:
     inputs:
       tag:
@@ -27,6 +34,11 @@ on:
           - alpha
           - beta
           - production
+      changesNotSentForReview:
+        description: Commit the edit without sending it for review
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   deploy:
@@ -114,13 +126,21 @@ jobs:
           whatsNewDirectory: whatsnew/
           # Empty when the release carried no mapping.txt; the action skips the input then.
           mappingFile: ${{ steps.mapping.outputs.path }}
-          # `changesNotSentForReview` is deliberately not set. Play rejects the parameter
-          # outright ("Changes are sent for review automatically. The query parameter
-          # changesNotSentForReview must not be set.") for any edit it has decided must be
-          # reviewed — which includes every release that adds a permission needing a Play
-          # Console declaration, such as a new foreground service type. It broke the 1.2.7
-          # upload after working for 1.2.6, since nothing in the workflow had changed.
+          # Play demands this parameter in both directions depending on the state it has put
+          # the app in, and refuses the commit either way when it disagrees:
           #
-          # Holding changes back from review is also the wrong default here: reviews for this
-          # app are slow, so a release that sits in the console waiting for someone to press
-          # "send for review" only adds latency (see AGENTS.md, Maintenance Policy).
+          #   unset/false → "Changes cannot be sent for review automatically. Please set the
+          #                  query parameter changesNotSentForReview to true."  (1.2.9)
+          #   true        → "Changes are sent for review automatically. The query parameter
+          #                  changesNotSentForReview must not be set."          (1.2.7)
+          #
+          # Neither value is correct for all time, which is why this is an input rather than a
+          # hardcoded choice — flip it when Play flips, no workflow edit needed.
+          #
+          # It defaults to true because the app currently has an open policy rejection, and a
+          # rejection has to be cleared by assembling the release by hand anyway: the
+          # noncompliant version codes must be moved to "Not Included" on every track before
+          # anything is sent for review. Auto-submitting would send a release that still
+          # carries them. Once the app is out of that state, false restores the hands-off
+          # behaviour that suits this app's slow reviews (see AGENTS.md, Maintenance Policy).
+          changesNotSentForReview: ${{ inputs.changesNotSentForReview }}
