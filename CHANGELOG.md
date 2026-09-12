@@ -5,6 +5,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Removed
+
+- The trend arrow image beside the reading is gone. The Android for Cars guidelines permit a single static image for content context on the car screen, and the arrow was a second image alongside the graph — Google Play rejected version code 11 on that basis. The graph is now the only image on the screen at any time, and it sits in the background image slot the guideline designates for exactly that purpose. Which way the glucose is going still reads from the delta beside the reading and from the graph itself
+
+### Changed
+
+- The graph no longer labels individual readings with value bubbles, so it shows the shape of the last three hours rather than a row of numbers to read while driving. The reading, the delta, the trend line and its colours, the target range band and the time and value axes are all unchanged
+- The graph is now held as one fixed image for five minutes at a time and is never animated or continuously updated, in the way album art stays put for the length of a track. It used to be redrawn whenever new readings arrived, which for sources that upload faster than sensor cadence could mean once a minute. The reading, the delta and the timestamps beside the graph are text and still update as soon as new data arrives, so nothing about how quickly a new value reaches the screen has changed
+
 ## [1.2.8] - 2026-09-08
 
 ### Removed
