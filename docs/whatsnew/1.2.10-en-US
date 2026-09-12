@@ -1,0 +1,1 @@
+The graph shows its times along the bottom again; they were being cut off by the car screen. It also keeps up with new readings properly — it could previously lag a refresh behind or skip one altogether. The reading beside it was always up to date.

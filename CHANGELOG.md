@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.10] - 2026-09-12
+
 ### Fixed
 
 - The graph has its time axis back. The labels sat flush against the bottom edge of the image, and the car screen crops the top and bottom of that image to fit its own slot, so on most screens they were cut away entirely and the graph showed no times at all. They now sit far enough inside the image to survive the crop
