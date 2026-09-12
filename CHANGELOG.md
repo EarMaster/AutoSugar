@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.9] - 2026-09-12
+
 ### Removed
 
 - The trend arrow image beside the reading is gone. The Android for Cars guidelines permit a single static image for content context on the car screen, and the arrow was a second image alongside the graph — Google Play rejected version code 11 on that basis. The graph is now the only image on the screen at any time, and it sits in the background image slot the guideline designates for exactly that purpose. Which way the glucose is going still reads from the delta beside the reading and from the graph itself

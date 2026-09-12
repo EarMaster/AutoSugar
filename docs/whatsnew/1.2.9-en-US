@@ -1,0 +1,1 @@
+The car screen now shows a single, static image, as the Android Auto guidelines require. The trend arrow beside the reading is gone, and the graph no longer labels each reading with a value. The graph now holds for five minutes at a time; the reading, change and times still update right away.
