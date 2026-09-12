@@ -29,6 +29,23 @@ import kotlin.math.roundToInt
 private const val DROP_PINS_ENABLED = false
 
 /**
+ * How far above the bottom of the plot the time labels sit.
+ *
+ * The host scales this image into a slot whose aspect ratio it chooses, and when that slot
+ * is wider than the bitmap it crops the top and bottom rather than letterboxing them. The
+ * labels sat four pixels off the plot's bottom edge — with the font's descent that put them
+ * flush against the image edge — and were cropped away entirely, taking the whole time axis
+ * with them. The band's lower edge was visibly flush with the image edge in cases where the
+ * scale says it should not have been, which is what gave the crop away.
+ *
+ * At 32 the baseline lands 48px above a 400px-tall bitmap, so the labels survive a bottom
+ * crop of up to about 12% of the image. This bounds the time labels only: the band, the
+ * trace and the gridlines still use the full plot, since losing a few pixels off the peak of
+ * the line is cosmetic where losing the axis is not.
+ */
+private const val SAFE_INSET_V = 32f
+
+/**
  * Renders the 3-hour glucose history graph as a [CarIcon] bitmap.
  *
  * @param entries      Glucose readings sorted by time (oldest first).
@@ -167,7 +184,7 @@ private fun drawTimeLabelsAndDropPins(
         labelPaint.textAlign = Paint.Align.CENTER
         canvas.drawText(
             "%02d:30".format(Locale.US, cal.get(java.util.Calendar.HOUR_OF_DAY)),
-            xOf(tHalf), pad + plotH - 4f, labelPaint,
+            xOf(tHalf), pad + plotH - SAFE_INSET_V, labelPaint,
         )
         tHalf += msPerHour
     }
@@ -220,7 +237,7 @@ private fun drawDropPinsAndHourLines(
             labelPaint.textAlign = Paint.Align.CENTER
             canvas.drawText(
                 "%02d:00".format(Locale.US, cal.get(java.util.Calendar.HOUR_OF_DAY)),
-                x, pad + plotH - 4f, labelPaint,
+                x, pad + plotH - SAFE_INSET_V, labelPaint,
             )
         }
 
