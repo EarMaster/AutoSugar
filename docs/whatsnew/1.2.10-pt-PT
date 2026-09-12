@@ -1,0 +1,1 @@
+O gráfico volta a mostrar as horas na parte inferior; estavam a ser cortadas pelo ecrã do carro. Além disso, acompanha agora corretamente as novas leituras: antes podia ficar uma atualização atrasado ou saltar uma. O valor ao lado esteve sempre atualizado.

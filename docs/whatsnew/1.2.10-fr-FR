@@ -1,0 +1,1 @@
+Le graphique réaffiche les heures en bas ; elles étaient coupées par l'écran de la voiture. Il suit aussi correctement les nouvelles mesures : il pouvait auparavant avoir un rafraîchissement de retard, voire en sauter une. La valeur affichée à côté, elle, était toujours à jour.
