@@ -17,7 +17,7 @@ on:
           Commit the edit without sending it for review. Required whenever Play has decided
           the release must be submitted by hand from the Console.
         required: false
-        default: true
+        default: false
         type: boolean
   workflow_dispatch:
     inputs:
@@ -37,7 +37,7 @@ on:
       changesNotSentForReview:
         description: Commit the edit without sending it for review
         required: false
-        default: true
+        default: false
         type: boolean
 
 jobs:
@@ -137,10 +137,9 @@ jobs:
           # Neither value is correct for all time, which is why this is an input rather than a
           # hardcoded choice — flip it when Play flips, no workflow edit needed.
           #
-          # It defaults to true because the app currently has an open policy rejection, and a
-          # rejection has to be cleared by assembling the release by hand anyway: the
-          # noncompliant version codes must be moved to "Not Included" on every track before
-          # anything is sent for review. Auto-submitting would send a release that still
-          # carries them. Once the app is out of that state, false restores the hands-off
-          # behaviour that suits this app's slow reviews (see AGENTS.md, Maintenance Policy).
+          # It defaults to false: the hands-off behaviour that suits this app's slow reviews
+          # (see AGENTS.md, Maintenance Policy). Play only demands true while the app has an
+          # open policy rejection, which has to be cleared by assembling the release by hand
+          # anyway: the noncompliant version codes must be moved to "Not Included" on every
+          # track before anything is sent for review. Pass true for as long as that lasts.
           changesNotSentForReview: ${{ inputs.changesNotSentForReview }}
