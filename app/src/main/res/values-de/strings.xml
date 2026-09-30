@@ -19,6 +19,8 @@
     <string name="label_stale_reading">⚠️ Messung: %s</string>
     <string name="label_reading">Messung: %s</string>
     <string name="label_received">Empfangen: %s</string>
+    <string name="label_glucose">Blutzucker</string>
+    <string name="label_status">Status</string>
 
     <!-- Settings UI -->
     <string name="label_settings">Einstellungen</string>

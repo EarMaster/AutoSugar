@@ -1,10 +1,5 @@
 package de.autosugar.car
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.annotations.RequiresCarApi
@@ -113,7 +108,6 @@ class GlucoseScreen(
     // onGetTemplate can fire frequently; cache the small generated bitmaps so they are
     // not re-rendered on the main thread on every rebuild.
     private val trendIconCache = mutableMapOf<String, CarIcon>()
-    private val numberIconCache = mutableMapOf<Pair<Int, Boolean>, CarIcon>()
 
     // A reading older than this is considered stale (≥2 missed 5-min CGM readings) and is
     // labelled as such in the UI. Alerting itself is handled by BackgroundAlertMonitor.
@@ -233,7 +227,7 @@ class GlucoseScreen(
 
     // endregion
 
-    // region PaneTemplate (fallback: 1 profile, >5 profiles, or CarApi < 6)
+    // region PaneTemplate (fallback: 1 profile, >4 profiles, or CarApi < 6)
 
     private fun buildPaneTemplate(): Template {
         val activeProfile = profiles.find { it.id == activeProfileId }
@@ -246,53 +240,33 @@ class GlucoseScreen(
             .build()
     }
 
+    /**
+     * Without tabs, switching sources goes through [SourceSelectScreen] for any number of
+     * profiles rather than switching in place.
+     *
+     * Switching in place changes the template title to the new profile's name, which the host
+     * never treats as a refresh: every switch spent a step of the five-template quota, and a
+     * handful of switches while driving ended in the host's "can't do this while driving"
+     * error. Popping back from the picker hands the quota back, and a back operation may
+     * change the contents of a same-type template freely, so the renamed pane costs nothing.
+     *
+     * It also replaces the numbered profile buttons this used for 2–4 profiles: the pane's
+     * action strip takes at most two actions, so three or four buttons failed validation.
+     */
     private fun buildActionStrip(): ActionStrip {
-        val builder = ActionStrip.Builder()
-        return when {
-            profiles.size > 4 -> builder.addAction(
-                Action.Builder()
-                    .setTitle(carContext.getString(R.string.action_switch_source))
-                    .setOnClickListener {
-                        screenManager.push(
-                            SourceSelectScreen(carContext, repository) { id -> switchTo(id) }
-                        )
-                    }
-                    .build()
-            ).build()
-            profiles.size in 2..5 -> {
-                // Numbered icon fallback when TabTemplate is unavailable (CarApi < 6).
-                // The upper bound of 5 here is unreachable in practice since the ">4"
-                // branch above already matches size 5 — this only ever runs for 2..4.
-                profiles.forEachIndexed { index, profile ->
-                    val active = profile.id == activeProfileId
-                    builder.addAction(
-                        Action.Builder()
-                            .setIcon(numberIconCache.getOrPut(index + 1 to active) {
-                                profileNumberIcon(index + 1, active)
-                            })
-                            .setOnClickListener { switchTo(profile.id) }
-                            .build()
+        val action = if (profiles.size >= 2) {
+            Action.Builder()
+                .setTitle(carContext.getString(R.string.action_switch_source))
+                .setOnClickListener {
+                    screenManager.push(
+                        SourceSelectScreen(carContext, repository) { id -> switchTo(id) }
                     )
                 }
-                builder.build()
-            }
-            else -> builder.addAction(Action.APP_ICON).build()
+                .build()
+        } else {
+            Action.APP_ICON
         }
-    }
-
-    private fun profileNumberIcon(number: Int, active: Boolean): CarIcon {
-        val size = 96
-        val bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val c = Canvas(bmp)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = if (active) Color.WHITE else Color.argb(150, 200, 200, 200)
-            textSize = size * 0.65f
-            textAlign = Paint.Align.CENTER
-            typeface = Typeface.DEFAULT_BOLD
-        }
-        val textY = size / 2f - (paint.fontMetrics.ascent + paint.fontMetrics.descent) / 2f
-        c.drawText(number.toString(), size / 2f, textY, paint)
-        return CarIcon.Builder(IconCompat.createWithBitmap(bmp)).build()
+        return ActionStrip.Builder().addAction(action).build()
     }
 
     // endregion
@@ -318,11 +292,18 @@ class GlucoseScreen(
             .build()
 
         else -> {
+            // Row titles must never carry live data. The host treats a new Pane as a refresh
+            // (free) only while the template title, the row count and every row title stay
+            // the same; anything else counts as a new step against the five-template quota.
+            // With the reading and its age in the titles, every poll spent a step, and a few
+            // minutes on screen while driving ended in the host's "can't do this while
+            // driving" error. Everything that changes goes into the row texts instead.
             val e = entry!!
             val now = System.currentTimeMillis()
             val stale = errorMessage != null || now - e.dateMs > staleAfterMs
             val statsRow = Row.Builder()
-                .setTitle(
+                .setTitle(carContext.getString(R.string.label_status))
+                .addText(
                     if (stale)
                         carContext.getString(R.string.label_stale_reading, ageString(now - e.dateMs))
                     else
@@ -334,7 +315,8 @@ class GlucoseScreen(
                 statsRow.addText(carContext.getString(R.string.label_received, ageString(now - lastFetchedMs)))
             }
             val valueRow = Row.Builder()
-                .setTitle("${e.displayValue(unit)} ${unitLabel(unit)}")
+                .setTitle(carContext.getString(R.string.label_glucose))
+                .addText("${e.displayValue(unit)} ${unitLabel(unit)}")
                 .addText("${e.displayDelta(unit) ?: "-"} ${unitLabel(unit)}")
             if (TREND_ARROW_ENABLED) {
                 valueRow.setImage(

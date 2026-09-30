@@ -37,6 +37,8 @@
     <string name="label_reading">Reading: %s</string>
     <string name="label_stale_reading">⚠️ Reading: %s</string>
     <string name="label_received">Received: %s</string>
+    <string name="label_glucose">Glucose</string>
+    <string name="label_status">Status</string>
 
     <!-- Glucose alerts -->
     <string name="label_glucose_alerts">Glucose alerts</string>
