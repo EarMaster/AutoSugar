@@ -1,0 +1,1 @@
+Corrige el error «no se puede hacer mientras conduces» que aparecía tras unos minutos en la pantalla de glucosa. La lectura aparece ahora bajo la etiqueta fija «Glucosa». En coches sin pestañas, cambia de fuente con «Cambiar fuente»; ahora también funciona con tres o cuatro fuentes.

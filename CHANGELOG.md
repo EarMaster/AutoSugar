@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.11] - 2026-09-30
+
 ### Fixed
 
 - The glucose screen no longer ends in "This task can't be done while driving" after a few minutes in the foreground. Android Auto allows an app only a handful of screen changes per task and counts an update as free only while the screen's titles stay the same, but the reading and its age were shown as titles, so every refresh used one up. The titles are now fixed labels ("Glucose", "Status") and the reading, delta and timestamps sit beneath them

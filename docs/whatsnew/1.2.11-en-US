@@ -1,0 +1,1 @@
+Fixes the "can't be done while driving" error that appeared after a few minutes on the glucose screen. The reading now sits under a fixed "Glucose" label. On cars without tabs, switch sources via "Switch Source"; this also works with three or four sources now.
