@@ -5,6 +5,16 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.12] - 2026-09-30
+
+### Changed
+
+- New app icon (a live glucose curve drawn as a road) for the launcher, themed icons, the website and the README, and refreshed the Android Auto screenshots to show it
+
+### Fixed
+
+- Releases reach Google Play again. The deploy asked Play to hold each release for manual submission, a mode Play only accepts while the app has an open policy rejection; with that cleared, Play refused every upload. Releases are now sent for review automatically by default
+
 ## [1.2.11] - 2026-09-30
 
 ### Fixed
