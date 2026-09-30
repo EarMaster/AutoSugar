@@ -19,6 +19,8 @@
     <string name="label_stale_reading">⚠️ Leitura: %s</string>
     <string name="label_reading">Leitura: %s</string>
     <string name="label_received">Recebido: %s</string>
+    <string name="label_glucose">Glicose</string>
+    <string name="label_status">Estado</string>
 
     <!-- Settings UI -->
     <string name="label_settings">Configurações</string>

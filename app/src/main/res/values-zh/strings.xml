@@ -19,6 +19,8 @@
     <string name="label_stale_reading">⚠️ 读数：%s</string>
     <string name="label_reading">读数：%s</string>
     <string name="label_received">已接收：%s</string>
+    <string name="label_glucose">血糖</string>
+    <string name="label_status">状态</string>
 
     <!-- Settings UI -->
     <string name="label_settings">设置</string>

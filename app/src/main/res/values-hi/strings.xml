@@ -19,6 +19,8 @@
     <string name="label_stale_reading">⚠️ रीडिंग: %s</string>
     <string name="label_reading">रीडिंग: %s</string>
     <string name="label_received">प्राप्त: %s</string>
+    <string name="label_glucose">ग्लूकोज़</string>
+    <string name="label_status">स्थिति</string>
 
     <!-- Settings UI -->
     <string name="label_settings">सेटिंग्स</string>

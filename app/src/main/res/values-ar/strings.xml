@@ -19,6 +19,8 @@
     <string name="label_stale_reading">⚠️ القراءة: %s</string>
     <string name="label_reading">القراءة: %s</string>
     <string name="label_received">تم الاستقبال: %s</string>
+    <string name="label_glucose">الجلوكوز</string>
+    <string name="label_status">الحالة</string>
 
     <!-- Settings UI -->
     <string name="label_settings">الإعدادات</string>

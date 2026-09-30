@@ -1,0 +1,1 @@
+Corregge l’errore «non è possibile durante la guida» che compariva dopo alcuni minuti sulla schermata della glicemia. Il valore appare ora sotto l’etichetta fissa «Glicemia». Sulle auto senza schede, cambia sorgente con «Cambia sorgente»; ora funziona anche con tre o quattro sorgenti.

@@ -19,6 +19,8 @@
     <string name="label_stale_reading">⚠️ 測定値: %s</string>
     <string name="label_reading">測定値: %s</string>
     <string name="label_received">受信: %s</string>
+    <string name="label_glucose">血糖値</string>
+    <string name="label_status">ステータス</string>
 
     <!-- Settings UI -->
     <string name="label_settings">設定</string>

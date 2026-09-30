@@ -1,0 +1,1 @@
+Corrige l’erreur « impossible pendant la conduite » qui apparaissait après quelques minutes sur l’écran de glycémie. La valeur s’affiche désormais sous le libellé fixe « Glycémie ». Sur les voitures sans onglets, changez de source via « Changer de source » ; cela fonctionne aussi avec trois ou quatre sources.
