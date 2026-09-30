@@ -14,8 +14,8 @@ android {
         applicationId = "de.autosugar"
         minSdk = 26
         targetSdk = 37
-        versionCode = 16
-        versionName = "1.2.11"
+        versionCode = 17
+        versionName = "1.2.12"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

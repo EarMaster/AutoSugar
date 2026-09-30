@@ -5,6 +5,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.12] - 2026-09-30
+
 ### Changed
 
 - New app icon (a live glucose curve drawn as a road) for the launcher, themed icons, the website and the README, and refreshed the Android Auto screenshots to show it
