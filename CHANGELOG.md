@@ -5,6 +5,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Funding links (Liberapay and Buy Me a Coffee) on the repository's Sponsor button
+
 ## [1.2.12] - 2026-09-30
 
 ### Changed
